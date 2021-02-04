@@ -1,0 +1,9 @@
+
+class Piece
+{
+private:
+  enum Type {roi, dame, fous, cavaliers, tours, pions};
+  Type type;
+  Coord pos;
+public:
+}

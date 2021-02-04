@@ -1,0 +1,11 @@
+#include <string>
+
+using namespace std;
+
+class Lecture
+{
+ private:
+  string* l_movements;
+ public:
+  Lecture();
+}
