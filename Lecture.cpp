@@ -54,8 +54,7 @@ void Lecture::add_string(string* s)
   {
     resize_lm();
   }
-
-  l_movements[lm_size] = *s;
+  l_movements[lm_size] = (*s);
   lm_size++;
 }
 void Lecture::resize_lm()

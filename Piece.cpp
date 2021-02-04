@@ -1,10 +1,18 @@
 #include "Piece.h"
 #include <string>
+#include <iostream>
+
+using namespace std;
 
 Piece::Piece():type(NONE),Temps_movements(new int[10]),TM_size(0),TM_max_size(10),color(true)
 {
-  type = NONE;
   pos = Coord();
+}
+Piece::Piece(Type t, bool c, int x, int y):Temps_movements(new int[10]),TM_size(0),TM_max_size(10)
+{
+  type = t;
+  color = c;
+  pos = Coord(x,y);
 }
 Piece::Piece(Piece* p):Temps_movements(new int[p->get_TM_max_size()]), color(p->get_Color())
 {
@@ -58,7 +66,7 @@ void Piece::set_Color(bool b)
 {
   color = b;
 }
-Piece::Type Piece::get_Type()
+Type Piece::get_Type()
 {
   return type;
 }
@@ -145,23 +153,29 @@ bool Piece::Test_movements(Coord* c)
   default:
     if(color)
     {
-      if(pos.y() == c->y()+1)
+      if(pos.y()+1 == c->y())
       {
-	if(pos.x() == c->x()+1 || pos.x() == c->x()-1)
+	if(pos.x()+1 == c->x() || pos.x()-1 == c->x())
 	{
 	  return true;
 	}
+      }
+      else if(pos.y()+2 == c->y() && pos.x() == c->x())
+      {
+	return true;
       }
     }
     else
     {
-      if(pos.y() == c->y()-1)
+      if(pos.y()-1 == c->y())
       {
-	if(pos.x() == c->x()+1 || pos.x() == c->x()-1)
+	if(pos.x()+1 == c->x() || pos.x()-1 == c->x())
 	{
 	  return true;
 	}
       }
+      else if(pos.y()-2 == c->y() && pos.x() == c->x())
+	return true;
     }
     break;
   }
@@ -188,25 +202,60 @@ bool Piece::Test_mov_Fous(Coord* c)
 }
 bool Piece::Test_mov_Cavaliers(Coord* c)
 {
-  if(pos.y() == c->y()-2 &&
-     (pos.x()==c->x()+1 || pos.x()==c->x()-1))
+  if(pos.y()-2 == c->y() &&
+     (pos.x()+1==c->x() || pos.x()-1==c->x()))
   {
     return true;
   }
-  if(pos.y() == c->y()+2 &&
-     (pos.x()==c->x()+1 || pos.x()==c->x()-1))
+  if(pos.y()+2 == c->y() &&
+     (pos.x()+1==c->x() || pos.x()-1==c->x()))
   {
     return true;
   }
-  if(pos.x() == c->x()-2 &&
-     (pos.y()==c->y()+1 || pos.y()==c->y()-1))
+  if(pos.x()-2 == c->x() &&
+     (pos.y()+1==c->y() || pos.y()-1==c->y()))
   {
     return true;
   }
-  if(pos.x() == c->x()+2 &&
-     (pos.y()==c->y()+1 || pos.y()==c->y()-1))
+  if(pos.x()+2 == c->x() &&
+     (pos.y()+1==c->y() || pos.y()-1==c->y()))
   {
     return true;
   }
   return false;
+}
+
+string Piece::toString()
+{
+  string s;
+  switch(type)
+  {
+  case roi:
+    s = "Roi: ";
+    break;
+  case dame:
+    s = "Dame: ";
+    break;
+  case fous:
+    s = "Fous: ";
+    break;
+  case cavaliers:
+    s = "Cavalier: ";
+    break;
+  case tours:
+    s = "Tour: ";
+    break;
+  case NONE:
+    s = "NONE: ";
+    break;
+  default:
+    s = "Pion: ";
+    break;
+  }
+  s+="(";
+  s+=to_string(pos.x());
+  s+=",";
+  s+=to_string(pos.y());
+  s+=")";
+  return  s;
 }

@@ -1,3 +1,6 @@
+#ifndef COORD
+#define COORD
+
 class Coord
 {
  private:
@@ -12,3 +15,5 @@ class Coord
   void update(int,int);
 };
 //destructeur!!
+
+#endif

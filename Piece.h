@@ -1,10 +1,18 @@
+#ifndef PIECE
+#define PIECE
+
 #include "Coord.h"
+#include <string>
+
+using namespace std;
+
+enum Type {roi, dame, fous, cavaliers,
+	   tours, pions,NONE};
+
 
 class Piece
 {
- private:
-  enum Type {roi, dame, fous, cavaliers, tours, pions,NONE};
-  
+ private:  
   Type type;
   bool color;//B:true N:false
   
@@ -15,6 +23,7 @@ class Piece
   int TM_max_size;
  public:
   Piece();
+  Piece(Type,bool,int,int);
   Piece(Piece*);
   ~Piece();
   
@@ -39,4 +48,8 @@ class Piece
   bool Test_mov_Tour(Coord*);
   bool Test_mov_Fous(Coord*);
   bool Test_mov_Cavaliers(Coord*);
+
+  string toString();
 };
+
+#endif

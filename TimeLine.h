@@ -1,3 +1,6 @@
+#ifndef TIME_LINE
+#define TIME_LINE
+
 #include "Piece.h"
 
 class TimeLine
@@ -42,5 +45,11 @@ class TimeLine
   
   Instance* get_instance_at(int);
 
+  Action int_to_act(int);
+  
   void resize_tl();
+
+  void toString();
 };
+
+#endif

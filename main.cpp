@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Lecture.h"
+#include "Identify.h"
 #include <string>
 
 using namespace std;
@@ -17,10 +18,9 @@ int main(int argc, char** argv)
   string* s = lecture.return_lm();
   int size = lecture.get_size();
   
-  for(int i = 0; i < size; i++)
-  {
-    cout << s[i] << endl;
-  }
-  
+  Identify iden(s,size);
+
+  TimeLine* tl = iden.get_tl();
+  tl->toString();
   return 1;
 }
