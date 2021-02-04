@@ -19,7 +19,7 @@ class Piece
   ~Piece();
   
   void set_Type(char);
-  void set_Coord(Coord*);
+  void set_Coord(Coord);
   void set_Color(bool);
   
   Type get_Type();

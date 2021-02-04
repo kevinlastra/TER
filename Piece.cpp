@@ -50,9 +50,9 @@ void Piece::set_Type(char c)
     break;
   }
 }
-void Piece::set_Coord(Coord* c)
+void Piece::set_Coord(Coord c)
 {
-  pos.update(c->x() ,c->y());
+  pos.update(c.x() ,c.y());
 }
 void Piece::set_Color(bool b)
 {
@@ -120,11 +120,11 @@ void Piece::resize()
 }
 bool Piece::Test_movements(Coord* c)
 {
+  int d;
   switch(type)
   {
   case roi:
-    int d = (c->x()-pos.x())*(c->x()-pos.x())+
-      (c->y()-pos.y())*(c->y()-pos.y());
+    d = (c->x()-pos.x())*(c->x()-pos.x())+(c->y()-pos.y())*(c->y()-pos.y());
     if(d == 1)
     {
       return true;
