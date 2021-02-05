@@ -21,9 +21,8 @@ void TimeLine::add_instance_on_top(Piece* p, Action a)
 
   act[size] = a;
   piece[size] = p;
-  
-  cout << p->toString() << endl;
 
+  
   size++;
   p->add_movements(size);
 }
@@ -66,6 +65,10 @@ TimeLine::Instance* TimeLine::get_instance_at(int i)
   ins->p = piece[i];
   return ins;
 }
+int TimeLine::get_size()
+{
+  return size;
+}
 TimeLine::Action TimeLine::int_to_act(int i)
 {
   switch(i)
@@ -106,6 +109,10 @@ void TimeLine::toString()
 {
   for(int i = 0; i < size; i++)
   {
-    cout << piece[i]->toString() << endl;
+    if(i < 10)
+      cout <<i<<".  ";
+    else
+      cout <<i<<". ";
+    cout<< piece[i]->toString() <<"    act: "<<act[i]<< endl;
   }
 }

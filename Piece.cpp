@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Piece::Piece():type(NONE),Temps_movements(new int[10]),TM_size(0),TM_max_size(10),color(true)
+Piece::Piece():type(NONE),Temps_movements(new int[10]),TM_size(0),TM_max_size(10),color(true),alive(true)
 {
   pos = Coord();
 }
@@ -13,6 +13,7 @@ Piece::Piece(Type t, bool c, int x, int y):Temps_movements(new int[10]),TM_size(
   type = t;
   color = c;
   pos = Coord(x,y);
+  alive = true;
 }
 Piece::Piece(Piece* p):Temps_movements(new int[p->get_TM_max_size()]), color(p->get_Color())
 {
@@ -66,6 +67,10 @@ void Piece::set_Color(bool b)
 {
   color = b;
 }
+void Piece::set_Alive(bool a)
+{
+  alive = a;
+}
 Type Piece::get_Type()
 {
   return type;
@@ -77,6 +82,10 @@ Coord Piece::get_Coord()
 bool Piece::get_Color()
 {
   return color;
+}
+bool Piece::get_Alive()
+{
+  return alive;
 }
 int Piece::get_TM_size()
 {
@@ -126,7 +135,7 @@ void Piece::resize()
   delete[] Temps_movements;
   Temps_movements = tm;
 }
-bool Piece::Test_movements(Coord* c)
+bool Piece::Test_movements(Coord* c, bool eat)
 {
   int d;
   switch(type)
@@ -155,7 +164,9 @@ bool Piece::Test_movements(Coord* c)
     {
       if(pos.y()+1 == c->y())
       {
-	if(pos.x()+1 == c->x() || pos.x()-1 == c->x())
+	if(pos.x() == c->x())
+	  return true;
+	if(eat && (pos.x()+1 == c->x() || pos.x()-1 == c->x()))
 	{
 	  return true;
 	}
@@ -167,9 +178,13 @@ bool Piece::Test_movements(Coord* c)
     }
     else
     {
+      //cout << c->x() << "   " << c->y() << endl;
+      //cout << pos.x() << "   "<< pos.y() << endl;
       if(pos.y()-1 == c->y())
       {
-	if(pos.x()+1 == c->x() || pos.x()-1 == c->x())
+	if(pos.x() == c->x())
+	  return true;
+	if(eat && (pos.x()+1 == c->x() || pos.x()-1 == c->x()))
 	{
 	  return true;
 	}
@@ -228,34 +243,47 @@ bool Piece::Test_mov_Cavaliers(Coord* c)
 string Piece::toString()
 {
   string s;
+  int space;
   switch(type)
   {
   case roi:
     s = "Roi: ";
+    space = 5;
     break;
   case dame:
     s = "Dame: ";
+    space = 6;
     break;
   case fous:
     s = "Fous: ";
+    space = 6;
     break;
   case cavaliers:
     s = "Cavalier: ";
+    space = 10;
     break;
   case tours:
     s = "Tour: ";
+    space = 6;
     break;
   case NONE:
     s = "NONE: ";
+    space = 6;
     break;
   default:
     s = "Pion: ";
+    space = 6;
     break;
   }
+  for(int i = space; i < 15;i++)
+    s+=" ";
   s+="(";
   s+=to_string(pos.x());
   s+=",";
   s+=to_string(pos.y());
-  s+=")";
+  s+=")    ";
+  s+=color?"1":"0";
+  s+="     Alive:";
+  s+=alive?"1":"0";
   return  s;
 }

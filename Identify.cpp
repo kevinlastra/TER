@@ -19,6 +19,7 @@ Identify::Identify(string* l, int size)
 
   for(int i = 0; i < size; i++)
   {
+    //cout << i << "         "<<liste[i]<<endl;
     identify_ps(&liste[i], i);
   }
 }
@@ -32,33 +33,48 @@ void Identify::identify_ps(string* piece, int i)
 {
   int ascii = (int)piece[0][0];
   bool color = i%2==0;
-  
+  int act;
   Piece* p = NULL;
   Coord newcoord;
-  
   if(ascii >= 65 && ascii <= 90)
   {
     switch(ascii)
     {
     case 'K':
       //cout << "King: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, roi, piece);
+      Factorize(&p, &newcoord, color, roi, piece, act);
       break;
     case 'Q':
-      //cout << "Queen: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, dame, piece);
+      //cout << "Queen: "<<piece[0]<<"  "<<color<<endl;
+      Factorize(&p, &newcoord, color, dame, piece, act);
       break;
     case 'B':
       //cout << "Bishop: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, fous, piece);
+      Factorize(&p, &newcoord, color, fous, piece, act);
       break;
     case 'N':
       //cout << "Knigth: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, cavaliers, piece);
+      if((int)piece[0][2] < 96 || piece[0][1] == 'x')
+      {
+	Factorize(&p, &newcoord, color, cavaliers, piece, act);
+      }
+      else
+      {
+	p = find_ps_bis(cavaliers,color,(int)piece[0][2]-96,(int)piece[0][3]-48,(int)piece[0][1]-96,false);
+	newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+      }
       break;
     case 'R':
       //cout << "Rok: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, tours, piece);
+      if((int)piece[0][2] < 96)
+      {
+	Factorize(&p, &newcoord, color, tours, piece, act);
+      }
+      else
+      {
+	p = find_ps_bis(tours,color,(int)piece[0][2]-96,(int)piece[0][3]-48,(int)piece[0][1]-96,false);
+	newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+      }
       break;
     case 'O':
       int a,b;
@@ -68,14 +84,14 @@ void Identify::identify_ps(string* piece, int i)
 	return_Castling(color,roi,a,b);
 
 	p = pieces[a];
-	newcoord = Coord(pieces[a]->get_Coord().x()-2, pieces[a]->get_Coord().y());
+	newcoord = Coord(pieces[a]->get_Coord().x()+2, pieces[a]->get_Coord().y());
 	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(0));
+	tl->add_instance_on_top(p,tl->int_to_act(2));
 
 	p = pieces[b];
-	newcoord = Coord(newcoord.x()+1, newcoord.y());
+	newcoord = Coord(newcoord.x()-1, newcoord.y());
 	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(0));
+	tl->add_instance_on_top(p,tl->int_to_act(2));
       }
       else if(piece[0] == "O-O-O")
       {
@@ -83,14 +99,14 @@ void Identify::identify_ps(string* piece, int i)
 	return_Castling(color,dame,a,b);
 
 	p = pieces[a];
-	newcoord = Coord(pieces[a]->get_Coord().x()+2, pieces[a]->get_Coord().y());
+	newcoord = Coord(pieces[a]->get_Coord().x()-2, pieces[a]->get_Coord().y());
 	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(0));
+	tl->add_instance_on_top(p,tl->int_to_act(2));
 
 	p = pieces[b];
-	newcoord = Coord(newcoord.x()-1, newcoord.y());
+	newcoord = Coord(newcoord.x()+1, newcoord.y());
 	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(0));
+	tl->add_instance_on_top(p,tl->int_to_act(2));
       }
       break;
     default://'_'
@@ -105,32 +121,44 @@ void Identify::identify_ps(string* piece, int i)
     {
       p = find_ps(pions,color,(int)piece[0][0]-96,(int)piece[0][1]-48);
       newcoord = Coord((int)piece[0][0]-96,(int)piece[0][1]-48);
+      act = 1;
     }
     else
     {
       p = find_ps_bis(pions,color,(int)piece[0][2]-96,
-		      (int)piece[0][3]-48,(int)piece[0][0]-96);
+		     (int)piece[0][3]-48,(int)piece[0][0]-96,true);
       newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+      act = 0;
     }
   }
-  
   if(p != NULL && ascii!='O')
   {
+    if(piece[0][1] == 'x')
+    {
+      kill_at_coord(newcoord.x(), newcoord.y());
+    }
     p->set_Coord(newcoord);
-    tl->add_instance_on_top(p,tl->int_to_act(0));
+    tl->add_instance_on_top(p,tl->int_to_act(act));
+  }
+  else if(p == NULL)
+  {    
+    cout <<endl<<"Error: "<< piece[0] << endl<<endl;;
   }
 }
-void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s)
+void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s, int& act)
 {
-   if(s[0][1] != 'x')
+  if(s[0][1] != 'x')
    {
+     //cout << "c:   y:"<<(int)s[0][2]-48<<"    "<<s[0][2]<<endl;
      p[0] = find_ps(t,color,(int)s[0][1]-96,(int)s[0][2]-48);
      c[0] = Coord((int)s[0][1]-96,(int)s[0][2]-48);
+     act = 1;
    }
    else
    {
      p[0] = find_ps(t,color, (int)s[0][2]-96, (int)s[0][3]-48);
      c[0] = Coord((int)s[0][2]-96,(int)s[0][3]-48);
+     act = 0;
    }
 }
 void Identify::return_Castling(bool color,Type t, int &a, int &b)
@@ -143,16 +171,16 @@ void Identify::return_Castling(bool color,Type t, int &a, int &b)
   if(t == roi)
   {
     if(color)
-      b = 16;
+      b = 17;
     else
-      b = 18;
+      b = 19;
   }
   else if(t == dame)
   {
     if(color)
-      b = 17;
+      b = 16;
     else
-      b = 19; 
+      b = 18; 
   }
 }
 Piece* Identify::find_ps(Type t, bool color, int x, int y)
@@ -162,14 +190,33 @@ Piece* Identify::find_ps(Type t, bool color, int x, int y)
   {
     if(pieces[i]->get_Type() == t &&
        pieces[i]->get_Color() == color &&
-       pieces[i]->Test_movements(&c))
+       pieces[i]->Test_movements(&c,false) &&
+       pieces[i]->get_Alive())
     {
-      return pieces[i];
-      break;
+      if(t == fous)
+      {
+	if(check_Bishop_path(pieces[i]->get_Coord(),c))
+	  return pieces[i];
+	else
+	  continue;
+      }
+      else if(t == tours)
+      {
+	//cout << "Test Rok Path: "<<check_Rok_path(pieces[i]->get_Coord(),c)<<endl;
+	if(check_Rok_path(pieces[i]->get_Coord(),c))
+	  return pieces[i];
+	else
+	  continue;
+      }
+      else
+      {
+	return pieces[i];
+      }
     }
   }
+  return NULL;
 }
-Piece* Identify::find_ps_bis(Type t, bool color, int x, int y, int xfrom)
+Piece* Identify::find_ps_bis(Type t, bool color, int x, int y, int xfrom, bool pawn)
 {
   Coord c(x,y);
   for(int i = 0; i < 32; i++)
@@ -177,12 +224,108 @@ Piece* Identify::find_ps_bis(Type t, bool color, int x, int y, int xfrom)
     if(pieces[i]->get_Type() == t &&
        pieces[i]->get_Color() == color &&
        pieces[i]->get_Coord().x() == xfrom &&
-       pieces[i]->Test_movements(&c))
+       pieces[i]->Test_movements(&c,pawn) &&
+       pieces[i]->get_Alive())
     {
-      return pieces[i];
-      break;
+      if(t == fous)
+      {
+	if(check_Bishop_path(pieces[i]->get_Coord(),c))
+	  return pieces[i];
+	else
+	  continue;
+      }
+      else if(t == tours)
+      {
+	if(check_Rok_path(pieces[i]->get_Coord(),c))
+	  return pieces[i];
+	else
+	  continue;
+      }
+      else
+      {
+	return pieces[i];
+      }
     }
   }
+}
+void Identify::kill_at_coord(int x, int y)
+{
+  for(int i = 0; i < 32; i++)
+  {
+    if(pieces[i]->get_Coord().x() == x &&
+       pieces[i]->get_Coord().y() == y &&
+       pieces[i]->get_Alive())
+    {
+      cout << "killed : "<<pieces[i]->toString()<<endl;
+      pieces[i]->set_Alive(false);
+    }
+  }
+}
+bool Identify::check_Bishop_path(Coord start, Coord end)
+{
+  int x = (start.x() > end.x())?-1:1;
+  int y = (start.y() > end.y())?-1:1;
+
+  int cnt = start.x()-end.x();
+  cnt = cnt<0?cnt*-1:cnt;
+  
+  int j = 1;
+  while(j <= cnt)
+  {
+    for(int i = 0; i < 32; i++)
+    {
+      if(pieces[i]->get_Coord().x() == start.x()+x*j &&
+	 pieces[i]->get_Coord().y() == start.y()+y*j &&
+	 pieces[i]->get_Alive())
+      {
+	return false;
+      }
+    }
+    cnt--;
+  }
+  return true;
+}
+bool Identify::check_Rok_path(Coord start, Coord end)
+{
+  int mv;
+  int i=1;
+  if(start.x() == end.x())
+  {
+    mv = start.y()>end.y()?-1:1;
+    //cout <<"y: "<< start.y()+i*mv<<"    "<<end.y()<<endl;
+    while(start.y()+i*mv != end.y())
+    {
+      //cout <<"y: "<< start.y()+i*mv<<endl;
+      for(int j = 0; j < 32; j++)
+      {
+	if(pieces[j]->get_Coord().x() == start.x() &&
+	   pieces[j]->get_Coord().y() == start.y()+i*mv &&
+	   pieces[j]->get_Alive())
+	{
+	  return false;
+	}
+      }
+      i++;
+    }
+  }
+  else if(start.y() == end.y())
+  {
+    mv = start.x()>end.x()?-1:1;
+    while(start.x()+i*mv != end.x())
+    {
+      for(int j = 0; j < 32; j++)
+      {
+	if(pieces[j]->get_Coord().y() == start.y() &&
+	   pieces[j]->get_Coord().x() == start.x()+i*mv &&
+	   pieces[j]->get_Alive())
+	{
+	  return false;
+	}
+      }
+      i++;
+    }
+  }
+  return true;
 }
 TimeLine* Identify::get_tl()
 {
@@ -232,9 +375,9 @@ void Identify::INIT_P()
   pieces[26] = new Piece(fous,false,3,8);
   pieces[27] = new Piece(fous,false,6,8);
 
-  pieces[28] = new Piece(roi,true,4,1);
-  pieces[29] = new Piece(roi,false,4,8);
+  pieces[28] = new Piece(roi,true,5,1);
+  pieces[29] = new Piece(roi,false,5,8);
 
-  pieces[30] = new Piece(dame,true,5,1);
-  pieces[31] = new Piece(dame,false,5,8);
+  pieces[30] = new Piece(dame,true,4,1);
+  pieces[31] = new Piece(dame,false,4,8);
 }

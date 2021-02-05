@@ -44,6 +44,7 @@ class TimeLine
   void remove_at(int);
   
   Instance* get_instance_at(int);
+  int get_size();
 
   Action int_to_act(int);
   
