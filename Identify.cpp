@@ -32,8 +32,10 @@ void Identify::identify_ps(string* piece, int i)
 {
   int ascii = (int)piece[0][0];
   bool color = i%2==0;
+  
   Piece* p = NULL;
   Coord newcoord;
+  
   if(ascii >= 65 && ascii <= 90)
   {
     switch(ascii)
@@ -59,13 +61,36 @@ void Identify::identify_ps(string* piece, int i)
       Factorize(&p, &newcoord, color, tours, piece);
       break;
     case 'O':
+      int a,b;
       if(piece[0] == "O-O")
       {
-	cout <<endl<< "Rok change: "<<piece[0]<<endl<<endl;
+	//cout <<endl<< "Rok-kingside & King change: "<<endl<<endl;
+	return_Castling(color,roi,a,b);
+
+	p = pieces[a];
+	newcoord = Coord(pieces[a]->get_Coord().x()-2, pieces[a]->get_Coord().y());
+	p->set_Coord(newcoord);
+	tl->add_instance_on_top(p,tl->int_to_act(0));
+
+	p = pieces[b];
+	newcoord = Coord(newcoord.x()+1, newcoord.y());
+	p->set_Coord(newcoord);
+	tl->add_instance_on_top(p,tl->int_to_act(0));
       }
       else if(piece[0] == "O-O-O")
       {
-	cout <<endl<< "Rok change: "<<piece[0]<<endl<<endl;
+	//cout <<endl<< "Rok-queenside & king change: "<<endl<<endl;
+	return_Castling(color,dame,a,b);
+
+	p = pieces[a];
+	newcoord = Coord(pieces[a]->get_Coord().x()+2, pieces[a]->get_Coord().y());
+	p->set_Coord(newcoord);
+	tl->add_instance_on_top(p,tl->int_to_act(0));
+
+	p = pieces[b];
+	newcoord = Coord(newcoord.x()-1, newcoord.y());
+	p->set_Coord(newcoord);
+	tl->add_instance_on_top(p,tl->int_to_act(0));
       }
       break;
     default://'_'
@@ -88,7 +113,8 @@ void Identify::identify_ps(string* piece, int i)
       newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
     }
   }
-  if(p != NULL)
+  
+  if(p != NULL && ascii!='O')
   {
     p->set_Coord(newcoord);
     tl->add_instance_on_top(p,tl->int_to_act(0));
@@ -106,6 +132,28 @@ void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s)
      p[0] = find_ps(t,color, (int)s[0][2]-96, (int)s[0][3]-48);
      c[0] = Coord((int)s[0][2]-96,(int)s[0][3]-48);
    }
+}
+void Identify::return_Castling(bool color,Type t, int &a, int &b)
+{
+  if(color)
+    a = 28;
+  else
+    a = 29;
+  
+  if(t == roi)
+  {
+    if(color)
+      b = 16;
+    else
+      b = 18;
+  }
+  else if(t == dame)
+  {
+    if(color)
+      b = 17;
+    else
+      b = 19; 
+  }
 }
 Piece* Identify::find_ps(Type t, bool color, int x, int y)
 {

@@ -21,6 +21,8 @@ void TimeLine::add_instance_on_top(Piece* p, Action a)
 
   act[size] = a;
   piece[size] = p;
+  
+  cout << p->toString() << endl;
 
   size++;
   p->add_movements(size);
@@ -39,7 +41,6 @@ void TimeLine::add_instance_at(Piece* p, Action a, int j)
   act[j] = a;
   
   p->add_movements(j);
-  
   size++;
 }
 void TimeLine::update_at(Piece* p, Action a, int i)

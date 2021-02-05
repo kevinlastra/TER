@@ -24,6 +24,8 @@ class Identify
 
   void identify_ps(string*,int);
   void Factorize(Piece**,Coord*,bool,Type,string*);//factorize switch(exeption de pion)
+
+  void return_Castling(bool,Type,int&,int&);//Type reference if is queen side or king side
   Piece* find_ps(Type,bool,int,int);//type,color,x,y
 
   //type,color,x,y,(le dernier parametre permet
