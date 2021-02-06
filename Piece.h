@@ -14,44 +14,78 @@ class Piece
 {
  private:  
   Type type;
-  bool color;//B:true N:false
-  bool alive;
-  Coord pos;
-  
-  int* Temps_movements;//TM
-  int TM_size;
+  bool color;//Blanc:true    Noir:false
+  bool alive;//vivant ou mort
+
+  //liste de position dans le temps
+  Coord* pos;
+
+  //liste de temps ou il a bouger (TM)
+  int* Temps_movements;
+
+  //taille actuel et maximal
+  int TM_size=0;
   int TM_max_size;
+
+  void resize();
  public:
+
+  //construteur et destructeur
   Piece();
   Piece(Type,bool,int,int);
   Piece(Piece*);
   ~Piece();
-  
+
+  //get et set
   void set_Type(char);
-  void set_Coord(Coord);
+  void set_Coord_at(Coord, int);
   void set_Color(bool);
   void set_Alive(bool);
   
   Type get_Type();
-  Coord get_Coord();
+  Coord* get_Coord();
   bool get_Color();
   bool get_Alive();
   
   int get_TM_size();
   int get_TM_max_size();
+
+  //renvoi la liste de temps et des coordones
   int* get_TM();
+  Coord* get_Coords();
+
+  //renvoi la postion i dans la liste de position
+  Coord get_pos_at(int);
+  //renvoi position en haut de la liste
+  Coord get_last_pos();
+
+  //renvoi le temps ou la il a
+  //bouger dans la position i de la liste
   int get_movements_at(int);
-  void add_movements(int);
+
+  //transforme i le temps dans le TimeLine et
+  //renvoi j l'index de la coordoner ou il a bouger
+  //au temps i
+  int time_to_pos_index(int);
+
+  //ajoute un temps et une coordoner
+  void add_movements(int, Coord);
+
+  //elimine le temps et la coordoner a l'index i
   void remove_movements_at(int);
 
-  void resize();
+  //test si la piece peut bouger a une telle coordoner
+  bool Test_movements(Coord*,bool,int);
+  bool Test_mov_Tour(Coord*, int);
+  bool Test_mov_Fous(Coord*, int);
+  bool Test_mov_Cavaliers(Coord*, int);
 
-  bool Test_movements(Coord*,bool);
-  bool Test_mov_Tour(Coord*);
-  bool Test_mov_Fous(Coord*);
-  bool Test_mov_Cavaliers(Coord*);
+  //to string dans le temps
+  string toString_At(int);
 
-  string toString();
+  //tostring simple, true pour printer
+  //tous les coordoner ou il a ete
+  string toString(bool=false);
 };
 
 #endif

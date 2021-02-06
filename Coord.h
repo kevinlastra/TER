@@ -10,8 +10,11 @@ class Coord
   Coord();
   Coord(int, int);
 
+  //renvoi x et y
   int x();
   int y();
+
+  //actualize x et y
   void update(int,int);
 };
 //destructeur!!

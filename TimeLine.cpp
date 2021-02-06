@@ -14,7 +14,7 @@ TimeLine::~TimeLine()
   delete[] piece;
 }
 
-void TimeLine::add_instance_on_top(Piece* p, Action a)
+void TimeLine::add_instance_on_top(Piece* p, Coord c, Action a)
 {
   if(size==max_size)
     resize_tl();
@@ -22,11 +22,10 @@ void TimeLine::add_instance_on_top(Piece* p, Action a)
   act[size] = a;
   piece[size] = p;
 
-  
+  p->add_movements(size, c);  
   size++;
-  p->add_movements(size);
 }
-void TimeLine::add_instance_at(Piece* p, Action a, int j)
+void TimeLine::add_instance_at(Piece* p, Coord c, Action a, int j)
 {
   if(size+1==max_size)
     resize_tl();
@@ -39,13 +38,13 @@ void TimeLine::add_instance_at(Piece* p, Action a, int j)
   piece[j] = p;
   act[j] = a;
   
-  p->add_movements(j);
+  p->add_movements(j, c);
   size++;
 }
 void TimeLine::update_at(Piece* p, Action a, int i)
 {  
   piece[i]->set_Type(p->get_Type());
-  piece[i]->set_Coord(p->get_Coord());
+  piece[i]->set_Coord_at(p->get_pos_at(i),i);
   piece[i]->set_Color(p->get_Color());
 
   act[i] = a;
@@ -58,32 +57,25 @@ void TimeLine::remove_at(int j)
   }
   size--;
 }
-TimeLine::Instance* TimeLine::get_instance_at(int i)
-{
-  TimeLine::Instance* ins;
-  ins->a = act[i];
-  ins->p = piece[i];
-  return ins;
-}
 int TimeLine::get_size()
 {
   return size;
 }
-TimeLine::Action TimeLine::int_to_act(int i)
+Action TimeLine::int_to_act(int i)
 {
   switch(i)
   {
   case 0:
-    return move;
+    return Action::move;
     break;
   case 1:
-    return eat;
+    return Action::eat;
     break;
   case 2:
-    return change;
+    return Action::change;
     break;
   default:
-    return NONE;
+    return Action::none;
     break;
   }
 }
@@ -113,6 +105,20 @@ void TimeLine::toString()
       cout <<i<<".  ";
     else
       cout <<i<<". ";
-    cout<< piece[i]->toString() <<"    act: "<<act[i]<< endl;
+
+    int j = piece[i]->time_to_pos_index(i);
+    cout<< piece[i]->toString_At(j)
+	<<"    Action: "<<act[i]<< endl<<endl;
+    
   }
+}
+Instance* TimeLine::get_instance_at(int i)
+{
+  int j = piece[i]->time_to_pos_index(i);
+  Instance* ins = new Instance;
+  ins->i = j;
+  ins->p = piece[i];
+  ins->a = act[i];
+
+  return ins;
 }

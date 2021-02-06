@@ -19,7 +19,7 @@ Identify::Identify(string* l, int size)
 
   for(int i = 0; i < size; i++)
   {
-    //cout << i << "         "<<liste[i]<<endl;
+    //cout <<"Liste at("<< i << ")         "<<liste[i]<<endl;
     identify_ps(&liste[i], i);
   }
 }
@@ -84,14 +84,14 @@ void Identify::identify_ps(string* piece, int i)
 	return_Castling(color,roi,a,b);
 
 	p = pieces[a];
-	newcoord = Coord(pieces[a]->get_Coord().x()+2, pieces[a]->get_Coord().y());
-	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(2));
+	newcoord = Coord(pieces[a]->get_last_pos().x()+2, pieces[a]->get_last_pos().y());
+	
+	tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
 
 	p = pieces[b];
 	newcoord = Coord(newcoord.x()-1, newcoord.y());
-	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(2));
+	
+	tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
       }
       else if(piece[0] == "O-O-O")
       {
@@ -99,14 +99,14 @@ void Identify::identify_ps(string* piece, int i)
 	return_Castling(color,dame,a,b);
 
 	p = pieces[a];
-	newcoord = Coord(pieces[a]->get_Coord().x()-2, pieces[a]->get_Coord().y());
-	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(2));
+	newcoord = Coord(pieces[a]->get_last_pos().x()-2, pieces[a]->get_last_pos().y());
+	
+	tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
 
 	p = pieces[b];
 	newcoord = Coord(newcoord.x()+1, newcoord.y());
-	p->set_Coord(newcoord);
-	tl->add_instance_on_top(p,tl->int_to_act(2));
+	
+	tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
       }
       break;
     default://'_'
@@ -137,8 +137,7 @@ void Identify::identify_ps(string* piece, int i)
     {
       kill_at_coord(newcoord.x(), newcoord.y());
     }
-    p->set_Coord(newcoord);
-    tl->add_instance_on_top(p,tl->int_to_act(act));
+    tl->add_instance_on_top(p,newcoord,tl->int_to_act(act));
   }
   else if(p == NULL)
   {    
@@ -190,12 +189,12 @@ Piece* Identify::find_ps(Type t, bool color, int x, int y)
   {
     if(pieces[i]->get_Type() == t &&
        pieces[i]->get_Color() == color &&
-       pieces[i]->Test_movements(&c,false) &&
+       pieces[i]->Test_movements(&c,false, pieces[i]->get_TM_size()-1) &&
        pieces[i]->get_Alive())
     {
       if(t == fous)
       {
-	if(check_Bishop_path(pieces[i]->get_Coord(),c))
+	if(check_Bishop_path(pieces[i]->get_last_pos(),c))
 	  return pieces[i];
 	else
 	  continue;
@@ -203,7 +202,7 @@ Piece* Identify::find_ps(Type t, bool color, int x, int y)
       else if(t == tours)
       {
 	//cout << "Test Rok Path: "<<check_Rok_path(pieces[i]->get_Coord(),c)<<endl;
-	if(check_Rok_path(pieces[i]->get_Coord(),c))
+	if(check_Rok_path(pieces[i]->get_last_pos(),c))
 	  return pieces[i];
 	else
 	  continue;
@@ -223,20 +222,20 @@ Piece* Identify::find_ps_bis(Type t, bool color, int x, int y, int xfrom, bool p
   {
     if(pieces[i]->get_Type() == t &&
        pieces[i]->get_Color() == color &&
-       pieces[i]->get_Coord().x() == xfrom &&
-       pieces[i]->Test_movements(&c,pawn) &&
+       pieces[i]->get_last_pos().x() == xfrom &&
+       pieces[i]->Test_movements(&c,pawn,pieces[i]->get_TM_size()-1) &&
        pieces[i]->get_Alive())
     {
       if(t == fous)
       {
-	if(check_Bishop_path(pieces[i]->get_Coord(),c))
+	if(check_Bishop_path(pieces[i]->get_last_pos(),c))
 	  return pieces[i];
 	else
 	  continue;
       }
       else if(t == tours)
       {
-	if(check_Rok_path(pieces[i]->get_Coord(),c))
+	if(check_Rok_path(pieces[i]->get_last_pos(),c))
 	  return pieces[i];
 	else
 	  continue;
@@ -252,8 +251,8 @@ void Identify::kill_at_coord(int x, int y)
 {
   for(int i = 0; i < 32; i++)
   {
-    if(pieces[i]->get_Coord().x() == x &&
-       pieces[i]->get_Coord().y() == y &&
+    if(pieces[i]->get_last_pos().x() == x &&
+       pieces[i]->get_last_pos().y() == y &&
        pieces[i]->get_Alive())
     {
       cout << "killed : "<<pieces[i]->toString()<<endl;
@@ -274,8 +273,8 @@ bool Identify::check_Bishop_path(Coord start, Coord end)
   {
     for(int i = 0; i < 32; i++)
     {
-      if(pieces[i]->get_Coord().x() == start.x()+x*j &&
-	 pieces[i]->get_Coord().y() == start.y()+y*j &&
+      if(pieces[i]->get_last_pos().x() == start.x()+x*j &&
+	 pieces[i]->get_last_pos().y() == start.y()+y*j &&
 	 pieces[i]->get_Alive())
       {
 	return false;
@@ -298,8 +297,8 @@ bool Identify::check_Rok_path(Coord start, Coord end)
       //cout <<"y: "<< start.y()+i*mv<<endl;
       for(int j = 0; j < 32; j++)
       {
-	if(pieces[j]->get_Coord().x() == start.x() &&
-	   pieces[j]->get_Coord().y() == start.y()+i*mv &&
+	if(pieces[j]->get_last_pos().x() == start.x() &&
+	   pieces[j]->get_last_pos().y() == start.y()+i*mv &&
 	   pieces[j]->get_Alive())
 	{
 	  return false;
@@ -315,8 +314,8 @@ bool Identify::check_Rok_path(Coord start, Coord end)
     {
       for(int j = 0; j < 32; j++)
       {
-	if(pieces[j]->get_Coord().y() == start.y() &&
-	   pieces[j]->get_Coord().x() == start.x()+i*mv &&
+	if(pieces[j]->get_last_pos().y() == start.y() &&
+	   pieces[j]->get_last_pos().x() == start.x()+i*mv &&
 	   pieces[j]->get_Alive())
 	{
 	  return false;
