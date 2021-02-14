@@ -33,7 +33,7 @@ void Identify::identify_ps(string* piece, int i)
 {
   int ascii = (int)piece[0][0];
   bool color = i%2==0;
-  int act;
+  int act = 3;
   Piece* p = NULL;
   Coord newcoord;
   if(ascii >= 65 && ascii <= 90)
@@ -53,16 +53,17 @@ void Identify::identify_ps(string* piece, int i)
       Factorize(&p, &newcoord, color, fous, piece, act);
       break;
       case 'N':
-      //cout << "Knigth: "<<piece[0]<<endl;
-      if((int)piece[0][2] < 96 || piece[0][1] == 'x')
-      {
-       Factorize(&p, &newcoord, color, cavaliers, piece, act);
-     }
-     else
-     {
-       p = find_ps_bis(cavaliers,color,(int)piece[0][2]-96,(int)piece[0][3]-48,(int)piece[0][1]-96,false);
-       newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
-     }
+	//cout << "Knigth: "<<piece[0]<<"   "<<act<<endl;
+	if((int)piece[0][2] < 96 || piece[0][1] == 'x')
+	{
+	  Factorize(&p, &newcoord, color, cavaliers, piece, act);
+	}
+	else
+	{
+	  p = find_ps_bis(cavaliers,color,(int)piece[0][2]-96,(int)piece[0][3]-48,(int)piece[0][1]-96,false);
+	  newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+	  act = 0;
+	}
      break;
      case 'R':
       //cout << "Rok: "<<piece[0]<<endl;
@@ -74,10 +75,12 @@ void Identify::identify_ps(string* piece, int i)
      {
        p = find_ps_bis(tours,color,(int)piece[0][2]-96,(int)piece[0][3]-48,(int)piece[0][1]-96,false);
        newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+       act = 0;
      }
      break;
      case 'O':
      int a,b;
+     act = 3;
      if(piece[0] == "O-O")
      {
 	//cout <<endl<< "Rok-kingside & King change: "<<endl<<endl;
@@ -92,6 +95,7 @@ void Identify::identify_ps(string* piece, int i)
        newcoord = Coord(newcoord.x()-1, newcoord.y());
        
        tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
+       
      }
      else if(piece[0] == "O-O-O")
      {
