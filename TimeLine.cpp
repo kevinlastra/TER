@@ -122,3 +122,10 @@ Instance* TimeLine::get_instance_at(int i)
 
   return ins;
 }
+
+Coord* TimeLine::get_next_coord(int i)
+{
+  int nextTime = piece[i]->time_to_next_pos_time(i);
+  //Instance* nextInstance = get_instance_at(nextTime);
+  Coord* nextCoord = piece[nextTime]->get_Coords();
+}

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Lecture.h"
+#include "Ecriture.h"
 #include "Identify.h"
 #include <string>
 
@@ -25,10 +26,17 @@ int main(int argc, char** argv)
 
   Instance* ins = tl->get_instance_at(tl->get_size()-1);
 
+
+
   int j = 0;
   cout << "i: "<<ins->i<<"   Action: "<<ins->a
        <<"  Piece("<<ins->p->get_pos_at(ins->i).x()
        <<","<<ins->p->get_pos_at(ins->i).y()<<"):"
        <<ins->p->get_Type()<<endl;;
+
+  string write_path= "output/result.pgn";
+  Ecriture ecriture;
+  ecriture.Write(tl,&write_path);
+
   return 1;
 }

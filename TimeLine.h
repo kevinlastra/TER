@@ -58,6 +58,8 @@ class TimeLine
 
   //pour a instant j, renvoi une instance du TimeLine
   Instance* get_instance_at(int);
+
+  Coord* get_next_coord(int);
 };
 
 #endif

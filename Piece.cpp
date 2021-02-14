@@ -125,6 +125,22 @@ int Piece::time_to_pos_index(int time)
       return i;
   }
 }
+
+int Piece::time_to_next_pos_time(int time)
+{
+  for(int i = 1; i < TM_size; i++)
+  {
+    if(Temps_movements[i] == time)
+    {
+      if(Temps_movements[i+1] != NULL)
+      {
+        return Temps_movements[i+1];
+      }
+    }
+  return 0;
+  }
+}
+
 void Piece::add_movements(int i, Coord c)
 {
   Temps_movements[TM_size] = i;

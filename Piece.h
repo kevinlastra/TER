@@ -1,6 +1,5 @@
 #ifndef PIECE
 #define PIECE
-
 #include "Coord.h"
 #include <string>
 
@@ -67,6 +66,9 @@ class Piece
   //renvoi j l'index de la coordoner ou il a bouger
   //au temps i
   int time_to_pos_index(int);
+
+  //retourne l'index dans timeline de la prochaine position de la piece
+  int time_to_next_pos_time(int);
 
   //ajoute un temps et une coordoner
   void add_movements(int, Coord);
