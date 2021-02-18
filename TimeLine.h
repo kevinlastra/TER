@@ -7,7 +7,7 @@
 //              -- eat: une piece mange une autre
 //              -- change: dans le cas ou tour et le roi fait du king castling(O-O) ou queen castling(O-O-O)
 //              -- none: cas de base
-enum Action {move, eat, change, none};
+enum Action {move, eat, change, promotion, none};
 
 //structure qui permet la lecture correct de TimeLine
 //pour a instant j, i est l'index de la coordoner dans p

@@ -18,7 +18,7 @@ void TimeLine::add_instance_on_top(Piece* p, Coord c, Action a)
 {
   if(size==max_size)
     resize_tl();
-
+  
   act[size] = a;
   piece[size] = p;
 
@@ -73,6 +73,9 @@ Action TimeLine::int_to_act(int i)
     break;
   case 2:
     return Action::change;
+    break;
+  case 3:
+    return Action::promotion;
     break;
   default:
     return Action::none;
