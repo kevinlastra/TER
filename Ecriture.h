@@ -22,7 +22,7 @@ class Ecriture
   string nomNoir;
 
   //prend un entier (de 1 a 8) et lui fait correspondre une lettre ( de a jusqu'a h)
-  string intToStr(int);
+  char intToStr(int);
   string get_str_castling(int);
 
  public:

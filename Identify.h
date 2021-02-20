@@ -49,8 +49,8 @@ class Identify
   //int: une position x dans un temps t-1, bool: si pion ou no
   Piece* find_ps_bis(Type,bool,int,int,int,bool);
 
-  //tue une pice a une coord especifique
-  void kill_at_coord(int,int);
+  //return une piece a une coord especifique, null si rien
+  Piece* piece_at_coord(int,int);
 
   //check si entre 2 coordoner il n'existe pas de piece
   bool check_Bishop_path(Coord,Coord);
