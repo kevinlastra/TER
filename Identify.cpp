@@ -53,6 +53,7 @@ void Identify::identify_ps(string* piece, int i)
       Factorize(&p, &newcoord, color, fous, piece, act);
       break;
       case 'N':
+<<<<<<< HEAD
 	    //cout << "Knigth: "<<piece[0]<<"   "<<act<<endl;
       if((int)piece[0][2] < 96 || piece[0][1] == 'x')
       {
@@ -66,6 +67,21 @@ void Identify::identify_ps(string* piece, int i)
         act = 0;
       }
       break;
+=======
+	//cout << "Knigth: "<<piece[0]<<"   "<<act<<endl;
+	if((int)piece[0][2] < 96 || piece[0][1] == 'x')
+	{
+	  Factorize(&p, &newcoord, color, cavaliers, piece, act);
+	}
+	else
+	{
+	  p = find_ps_bis(cavaliers,color,(int)piece[0][2]-96,
+			  (int)piece[0][3]-48,(int)piece[0][1]-96,false);
+	  newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+	  act = 0;
+	}
+     break;
+>>>>>>> 81016d7503030e2d1ff7a1949c890fb86eb9a0fc
      case 'R':
       //cout << "Rok: "<<piece[0]<<endl;
      if((int)piece[0][2] < 96)
