@@ -56,7 +56,7 @@ class Identify
   //check si entre 2 coordoner il n'existe pas de piece
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);
-
+  Type char_to_type(char);
   //INIT des 32 pieces
   void INIT_P();  
 };

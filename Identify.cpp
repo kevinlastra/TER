@@ -38,53 +38,30 @@ void Identify::identify_ps(string* piece, int i)
   Coord newcoord;
   if(ascii >= 65 && ascii <= 90)
   {
-    switch(ascii)
+    if(ascii == 'K')
     {
-    case 'K':
       //cout << "King: "<<piece[0]<<endl;
       Factorize(&p, &newcoord, color, roi, piece, act);
-      break;
-    case 'Q':
-      //cout << "Queen: "<<piece[0]<<"  "<<color<<endl;
-      Factorize(&p, &newcoord, color, dame, piece, act);
-      break;
-    case 'B':
-      //cout << "Bishop: "<<piece[0]<<endl;
-      Factorize(&p, &newcoord, color, fous, piece, act);
-      break;
-    case 'N':
-      //cout << "Knigth: "<<piece[0]<<endl;
+    }
+    else if(ascii == 'Q' || ascii == 'B' || ascii == 'N' || ascii == 'R')
+    {
+      
       if((int)piece[0][2] < 97 || piece[0][1] == 'x')
       {
-	Factorize(&p, &newcoord, color, cavaliers, piece, act); 
+	Factorize(&p, &newcoord, color, char_to_type(ascii), piece, act); 
       }
       else
       {
-	p = find_piece_ambiguos(cavaliers,color,(int)piece[0][2]-96,
+	p = find_piece_ambiguos(char_to_type(ascii),color,(int)piece[0][2]-96,
 				(int)piece[0][3]-48,
 				(int)piece[0][1]-96,false);
 	newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
 	act = 0;
-	//cout << "abiguos movement"<<endl;
-	}
-	break;
-     case 'R':
-       //cout << "Rok: "<<piece[0]<<endl;
-       if((int)piece[0][2] < 97 || piece[0][1] == 'x')
-       {
-	 Factorize(&p, &newcoord, color, tours, piece, act);
-       }
-       else
-       {
-	 p = find_piece_ambiguos(tours,color,(int)piece[0][2]-96,
-				 (int)piece[0][3]-48,
-				 (int)piece[0][1]-96,false);
-	 newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
-	 act = 0;
-       }
-       break;
-     case 'O':
-       int a,b;
+      }
+    }
+    else if(ascii == 'O')
+    {
+      int a,b;
        act = 3;
        if(piece[0] == "O-O")
        {
@@ -120,10 +97,6 @@ void Identify::identify_ps(string* piece, int i)
 	 tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
 	 return;
        }
-       break;
-    default://'_'
-      cout << "---------undef: "<<piece[0]<<endl;
-      break;
     }
   }
   else
@@ -408,6 +381,30 @@ Piece** Identify::get_Pieces()
 int Identify::size()
 {
   return p_size;
+}
+Type Identify::char_to_type(char type)
+{
+  switch(type)
+  {
+  case 'K':
+    return roi;
+    break;
+  case 'Q':
+    return dame;
+    break;
+  case 'B':
+    return fous;
+    break;
+  case 'N':
+    return cavaliers;
+    break;
+  case 'R':
+    return tours;
+    break;
+  default:
+    return pions;
+    break;
+  }
 }
 void Identify::INIT_P()
 {
