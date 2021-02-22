@@ -22,14 +22,14 @@ int main(int argc, char** argv)
   
   Identify iden(s,size);
 
-  TimeLine* tl = iden.get_tl();
+  TimeLine* tl = iden.get_TimeLine();
   tl->toString();
 
   Instance* ins = tl->get_instance_at(tl->get_size()-1);
 
 
 
-  int j = 0;
+  /*int j = 0;
   cout << "i: "<<ins->i<<"   Action: "<<ins->a
        <<"  Piece("<<ins->p->get_pos_at(ins->i).x()
        <<","<<ins->p->get_pos_at(ins->i).y()<<"):"
@@ -40,6 +40,6 @@ int main(int argc, char** argv)
   ecriture.Write(tl,&write_path);
   Comparer comparer;
   comparer.Compare(argv[1],"output/result.pgn");
-
+  */
   return 1;
 }

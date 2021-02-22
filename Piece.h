@@ -31,7 +31,7 @@ class Piece
 
   //construteur et destructeur
   Piece();
-  Piece(Type,bool,int,int);
+  Piece(Type,bool,int,int);//type,couleur,x,y
   Piece(Piece*);
   ~Piece();
 

@@ -34,9 +34,13 @@ void Lecture::Read(string* path)
     
     string s = line.substr(line.find_first_of(" ",0)+1);
     string a = s.substr(0, s.find_first_of(" "));
-    string b = s.substr(s.find_first_of(" ")+1);
     add_string(&a);
-    add_string(&b);
+
+    if(s.find_first_of(" ") != string::npos)
+    {
+      string b = s.substr(s.find_first_of(" ")+1);
+      add_string(&b);
+    }
   }
   file.close();
 }

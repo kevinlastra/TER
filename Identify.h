@@ -27,8 +27,9 @@ class Identify
   ~Identify();
 
   //get pieces et TimeLine
-  TimeLine* get_tl();
-  Piece** get_p();
+  TimeLine* get_TimeLine();
+  Piece** get_Pieces();
+  int size();
   
  private:
   //pour un mot et une couleur, ajoute une piece a TimeLine
@@ -44,10 +45,10 @@ class Identify
 
   //cherche une piece avec les parametre suivant
   //Type, couleur et qui peuve aller a une coordoner x et y
-  Piece* find_ps(Type,bool,int,int);
+  Piece* find_piece(Type,bool,int,int);
   //find_ps mais avec plus de parametre de check
   //int: une position x dans un temps t-1, bool: si pion ou no
-  Piece* find_ps_bis(Type,bool,int,int,int,bool);
+  Piece* find_piece_ambiguos(Type,bool,int,int,int,bool);
 
   //return une piece a une coord especifique, null si rien
   Piece* piece_at_coord(int,int);
