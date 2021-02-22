@@ -76,6 +76,12 @@ void Ecriture::Write(TimeLine* tm, string* path)
         coupBlanc=get_str_castling(pBlanche->p->get_pos_at(pBlanche->i).x());
         i++;
         break;
+
+      case Action::promotion:
+        coupBlanc= intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y()) +"=" + type_to_pgn[typeBlanc];
+        break;
+
+
       default:
         cout << "coordonnée x:" << pBlanche->p->get_pos_at(pBlanche->i).x() << " coordonnée y:" << pBlanche->p->get_pos_at(pBlanche->i).y() << " type blanc:" << type_to_pgn[typeBlanc] << endl;
         cout << "a:" << pBlanche->a << endl;

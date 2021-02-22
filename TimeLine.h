@@ -16,6 +16,7 @@ struct Instance
   int i;
   Piece* p;
   Action a;
+  //bool ambi;
 };
 
 class TimeLine
@@ -25,6 +26,8 @@ class TimeLine
   Action* act;
   //liste de piece dans le temps
   Piece** piece;
+
+  //bool* ambiguous;
 
   //taille actuel et maximal
   int max_size;
@@ -44,6 +47,8 @@ class TimeLine
   
   void update_at(Piece*,Action,int);
   void remove_at(int);
+
+  //void set_ambiguous(int);
 
   //return la taille de piece ou act
   int get_size();
