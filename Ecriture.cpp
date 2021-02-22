@@ -138,7 +138,7 @@ char Ecriture::intToStr(int n)
 //renvoie le string du roque qu'il soit petit ou grand
 string Ecriture::get_str_castling(int x){
   if(x==7){
-     return "0-0";
+     return "O-O";
   }
-  return "0-0-0";
+  return "O-O-O";
 }
