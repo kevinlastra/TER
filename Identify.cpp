@@ -35,7 +35,14 @@ void Identify::identify_ps(string* piece, int i)
   bool color = i%2==0;
   int act = 3;
   Piece* p = NULL;
+  
   Coord newcoord;
+  Info info;
+  info.echec = false;
+  info.ambiguous = false;
+  
+  if(piece[0][(*piece).size()-1] == '+')
+    info.echec = true;
   if(ascii >= 65 && ascii <= 90)
   {
     if(ascii == 'K')
@@ -45,13 +52,13 @@ void Identify::identify_ps(string* piece, int i)
     }
     else if(ascii == 'Q' || ascii == 'B' || ascii == 'N' || ascii == 'R')
     {
-      
       if((int)piece[0][2] < 97 || piece[0][1] == 'x')
       {
 	Factorize(&p, &newcoord, color, char_to_type(ascii), piece, act); 
       }
       else
       {
+	info.ambiguous = true;
 	p = find_piece_ambiguos(char_to_type(ascii),color,(int)piece[0][2]-96,
 				(int)piece[0][3]-48,
 				(int)piece[0][1]-96,false);
@@ -62,54 +69,57 @@ void Identify::identify_ps(string* piece, int i)
     else if(ascii == 'O')
     {
       int a,b;
-       act = 3;
-       if(piece[0] == "O-O")
-       {
-	 //cout <<endl<< "Rok-kingside & King change: "<<endl<<endl;
-	 return_Castling(color,roi,a,b);
+      
+      act = 3;
+      if(piece[0] == "O-O")
+      {
+	//cout <<endl<< "Rok-kingside & King change: "<<endl<<endl;
+	return_Castling(color,roi,a,b);
+	
+	p = pieces[a];
+	newcoord = Coord(pieces[a]->get_last_pos().x()+2,
+			 pieces[a]->get_last_pos().y());
+	
 	 
-	 p = pieces[a];
-	 newcoord = Coord(pieces[a]->get_last_pos().x()+2,
-			pieces[a]->get_last_pos().y());
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	
+	p = pieces[b];
+	newcoord = Coord(newcoord.x()-1, newcoord.y());
+	
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	return;
+      }
+      else if(piece[0] == "O-O-O")
+      {
+	//cout <<endl<< "Rok-queenside & king change: "<<endl<<endl;
+	return_Castling(color,dame,a,b);
+	
+	p = pieces[a];
+	newcoord = Coord(pieces[a]->get_last_pos().x()-2,
+			 pieces[a]->get_last_pos().y());
 	 
-	 tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
-	 
-	 p = pieces[b];
-	 newcoord = Coord(newcoord.x()-1, newcoord.y());
-	 
-	 tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	
+	p = pieces[b];
+	newcoord = Coord(newcoord.x()+1, newcoord.y());
+	
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
 	 return;
-       }
-       else if(piece[0] == "O-O-O")
-       {
-	 //cout <<endl<< "Rok-queenside & king change: "<<endl<<endl;
-	 return_Castling(color,dame,a,b);
-	 
-	 p = pieces[a];
-	 newcoord = Coord(pieces[a]->get_last_pos().x()-2,
-			  pieces[a]->get_last_pos().y());
-	 
-	 tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
-	 
-	 p = pieces[b];
-	 newcoord = Coord(newcoord.x()+1, newcoord.y());
-	 
-	 tl->add_instance_on_top(p,newcoord,tl->int_to_act(2));
-	 return;
-       }
+      }
     }
   }
   else
   {
     //cout << "Pion: " << piece[0]<<endl;
     if(piece[0][1] != 'x')
-    {
+    {      
       //simple movement
       if(piece[0][2] == '\0' || piece[0][2] == '+')
       {
 	p = find_piece(pions,color,(int)piece[0][0]-96,(int)piece[0][1]-48);
 	newcoord = Coord((int)piece[0][0]-96,(int)piece[0][1]-48);
 	act = 0;
+	
       }//promotion
       else if(piece[0][2] >= 65 && piece[0][2] <= 90)
       {
@@ -119,7 +129,7 @@ void Identify::identify_ps(string* piece, int i)
 	
 	act = 3;
 
-	tl->add_instance_on_top(p,newcoord,tl->int_to_act(act));
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
 	
 	pieces[p_size]->set_Type(piece[0][2]);
 	pieces[p_size]->set_Color(color);
@@ -128,19 +138,22 @@ void Identify::identify_ps(string* piece, int i)
 	p = pieces[p_size];
 	p_size++;
 	
-	tl->add_instance_on_top(p,newcoord,tl->int_to_act(act));
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
 
 	return;
       }
     }
     else//pion mange
     {
+      info.ambiguous = true;
+
       p = find_piece_ambiguos(pions,color,(int)piece[0][2]-96,
 		      (int)piece[0][3]-48,(int)piece[0][0]-96,true);
       newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
       act = 1;
     }
   }
+
   
   if(p != NULL)
   {
@@ -182,7 +195,7 @@ void Identify::identify_ps(string* piece, int i)
       //cout << "killing : "<<piece_to_kill->toString()<<endl;
       piece_to_kill->set_Alive(false);
     }
-    tl->add_instance_on_top(p,newcoord,tl->int_to_act(act));
+    tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
   }
   else if(p == NULL)
   {    

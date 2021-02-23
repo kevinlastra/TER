@@ -2,39 +2,38 @@
 #define TIME_LINE
 
 #include "Piece.h"
+#include <vector>
+
 
 //enum d'action -- move: d'une coordone a une autre
 //              -- eat: une piece mange une autre
-//              -- change: dans le cas ou tour et le roi fait du king castling(O-O) ou queen castling(O-O-O)
+//              -- change: dans le cas ou tour et le roi fait du king castling(O-O) ou
+//                         queen castling(O-O-O)
 //              -- none: cas de base
 enum Action {move, eat, change, promotion, none};
 
 //structure qui permet la lecture correct de TimeLine
-//pour a instant j, i est l'index de la coordoner dans p
-struct Instance
+//pour un instant j, i est l'index de la coordoner dans p
+struct Info
+{
+  bool echec;//la piece a l'instant i est on echec avec le roi
+  bool ambiguous;//la piece a l'instant i peut etre ambiguous
+};
+struct Instant
 {
   int i;
   Piece* p;
   Action a;
-  //bool ambi;
+  Info* info;
 };
 
 class TimeLine
 {
  private:
-  //liste d'action
-  Action* act;
-  //liste de piece dans le temps
-  Piece** piece;
+  std::vector<Instant> instants;
 
-  //bool* ambiguous;
-
-  //taille actuel et maximal
-  int max_size;
+  //taille de la liste
   int size;
-
-  //resize pour act et piece
-  void resize_tl();
   
  public:
   //constructeur, destructeur
@@ -42,15 +41,13 @@ class TimeLine
   ~TimeLine();
 
   //Generation du TimeLine
-  void add_instance_on_top(Piece*,Coord,Action);
-  void add_instance_at(Piece*,Coord,Action,int);
+  void add_instant_on_top(Piece*,Coord,Action,Info*);
+  void add_instant_at(Piece*,Coord,Action,Info*,int);
   
-  void update_at(Piece*,Action,int);
+  void update_at(Piece*,Action,Info*,int);
   void remove_at(int);
 
-  //void set_ambiguous(int);
-
-  //return la taille de piece ou act
+  //return la taille de la liste
   int get_size();
 
   //transforme un entier dans une action 1-> move 2->eat etc....
@@ -62,7 +59,7 @@ class TimeLine
   //###   Manipulation du TimeLine  ####
 
   //pour a instant j, renvoi une instance du TimeLine
-  Instance* get_instance_at(int);
+  Instant* get_instant_at(int);
 
   Coord* get_next_coord(int);
 };

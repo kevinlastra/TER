@@ -49,7 +49,7 @@ void Ecriture::Write(TimeLine* tm, string* path)
   for(int i=0;i<tm->get_size();i+=2){
     
     coupNoir= "";
-    pBlanche = tm->get_instance_at(i); //Piece blanche
+    pBlanche = tm->get_instant_at(i); //Piece blanche
     
     Type typeBlanc= pBlanche->p->get_Type();
     coupBlanc= type_to_pgn[typeBlanc]; //string dans lequel les coups de cette ligne seront ecrits
@@ -90,8 +90,8 @@ void Ecriture::Write(TimeLine* tm, string* path)
     }
     
     //coup joueur noir
-    if(tm->get_instance_at(i+1)){
-      pNoire = tm->get_instance_at(i+1); //Piece noire
+    if(tm->get_instant_at(i+1)){
+      pNoire = tm->get_instant_at(i+1); //Piece noire
       Type typeNoir= pNoire->p->get_Type();
       coupNoir= type_to_pgn[typeNoir  ];
 

@@ -14,8 +14,8 @@ class Ecriture
   string coupNoir;
 
   //Pieces jouées lors du tour
-  Instance* pBlanche;
-  Instance* pNoire;
+  Instant* pBlanche;
+  Instant* pNoire;
 
   //leurs noms
   string nomBlanc;
