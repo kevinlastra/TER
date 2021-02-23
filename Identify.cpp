@@ -183,7 +183,7 @@ void Identify::identify_ps(string* piece, int i)
 
 	  if(index != i-1 || c.x() != piece_to_kill->get_last_pos().x() ||
 	     c.y() != piece_to_kill->get_last_pos().y()-2)
-	    p = NULL;
+	    piece_to_kill = NULL;
 	}
       }
       if(piece_to_kill == NULL)
@@ -257,19 +257,19 @@ Piece* Identify::find_piece(Type t, bool color, int x, int y)
          return pieces[i];
        else
          continue;
-     }
-     else if(t == tours)
-     {
+      }
+      else if(t == tours)
+      {
 	//cout << "Test Rok Path: "<<check_Rok_path(pieces[i]->get_Coord(),c)<<endl;
-       if(check_Rok_path(pieces[i]->get_last_pos(),c))
-         return pieces[i];
-       else
-         continue;
-     }
-     else
-     {
-       return pieces[i];
-     }
+	if(check_Rok_path(pieces[i]->get_last_pos(),c))
+	  return pieces[i];
+	else
+	  continue;
+      }
+      else
+      {
+	return pieces[i];
+      }
    }
  }
  return NULL;
