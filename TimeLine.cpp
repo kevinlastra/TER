@@ -6,7 +6,7 @@ using namespace std;
 TimeLine::TimeLine():size(0){}
 TimeLine::~TimeLine(){}
 
-void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info* inf)
+void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 {
   Instant ins;
   ins.p = p;
@@ -20,7 +20,7 @@ void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info* inf)
 
   instants.push_back(ins);
 }
-void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info* inf, int j)
+void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
 {
   Instant ins;
   ins.p = p;
@@ -34,7 +34,7 @@ void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info* inf, int j)
   p->add_movements(j, c);
   size++;
 }
-void TimeLine::update_at(Piece* p, Action a, Info* info, int i)
+void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
   instants.at(i).p->set_Type(p->get_Type());
   instants.at(i).p->set_Coord_at(p->get_pos_at(i),i);
@@ -88,8 +88,8 @@ void TimeLine::toString()
     j = instants.at(i).p->time_to_pos_index(i);
     cout<< instants.at(i).p->toString_At(j)
 	<<"    Action: "<<instants.at(i).a
-	<<"    Echec? "<<instants.at(i).info->echec
-	<<"    Ambiguous? "<<instants.at(i).info->ambiguous
+	<<"    Echec? "<<instants.at(i).info.echec
+	<<"    Ambiguous? "<<instants.at(i).info.ambiguous
 	<<endl<<endl;
     
   }

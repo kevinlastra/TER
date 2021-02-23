@@ -81,12 +81,12 @@ void Identify::identify_ps(string* piece, int i)
 			 pieces[a]->get_last_pos().y());
 	
 	 
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),info);
 	
 	p = pieces[b];
 	newcoord = Coord(newcoord.x()-1, newcoord.y());
 	
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),info);
 	return;
       }
       else if(piece[0] == "O-O-O")
@@ -98,12 +98,12 @@ void Identify::identify_ps(string* piece, int i)
 	newcoord = Coord(pieces[a]->get_last_pos().x()-2,
 			 pieces[a]->get_last_pos().y());
 	 
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),info);
 	
 	p = pieces[b];
 	newcoord = Coord(newcoord.x()+1, newcoord.y());
 	
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),&info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(2),info);
 	 return;
       }
     }
@@ -129,7 +129,7 @@ void Identify::identify_ps(string* piece, int i)
 	
 	act = 3;
 
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), info);
 	
 	pieces[p_size]->set_Type(piece[0][2]);
 	pieces[p_size]->set_Color(color);
@@ -138,7 +138,7 @@ void Identify::identify_ps(string* piece, int i)
 	p = pieces[p_size];
 	p_size++;
 	
-	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
+	tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), info);
 
 	return;
       }
@@ -195,7 +195,7 @@ void Identify::identify_ps(string* piece, int i)
       //cout << "killing : "<<piece_to_kill->toString()<<endl;
       piece_to_kill->set_Alive(false);
     }
-    tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), &info);
+    tl->add_instant_on_top(p,newcoord,tl->int_to_act(act), info);
   }
   else if(p == NULL)
   {    

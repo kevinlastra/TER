@@ -23,7 +23,7 @@ int main(int argc, char** argv)
   Identify iden(s,size);
 
   TimeLine* tl = iden.get_TimeLine();
-  //tl->toString();
+  tl->toString();
 
   Instant* ins = tl->get_instant_at(tl->get_size()-1);
 
