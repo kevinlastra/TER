@@ -16,6 +16,7 @@ class Ecriture
   //Pieces jouées lors du tour
   Instant* pBlanche;
   Instant* pNoire;
+  Instant* pLast;
 
   //leurs noms
   string nomBlanc;

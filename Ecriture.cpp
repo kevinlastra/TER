@@ -62,7 +62,23 @@ void Ecriture::Write(TimeLine* tm, string* path)
     //}
     
     //Coup joueur blanc
-     switch(pBlanche->a){
+    if(pBlanche->info.ambiguous)
+    {
+      int lastTime = pBlanche->p->time_to_previous_pos_time(i);
+      if(lastTime>=0){
+        cout << lastTime << endl;
+        pLast = tm->get_instant_at(lastTime);
+        coupBlanc += intToStr(pLast->p->get_pos_at(pLast->i).x());
+        
+        //cout  << coupBlanc<<" : " << lastTime << endl;
+        //cout << pBlanche->p->toString() << "       lastTime: "<< lastTime << "     y:"<< pLast->p->get_pos_at(pLast->i).y() <<endl;
+      
+      }else{
+        coupBlanc+= intToStr(pBlanche->p->get_pos_at(0).x());
+      }
+    }
+    
+    switch(pBlanche->a){
         
       case Action::eat:
         coupBlanc+="x";
@@ -71,7 +87,7 @@ void Ecriture::Write(TimeLine* tm, string* path)
           //cout <<"x: "<< pBlanche->p->get_pos_at(pBlanche->i).x() << "y: "<< pBlanche->p->get_pos_at(pBlanche->i).y()  <<endl;
           //a ajouter: gestion des coups ambigus (peut-être dans tm->get_instance_at(i))
           //On écrit le coup sous la forme : type du coup + coordonnées d'arrivées en x (transformées en string) + coordonnées d'arrivées en y
-        coupBlanc+= intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());
+        coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());
         
         break;
 
@@ -83,10 +99,10 @@ void Ecriture::Write(TimeLine* tm, string* path)
         break;
 
       case Action::promotion:
-        cout<< "promo" << endl;
+        //cout<< "promo" << endl;
         coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y()) + type_to_pgn[tm->get_instant_at(i+1)->p->get_Type()];
         i++;
-        cout << "promo effectuee" << endl;
+        //cout << "promo effectuee" << endl;
         break;
 
 
@@ -106,7 +122,17 @@ void Ecriture::Write(TimeLine* tm, string* path)
       Type typeNoir= pNoire->p->get_Type();
       coupNoir= type_to_pgn[typeNoir ];
 
-      
+      if(pNoire->info.ambiguous)
+      {
+        
+        int lastTime = pNoire->p->time_to_previous_pos_time(i+1);
+        if(lastTime >= 0){
+          pLast = tm->get_instant_at(lastTime);
+          coupNoir += intToStr(pLast->p->get_pos_at(pLast->i).x());
+        }else{
+          coupNoir+= intToStr(pNoire->p->get_pos_at(0).x());
+        }
+      }
 
       switch(pNoire->a){
 
@@ -147,9 +173,13 @@ cout << "promo effectuee" << endl;
     //Ecriture sur dans le fichier passé en argument
     //cout << (tour/2)+1 << ": Blanc: " << pBlanche->a << "Noir : "  << pNoire->a << endl;
     //cout << "coordonnées blanche : x : " << pBlanche->p->get_pos_at(pBlanche->i).x() << " y : " << pBlanche->p->get_pos_at(pBlanche->i).y() << " affiché: " << intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) << endl;
-    file << (tour/2)+1 << ". " << coupBlanc << " " << coupNoir << endl;
-    cout << (tour/2)+1 <<": Pnoire -Est ambigue: "<< pNoire->info.ambiguous << "- Fait echec: " << pNoire->info.echec << endl;
-    cout << (tour/2)+1 <<": Pblanche -Est ambigue: "<< pBlanche->info.ambiguous << "- Fait echec: " << pBlanche->info.echec << endl;
+    file << (tour/2)+1 << ". " << coupBlanc;
+    if(coupNoir!=""){
+      file << " " << coupNoir;
+    }
+    file << endl;
+    //cout << (tour/2)+1 <<": Pnoire -Est ambigue: "<< pNoire->info.ambiguous << "- Fait echec: " << pNoire->info.echec << endl;
+    //cout << (tour/2)+1 <<": Pblanche -Est ambigue: "<< pBlanche->info.ambiguous << "- Fait echec: " << pBlanche->info.echec << endl;
     tour= tour+2;
 
   }

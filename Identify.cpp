@@ -160,7 +160,7 @@ void Identify::identify_ps(string* piece, int i)
     if(act == 1)
     {
       Piece* piece_to_kill = piece_at_coord(newcoord.x(), newcoord.y());
-      //test pour "manger en passant"
+      //test pour "prise en passant"
       if(piece_to_kill == NULL && (ascii >= 97 && ascii <= 104))
       {
 	Coord c;
@@ -494,4 +494,19 @@ void Identify::INIT_P()
   pieces[45] = new Piece();
   pieces[46] = new Piece();
   pieces[47] = new Piece();
+}
+
+bool Identify::is_ambiguous(TimeLine tm, Instant ins)
+{
+  for(int i; i<ins.i-1;i++){
+    Instant* test = tm.get_instant_at(i);
+    if(test->i==test->p->get_last_time()){
+
+      
+
+    }
+
+  }
+
+  return false;
 }

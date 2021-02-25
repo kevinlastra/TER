@@ -58,6 +58,7 @@ class Piece
   //renvoi position en haut de la liste
   Coord get_last_pos();
 
+  int get_last_time();
   //renvoi le temps ou la il a
   //bouger dans la position i de la liste
   int get_movements_at(int);
@@ -69,7 +70,7 @@ class Piece
 
   //retourne l'index dans timeline de la prochaine position de la piece
   int time_to_next_pos_time(int);
-
+  int time_to_previous_pos_time(int);
   //ajoute un temps et une coordoner
   void add_movements(int, Coord);
 

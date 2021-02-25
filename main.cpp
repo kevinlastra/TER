@@ -34,12 +34,12 @@ int main(int argc, char** argv)
        <<"  Piece("<<ins->p->get_pos_at(ins->i).x()
        <<","<<ins->p->get_pos_at(ins->i).y()<<"):"
        <<ins->p->get_Type()<<endl;;
-
+  */
   string write_path= "output/result.pgn";
   Ecriture ecriture;
   ecriture.Write(tl,&write_path);
   Comparer comparer;
   comparer.Compare(argv[1],"output/result.pgn");
-  */
+  
   return 1;
 }

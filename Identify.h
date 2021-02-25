@@ -59,6 +59,8 @@ class Identify
   Type char_to_type(char);
   //INIT des 32 pieces
   void INIT_P();  
+
+  bool is_ambiguous(TimeLine, Instant);
 };
 
 #endif

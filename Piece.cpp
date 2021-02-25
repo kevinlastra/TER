@@ -9,7 +9,7 @@ Piece::Piece():type(NONE),Temps_movements(new int[10]),TM_max_size(10),color(tru
 Piece::Piece(Type t, bool c, int x, int y):Temps_movements(new int[10]),TM_max_size(10),pos(new Coord[10])
 {
   pos[0] = Coord(x,y);
-  Temps_movements[0] = 0;
+  Temps_movements[0] = -1;
   TM_size++;
   type = t;
   color = c;
@@ -111,6 +111,12 @@ Coord Piece::get_last_pos()
 {
   return pos[TM_size-1];
 }
+
+int Piece::get_last_time()
+{
+  return Temps_movements[TM_size-1];
+}
+
 int Piece::get_movements_at(int i)
 {
   return Temps_movements[i];
@@ -139,6 +145,18 @@ int Piece::time_to_next_pos_time(int time)
     }
   return 0;
   }
+}
+
+int Piece::time_to_previous_pos_time(int time)
+{
+  for(int i = 1; i < TM_size; i++)
+  {
+    if(Temps_movements[i] == time)
+    {
+      return Temps_movements[i-1];
+    }
+  }
+  return -1;
 }
 
 void Piece::add_movements(int i, Coord c)
