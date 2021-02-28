@@ -143,8 +143,9 @@ int Piece::time_to_next_pos_time(int time)
         return Temps_movements[i+1];
       }
     }
-  return 0;
+    return 0;
   }
+  return -1;
 }
 
 int Piece::time_to_previous_pos_time(int time)

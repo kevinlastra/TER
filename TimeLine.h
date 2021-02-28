@@ -2,6 +2,7 @@
 #define TIME_LINE
 
 #include "Piece.h"
+#include "ChessPlate.h"
 #include <vector>
 
 
@@ -18,6 +19,9 @@ struct Info
 {
   bool echec;//la piece a l'instant i est on echec avec le roi
   bool ambiguous;//la piece a l'instant i peut etre ambiguous
+
+  Info();
+  Info(bool, bool);
 };
 struct Instant
 {
@@ -25,19 +29,24 @@ struct Instant
   Piece* p;
   Action a;
   Info info;
+
+  Instant(int,Piece*,Action,Info);
 };
 
 class TimeLine
 {
  private:
   std::vector<Instant> instants;
-
+  
   //taille de la liste
   int size;
   
  public:
+  ChessPlate* chessplate;
+  
   //constructeur, destructeur
   TimeLine();
+  TimeLine(ChessPlate*);
   ~TimeLine();
 
   //Generation du TimeLine
@@ -48,10 +57,7 @@ class TimeLine
   void remove_at(int);
 
   //return la taille de la liste
-  int get_size();
-
-  //transforme un entier dans une action 1-> move 2->eat etc....
-  Action int_to_act(int);
+  int get_size();  
   
   //debug 
   void toString();
@@ -64,4 +70,6 @@ class TimeLine
   Coord* get_next_coord(int);
 };
 
+//transforme un entier dans une action 1-> move 2->eat etc....
+Action int_to_act(int);
 #endif

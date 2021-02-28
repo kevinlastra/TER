@@ -1,0 +1,32 @@
+#ifndef TIMEDIVISION
+#define TIMEDIVISION
+
+#include "TimeLine.h"
+#include "Piece.h"
+
+struct MultiTimeLine
+{
+  TimeLine* tl;
+  int deb;
+  int* prox;//prochains timelines
+  int prev;//remonter dans l'arbre
+};
+class TimeDivision
+{
+ private:
+  MultiTimeLine** MTL;
+  
+  int max_size;
+  int size;
+
+  void resize();
+ public:
+  TimeDivision();
+  ~TimeDivision();
+
+  void diviser(int,int,int);//index of incoming timeline, nb de division, deb du nouveau timeline
+  void add_to_timeline(Piece*,Coord,Action,Info,int);
+  int nb_timeline_at(int);
+  TimeLine** timelines_at(int);
+};
+#endif

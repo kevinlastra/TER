@@ -3,15 +3,29 @@
 
 using namespace std;
 
-TimeLine::TimeLine():size(0){}
+TimeLine::TimeLine():size(0),chessplate(new ChessPlate()){}
+TimeLine::TimeLine(ChessPlate* c):size(0)
+{
+  chessplate = new ChessPlate(c);
+}
 TimeLine::~TimeLine(){}
-
+Info::Info(){}
+Info::Info(bool e, bool a)
+{
+  echec = e;
+  ambiguous = a;
+}
+Instant::Instant(int index, Piece* piece, Action act, Info inf)
+{
+  i = index;
+  p = piece;
+  a = act;
+  info.echec = inf.echec;
+  info.ambiguous = inf.ambiguous;
+}
 void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 {
-  Instant ins;
-  ins.p = p;
-  ins.a = a;
-  ins.info = inf;
+  Instant ins(p->time_to_pos_index(size), p, a, inf);
   
   ins.i = p->time_to_pos_index(size);
   
@@ -22,11 +36,7 @@ void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 }
 void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
 {
-  Instant ins;
-  ins.p = p;
-  ins.a = a;
-  ins.info = inf;
-  ins.i = p->time_to_pos_index(size);
+  Instant ins(p->time_to_pos_index(size), p, a, inf);
   
   std::vector<Instant>::iterator it=instants.begin();
   instants.insert(it+j, ins);
@@ -53,27 +63,6 @@ void TimeLine::remove_at(int j)
 int TimeLine::get_size()
 {
   return size;
-}
-Action TimeLine::int_to_act(int i)
-{
-  switch(i)
-  {
-  case 0:
-    return Action::move;
-    break;
-  case 1:
-    return Action::eat;
-    break;
-  case 2:
-    return Action::change;
-    break;
-  case 3:
-    return Action::promotion;
-    break;
-  default:
-    return Action::none;
-    break;
-  }
 }
 void TimeLine::toString()
 {
@@ -104,4 +93,25 @@ Coord* TimeLine::get_next_coord(int i)
   int nextTime = instants.at(i).p->time_to_next_pos_time(i);
   
   Coord* nextCoord = instants.at(nextTime).p->get_Coords();
+}
+Action int_to_act(int i)
+{
+  switch(i)
+  {
+  case 0:
+    return Action::move;
+    break;
+  case 1:
+    return Action::eat;
+    break;
+  case 2:
+    return Action::change;
+    break;
+  case 3:
+    return Action::promotion;
+    break;
+  default:
+    return Action::none;
+    break;
+  }
 }

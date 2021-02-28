@@ -3,7 +3,7 @@ CXX_FLAGS=-Wall -ansi -pedantic -g -std=c++17
 DEPEND=.depend
 
 PROG=main
-SOURCES=main.cpp Lecture.cpp Piece.cpp Coord.cpp TimeLine.cpp Identify.cpp Ecriture.cpp Comparer.cpp
+SOURCES=main.cpp Lecture.cpp Piece.cpp Coord.cpp TimeLine.cpp Identify.cpp Ecriture.cpp Comparer.cpp ChessPlate.cpp TimeDivision.cpp
 
 ifeq ($(wildcard $(DEPEND)),)
 all: $(PROG)
@@ -13,7 +13,7 @@ include $(DEPEND)
 endif
 
 $(PROG): $(SOURCES:.cpp=.o)
-	clear ;$(CXX) $^ -o $@; make clean
+	$(CXX) $^ -o $@; make clean
 $(DEPEND): $(SOURCES)
 	$(CXX) -MM $^ > $@
 .cpp.o:

@@ -24,7 +24,7 @@ Ecriture::~Ecriture(){}
 //Fonction d'écriture avec l'a timeline de la partie et le chemin du fichier dans lequel on écrira.
 void Ecriture::Write(TimeLine* tm, string* path)
 {
-  cout << "lancement de l'éctriture: " << endl;
+  //cout << "lancement de l'éctriture: " << endl;
   Piece blanc;
   Piece noire;
   string coupBlanc;
@@ -66,7 +66,7 @@ void Ecriture::Write(TimeLine* tm, string* path)
     {
       int lastTime = pBlanche->p->time_to_previous_pos_time(i);
       if(lastTime>=0){
-        cout << lastTime << endl;
+        //cout << lastTime << endl;
         pLast = tm->get_instant_at(lastTime);
         coupBlanc += intToStr(pLast->p->get_pos_at(pLast->i).x());
         

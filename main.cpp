@@ -1,4 +1,5 @@
 #include <iostream>
+#include "TimeDivision.h"
 #include "Lecture.h"
 #include "Ecriture.h"
 #include "Identify.h"
@@ -22,10 +23,10 @@ int main(int argc, char** argv)
   
   Identify iden(s,size);
 
-  TimeLine* tl = iden.get_TimeLine();
-  tl->toString();
+  TimeDivision* tl = iden.get_TimeLines();
+  //tl->toString();
 
-  Instant* ins = tl->get_instant_at(tl->get_size()-1);
+  // Instant* ins = tl->get_instant_at(tl->get_size()-1);
 
 
 
@@ -35,11 +36,12 @@ int main(int argc, char** argv)
        <<","<<ins->p->get_pos_at(ins->i).y()<<"):"
        <<ins->p->get_Type()<<endl;;
   */
+  /*
   string write_path= "output/result.pgn";
   Ecriture ecriture;
   ecriture.Write(tl,&write_path);
   Comparer comparer;
   comparer.Compare(argv[1],"output/result.pgn");
-  
+  */
   return 1;
 }
