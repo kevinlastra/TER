@@ -113,19 +113,28 @@ void Identify::identify_ps(string* piece, int index)
     }
     else if(piece[0] == "_")
     {
-      int time_pos = mtl->deb+mtl->tl->get_size();
+      cout << "test sur cas '_': debut division"<<endl;
+
+      int time_pos = mtl->deb+mtl->tl->get_size();  
       
       int* tls_ = TD->diviser(tls[i],2,time_pos);
       
       MultiTimeLine* mtl_;
+
+      //si je divise le temps en 2 je doit ajouter dans le mlt_ 2 tl different
+      //dans ce cas c'est que un test donc j'envoi 2 fois la meme solution
       for(int j = 0; j < 2;j++)
       {
+	
 	mtl_ = TD->get_TimeLine_at(tls_[j]);
+
+	//je cree une piece et une coordoner pour test, rien de special
 	p = new Piece();
 	newcoord = Coord(0,0);
 	
 	mtl_->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
       }
+      cout << "fin du test sur '_'"<<endl;
       continue;
     }
     else

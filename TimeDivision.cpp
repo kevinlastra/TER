@@ -15,8 +15,7 @@ TimeDivision::TimeDivision()
 }
 TimeDivision::~TimeDivision(){}
 int* TimeDivision::diviser(int index, int nb, int deb)
-{
-  
+{  
   MTL[index]->prox = new int[nb];
 
   MTL[index]->prox_size += 2;
