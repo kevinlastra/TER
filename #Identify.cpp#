@@ -222,7 +222,7 @@ void Identify::identify_ps(string* piece, int index)
     {    
       cout <<endl<<"Error: "<< piece[0] << endl<<endl;
       
-      p = Traitement_erreur(type,&newcoord);
+      p = Traitement_erreur(type,newcoord);
 
       mtl->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
     }
@@ -272,7 +272,7 @@ Type Identify::char_to_type(char type)
   }
   return pions;
 }
-Piece* Identify::Traitement_erreur(Type type, Coord* coord)
+void Identify::Traitement_erreur(Type type, Coord* coord)
 {
   
 }

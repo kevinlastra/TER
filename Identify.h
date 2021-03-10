@@ -27,7 +27,7 @@ class Identify
   ~Identify();
 
   TimeDivision* get_TimeLines();
-  void Traitement_erreur(Type,Coord*);
+  Piece* Traitement_erreur(Type,Coord*);
  private:
   //pour un mot et une couleur, ajoute une piece a TimeLine
   void identify_ps(string*,int);
