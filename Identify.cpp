@@ -24,18 +24,24 @@ Identify::~Identify(){}
 
 void Identify::identify_ps(string* piece, int index)
 {
+  //INIT
   int ascii = (int)piece[0][0];
+  
   bool color = index%2==0;
-
+  
   int act;
+  Type type;
+  Coord newcoord;
+  
   Piece* p;
   
-  Coord newcoord;
   Info info;
 
   int nb_timeline = TD->nb_timeline_end();
   int* tls = TD->timelines_end();
   MultiTimeLine* mtl;
+
+  //START CALC
   for(int i = 0; i < nb_timeline; i++)
   {
     act = 3;
@@ -47,22 +53,24 @@ void Identify::identify_ps(string* piece, int index)
     
     if(piece[0][(*piece).size()-1] == '+')
       info.echec = true;
+    
+    type = char_to_type(ascii);
     if(ascii >= 65 && ascii <= 90)
     {
       if(ascii == 'K')
       {
-	Factorize(mtl->tl, &p, &newcoord, color, roi, piece, act);
+	Factorize(mtl->tl, &p, &newcoord, color, type, piece, act);
       }
       else if(ascii == 'Q' || ascii == 'B' || ascii == 'N' || ascii == 'R')
       {
 	if((int)piece[0][2] < 97 || piece[0][1] == 'x')
 	{
-	  Factorize(mtl->tl, &p, &newcoord, color, char_to_type(ascii), piece, act); 
+	  Factorize(mtl->tl, &p, &newcoord, color, type, piece, act); 
 	}
 	else
 	{
 	  info.ambiguous = true;
-	  p = mtl->tl->chessplate->find_piece_ambiguos(char_to_type(ascii),color,(int)piece[0][2]-96,
+	  p = mtl->tl->chessplate->find_piece_ambiguos(type,color,(int)piece[0][2]-96,
 						      (int)piece[0][3]-48,
 						      (int)piece[0][1]-96,false);
 	  newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
@@ -115,27 +123,10 @@ void Identify::identify_ps(string* piece, int index)
     {
       cout << "test sur cas '_': debut division"<<endl;
 
-      int time_pos = mtl->deb+mtl->tl->get_size();  
+      p = new Piece(type,color,-1,-1);
+      newcoord = Coord(-1,-1);
       
-      int* tls_ = TD->diviser(tls[i],2,time_pos);
-      
-      MultiTimeLine* mtl_;
-
-      //si je divise le temps en 2 je doit ajouter dans le mlt_ 2 tl different
-      //dans ce cas c'est que un test donc j'envoi 2 fois la meme solution
-      for(int j = 0; j < 2;j++)
-      {
-	
-	mtl_ = TD->get_TimeLine_at(tls_[j]);
-
-	//je cree une piece et une coordoner pour test, rien de special
-	p = new Piece();
-	newcoord = Coord(0,0);
-	
-	mtl_->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
-      }
       cout << "fin du test sur '_'"<<endl;
-      continue;
     }
     else
     {
@@ -229,7 +220,8 @@ void Identify::identify_ps(string* piece, int index)
     }
     else if(p == NULL)
     {    
-      cout <<endl<<"Error: "<< piece[0] << endl<<endl;;
+      cout <<endl<<"Error: "<< piece[0] << endl<<endl;
+      Traitement_erreur(type,newcoord);
     }
   }
 }
@@ -274,8 +266,10 @@ Type Identify::char_to_type(char type)
   case 'R':
     return tours;
     break;
-  default:
-    return pions;
-    break;
   }
+  return pions;
+}
+void Identify::Traitement_erreur(Type type, Coord* coord)
+{
+  
 }
