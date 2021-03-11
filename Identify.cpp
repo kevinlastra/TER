@@ -121,12 +121,9 @@ void Identify::identify_ps(string* piece, int index)
     }
     else if(piece[0] == "_")
     {
-      cout << "test sur cas '_': debut division"<<endl;
-
+      cout << "piece type = '_'"<<endl;
       p = new Piece(type,color,-1,-1);
       newcoord = Coord(-1,-1);
-      
-      cout << "fin du test sur '_'"<<endl;
     }
     else
     {
@@ -179,50 +176,29 @@ void Identify::identify_ps(string* piece, int index)
     
     if(p != NULL)
     {
-	if(act == 1)
+      if(act == 1)
+      {
+	Piece* piece_to_kill = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y());
+	//test pour "prise en passant"
+	if(p->get_Type() == pions && piece_to_kill == NULL && (ascii >= 97 && ascii <= 104))
 	{
-	  Piece* piece_to_kill = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y());
-	  //test pour "prise en passant"
-	  if(p->get_Type() == pions && piece_to_kill == NULL && (ascii >= 97 && ascii <= 104))
-	  {
-	    Coord c;
-	    int index;
-	    if(color)
-	    {
-	      piece_to_kill = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y()-1);
-	      c = piece_to_kill->get_pos_at(piece_to_kill->get_TM_size()-2);
-	      index = piece_to_kill->get_movements_at(piece_to_kill->get_TM_size()-1);
-	      
-	      if(index != i-1 || c.x() != piece_to_kill->get_last_pos().x() ||
-		 c.y() != piece_to_kill->get_last_pos().y() + 2)
-		piece_to_kill = NULL;
-	    }
-	    else
-	    {
-	      piece_to_kill = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y()+1);
-	      c = piece_to_kill->get_pos_at(piece_to_kill->get_TM_size()-2);
-	      index = piece_to_kill->get_movements_at(piece_to_kill->get_TM_size()-1);
-	      
-	      if(index != i-1 || c.x() != piece_to_kill->get_last_pos().x() ||
-		 c.y() != piece_to_kill->get_last_pos().y()-2)
-		piece_to_kill = NULL;
-	    }
-	  }
-	  if(piece_to_kill == NULL)
-	  {
-	    cout << "erreur piece en passant, piece == null"<<endl;
-	    continue;
-	  }
-	  
-	  piece_to_kill->set_Alive(false);
+	  piece_to_kill = Manger_en_passant(mtl,newcoord,color,i);
 	}
-	mtl->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
+	if(piece_to_kill == NULL)
+	{
+	  cout << "Erreur: piece a tuée introuvable"<<endl;
+	  continue;
+	}
+	
+	piece_to_kill->set_Alive(false);
+      }
+      mtl->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
     }
     else if(p == NULL)
-    {    
-      cout <<endl<<"Error: "<< piece[0] << endl<<endl;
+    {
+      cout <<endl<<"Erreur: "<< piece[0] << endl<<endl;
       
-      p = Traitement_erreur(type,&newcoord);
+      p = Traitement_erreur(type,newcoord);
 
       mtl->tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
     }
@@ -244,7 +220,54 @@ void Identify::Factorize(TimeLine* tl, Piece** p, Coord* c, bool color, Type t, 
     act = 1;
   }
 }
+Piece* Identify::Manger_en_passant(MultiTimeLine* mtl,Coord newcoord,bool color, int i)
+{
+  Coord c;
+  int index;
+  Piece* p = NULL;
 
+  
+  
+  if(color)
+  {
+    p = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y()-1);
+    
+    if(p == NULL)
+    {
+      cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
+      Traitement_erreur(pions, Coord(newcoord.x(), newcoord.y()-1));
+    }
+    else
+    {
+      c = p->get_pos_at(p->get_TM_size()-2);
+      index = p->get_movements_at(p->get_TM_size()-1);
+      if(index != i-1 || c.x() != p->get_last_pos().x() ||
+	 c.y() != p->get_last_pos().y() + 2)
+	p = NULL;
+    }
+  }
+  else
+  {
+    p = mtl->tl->chessplate->piece_at_coord(newcoord.x(), newcoord.y()+1);
+    
+    if(p == NULL)
+    {
+      cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
+      Traitement_erreur(pions, Coord(newcoord.x(), newcoord.y()+1));
+    }
+    else
+    {
+      c = p->get_pos_at(p->get_TM_size()-2);
+      index = p->get_movements_at(p->get_TM_size()-1);
+      
+      if(index != i-1 || c.x() != p->get_last_pos().x() ||
+	 c.y() != p->get_last_pos().y()-2)
+	p = NULL;
+    }
+  }
+
+  return p;
+}
 
 TimeDivision* Identify::get_TimeLines()
 {
@@ -272,7 +295,8 @@ Type Identify::char_to_type(char type)
   }
   return pions;
 }
-Piece* Identify::Traitement_erreur(Type type, Coord* coord)
+Piece* Identify::Traitement_erreur(Type type, Coord coord)
 {
-  
+  cout <<"Type: "<<type<<"    x: "<<coord.x()<<"    y: "<<coord.y()<<endl;
+  return NULL;
 }

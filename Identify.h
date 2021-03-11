@@ -27,14 +27,14 @@ class Identify
   ~Identify();
 
   TimeDivision* get_TimeLines();
-  Piece* Traitement_erreur(Type,Coord*);
+  Piece* Traitement_erreur(Type,Coord);
  private:
   //pour un mot et une couleur, ajoute une piece a TimeLine
   void identify_ps(string*,int);
 
   //factorize des operation
   void Factorize(TimeLine*,Piece**,Coord*,bool,Type,string*,int&);
-
+  Piece* Manger_en_passant(MultiTimeLine*,Coord,bool,int);
   Type char_to_type(char);
 
 };
