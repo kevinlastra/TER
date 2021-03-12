@@ -3,7 +3,7 @@ CXX_FLAGS=-Wall -ansi -pedantic -g -std=c++17
 DEPEND=.depend
 
 PROG=main
-SOURCES=main.cpp Lecture.cpp Piece.cpp Coord.cpp TimeLine.cpp Identify.cpp Ecriture.cpp Comparer.cpp ChessPlate.cpp TimeDivision.cpp
+SOURCES=main.cpp Lecture.cpp Piece.cpp Coord.cpp TimeLine.cpp Identify.cpp Comparer.cpp ChessPlate.cpp TimeDivision.cpp Erreur_manager.cpp
 
 ifeq ($(wildcard $(DEPEND)),)
 all: $(PROG)

@@ -7,61 +7,31 @@ using namespace std;
 
 TimeDivision::TimeDivision()
 {
-  MTL.push_back(new MultiTimeLine);
-  
-  MTL[0]->tl = new TimeLine();
-  MTL[0]->deb = 0;
-  MTL[0]->prev = -1;
+  TimeLines.push_back(new TimeLine);
 }
 TimeDivision::~TimeDivision(){}
-int* TimeDivision::diviser(int index, int nb, int deb)
-{  
-  MTL[index]->prox = new int[nb];
-
-  MTL[index]->prox_size += 2;
+int* TimeDivision::diviser(int nb, int index)
+{
   
-  int j = 0;
-  for(int i = 0; i < nb; i++)
+  int* indexs = new int[nb];
+  indexs[0] = index;
+  if(nb >= 2)
   {
-    MTL.push_back(new MultiTimeLine());
-    j = MTL.size()-1;
-    cout << "new branch index: "<<j<<"  deb: "<<deb<<endl;
-    MTL[j]->deb = deb;
-    MTL[j]->tl = new TimeLine(MTL[index]->tl->chessplate);
-    MTL[j]->prev = index;
-    
-    MTL[index]->prox[i] = j;
-  }
-  return MTL[index]->prox;
-}
-int TimeDivision::nb_timeline_end()
-{
-  int cnt = 0;
-  for(int i = 0; i < MTL.size(); i++)
-  {
-    if(MTL[i]->prox_size == 0)
+    cout << "start copying at index "<<indexs[0]<<endl;
+    for(int i = 1; i < nb; i++)
     {
-      cnt++;
+      indexs[i] = TimeLines.size();
+      TimeLines.push_back(new TimeLine(TimeLines[index]));
+      cout << "new branch generated at "<<indexs[i]<<endl;
     }
   }
-  return cnt;
-}
-int* TimeDivision::timelines_end()
-{
-  int* indexs = new int[nb_timeline_end()];
-  int j = 0;
-  for(int i = 0; i < MTL.size(); i++)
-  {
-    if(MTL[i]->prox_size == 0)
-    {
-      indexs[j] = i;
-      j++;
-    }
-  }
-
   return indexs;
 }
-MultiTimeLine* TimeDivision::get_TimeLine_at(int i)
+TimeLine* TimeDivision::TimeLine_at(int i)
 {
-  return MTL[i];
+  return TimeLines[i];
+}
+int TimeDivision::size()
+{
+  return TimeLines.size();
 }

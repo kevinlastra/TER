@@ -1,0 +1,14 @@
+#ifndef ERREUR_MANAGER
+#define ERREUR_MANAGER
+
+
+class Erreur_manager
+{
+ private:
+ public:
+  Erreur_manager();
+
+  Traiter_Erreur(Info_Erreur);
+};
+
+#endif

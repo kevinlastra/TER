@@ -38,15 +38,13 @@ class TimeLine
  private:
   std::vector<Instant> instants;
   
-  //taille de la liste
-  int size;
-  
  public:
   ChessPlate* chessplate;
   
   //constructeur, destructeur
   TimeLine();
   TimeLine(ChessPlate*);
+  TimeLine(TimeLine*);
   ~TimeLine();
 
   //Generation du TimeLine
@@ -66,8 +64,11 @@ class TimeLine
 
   //pour a instant j, renvoi une instance du TimeLine
   Instant* get_instant_at(int);
-
+  std::vector<Instant> get_instants();
   Coord* get_next_coord(int);
+
+  //
+  int* get_all_piece_NULL(int&);
 };
 
 //transforme un entier dans une action 1-> move 2->eat etc....

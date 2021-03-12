@@ -91,4 +91,7 @@ class Piece
   string toString(bool=false);
 };
 
+Type char_to_type(char);
+string char_to_type_string(char);
+string type_to_type_string(Type);
 #endif

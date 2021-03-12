@@ -3,10 +3,16 @@
 
 using namespace std;
 
-TimeLine::TimeLine():size(0),chessplate(new ChessPlate()){}
-TimeLine::TimeLine(ChessPlate* c):size(0)
+TimeLine::TimeLine():chessplate(new ChessPlate()){}
+TimeLine::TimeLine(ChessPlate* c)
 {
   chessplate = new ChessPlate(c);
+}
+
+TimeLine::TimeLine(TimeLine* tl)
+{
+  chessplate = new ChessPlate(tl->chessplate);
+  instants = std::vector<Instant>(tl->get_instants());
 }
 TimeLine::~TimeLine(){}
 Info::Info(){}
@@ -25,24 +31,22 @@ Instant::Instant(int index, Piece* piece, Action act, Info inf)
 }
 void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 {
-  Instant ins(p->time_to_pos_index(size), p, a, inf);
+  Instant ins(p->time_to_pos_index(instants.size()), p, a, inf);
   
-  ins.i = p->time_to_pos_index(size);
+  ins.i = p->time_to_pos_index(instants.size());
   
-  p->add_movements(size, c);  
-  size++;
+  p->add_movements(instants.size(), c);  
 
   instants.push_back(ins);
 }
 void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
 {
-  Instant ins(p->time_to_pos_index(size), p, a, inf);
+  Instant ins(p->time_to_pos_index(instants.size()), p, a, inf);
   
   std::vector<Instant>::iterator it=instants.begin();
   instants.insert(it+j, ins);
   
   p->add_movements(j, c);
-  size++;
 }
 void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
@@ -57,42 +61,62 @@ void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 void TimeLine::remove_at(int j)
 {
   instants.erase(instants.begin()+j);
-  size--;
 }
 
 int TimeLine::get_size()
 {
-  return size;
+  return instants.size();
 }
 void TimeLine::toString()
 {
   int j;
-  for(int i = 0; i < size; i++)
+  for(int i = 0; i < instants.size(); i++)
   {
     if(i < 10)
       cout <<i<<".  ";
     else
       cout <<i<<". ";
 
-    j = instants.at(i).p->time_to_pos_index(i);
-    cout<< instants.at(i).p->toString_At(j)
-	<<"    Action: "<<instants.at(i).a
-	<<"    Echec? "<<instants.at(i).info.echec
-	<<"    Ambiguous? "<<instants.at(i).info.ambiguous
+    j = instants[i].p->time_to_pos_index(i);
+    cout<< instants[i].p->toString_At(j)
+	<<"    Action: "<<instants[i].a
+	<<"    Echec? "<<instants[i].info.echec
+	<<"    Ambiguous? "<<instants[i].info.ambiguous
 	<<endl<<endl;
     
   }
 }
 Instant* TimeLine::get_instant_at(int i)
 {
-  return &instants.at(i);
+  return &instants[i];
 }
-
+std::vector<Instant> TimeLine::get_instants(){return instants;}
 Coord* TimeLine::get_next_coord(int i)
 {
   int nextTime = instants.at(i).p->time_to_next_pos_time(i);
   
   Coord* nextCoord = instants.at(nextTime).p->get_Coords();
+}
+int* TimeLine::get_all_piece_NULL(int& nb)
+{
+  for(int i = 0; i < instants.size(); i++)
+  {
+    if(instants[i].p->get_Type() == NONE)
+    {
+      nb++;
+    }
+  }
+  int indexs[nb];
+  int j = 0;
+  for(int i = 0; i < instants.size(); i++)
+  {
+    if(instants[i].p->get_Type() == NONE)
+    {
+      indexs[j] = i;
+      j++;
+    }
+  }
+  return indexs;
 }
 Action int_to_act(int i)
 {

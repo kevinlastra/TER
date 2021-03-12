@@ -33,30 +33,7 @@ Piece::~Piece()
 }
 void Piece::set_Type(char c)
 {
-  switch(c)
-  {
-  case 'K':
-    type = roi;
-    break;
-  case 'Q':
-    type = dame;
-    break;
-  case 'B':
-    type = fous;
-    break;
-  case 'N':
-    type = cavaliers;
-    break;
-  case 'R':
-    type = tours;
-    break;
-  case '_':
-    type = NONE;
-    break;
-  default:
-    type = pions;
-    break;
-  }
+  type = char_to_type(c);
 }
 void Piece::set_Coord_at(Coord c, int i)
 {
@@ -306,36 +283,29 @@ bool Piece::Test_mov_Cavaliers(Coord* c, int i)
 
 string Piece::toString_At(int i)
 {
-  string s;
+  string s = type_to_type_string(type)+": ";
   int space;
   switch(type)
   {
   case roi:
-    s = "Roi: ";
     space = 5;
     break;
   case dame:
-    s = "Dame: ";
     space = 6;
     break;
   case fous:
-    s = "Fous: ";
     space = 6;
     break;
   case cavaliers:
-    s = "Cavalier: ";
     space = 10;
     break;
   case tours:
-    s = "Tour: ";
     space = 6;
     break;
   case NONE:
-    s = "NONE: ";
     space = 6;
     break;
   default:
-    s = "Pion: ";
     space = 6;
     break;
   }
@@ -348,36 +318,29 @@ string Piece::toString_At(int i)
 }
 string Piece::toString(bool cpx)
 {
-  string s;
+  string s = type_to_type_string(type)+": ";
   int space;
   switch(type)
   {
   case roi:
-    s = "Roi: ";
     space = 5;
     break;
   case dame:
-    s = "Dame: ";
     space = 6;
     break;
   case fous:
-    s = "Fous: ";
     space = 6;
     break;
   case cavaliers:
-    s = "Cavalier: ";
     space = 10;
     break;
   case tours:
-    s = "Tour: ";
     space = 6;
     break;
   case NONE:
-    s = "NONE: ";
     space = 6;
     break;
   default:
-    s = "Pion: ";
     space = 6;
     break;
   }
@@ -403,4 +366,76 @@ string Piece::toString(bool cpx)
   }
   s+="\n";
   return  s;
+}
+
+Type char_to_type(char type)
+{
+  switch(type)
+  {
+  case 'K':
+    return roi;
+    break;
+  case 'Q':
+    return dame;
+    break;
+  case 'B':
+    return fous;
+    break;
+  case 'N':
+    return cavaliers;
+    break;
+  case 'R':
+    return tours;
+    break;
+  }
+  return pions;
+}
+string char_to_type_string(char type)
+{
+  switch(type)
+  {
+  case 'K':
+    return "Roi";
+    break;
+  case 'Q':
+    return "Dame";
+    break;
+  case 'B':
+    return "Fous";
+    break;
+  case 'N':
+    return "Cavalier";
+    break;
+  case 'R':
+    return "Tour";
+    break;
+  case '_':
+    return "NONE";
+    break;
+  }
+  return "Pion";
+}
+string type_to_type_string(Type type)
+{
+  switch(type)
+  {
+  case roi:
+    return "Roi";
+    break;
+  case dame:
+    return "Dame";
+    break;
+  case fous:
+    return "Fous";
+    break;
+  case cavaliers:
+    return "Cavalier";
+    break;
+  case tours:
+    return "Tour";
+    break;
+  case NONE:
+    return "NONE";
+  }
+  return "Pion";
 }

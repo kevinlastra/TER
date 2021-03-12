@@ -4,9 +4,12 @@
 #include <string>
 #include "TimeDivision.h"
 #include "Piece.h"
+#include "Coord.h"
 #include "TimeLine.h"
+#include "Erreur_manager.h"
 
 using namespace std;
+
 
 class Identify
 {
@@ -14,12 +17,18 @@ class Identify
   //pointeur du TimeLine
   TimeDivision* TD;
   
+  Erreur_manager* EM;
+  Info_Erreur Error;
+  
   //liste de mots, lue par le lecteur ref-> Lecteur.h
   string* liste;
 
   //liste de 32 pieces
   ChessPlate* chessplate;
   
+  TimeLine* tl;
+  int MTL_index;
+  int temps_index;
  public:
   //constructeur et destructeur
   Identify();
@@ -27,15 +36,14 @@ class Identify
   ~Identify();
 
   TimeDivision* get_TimeLines();
-  Piece* Traitement_erreur(Type,Coord);
+  void Traitement_erreur();
  private:
   //pour un mot et une couleur, ajoute une piece a TimeLine
-  void identify_ps(string*,int);
+  void interpreteur(string*);
 
   //factorize des operation
-  void Factorize(TimeLine*,Piece**,Coord*,bool,Type,string*,int&);
-  Piece* Manger_en_passant(MultiTimeLine*,Coord,bool,int);
-  Type char_to_type(char);
+  void Factorize(Piece**,Coord*,bool,Type,string*,int&);
+  void Tuer(Coord,Info,Type);
 
 };
 
