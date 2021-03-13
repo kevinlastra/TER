@@ -40,9 +40,25 @@ void Erreur_manager::Pion(Info_Erreur e)
     int* indexs = tl->get_all_piece_NULL(nb);
     
     proxs = TD->diviser(nb,proxs[1]);
+    cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;
+    std::vector<std::vector<Anode>> arbres;
     for(int i = 0; i < nb; i++)
     {
-      cout << "i: "<<i<<endl;
+      for(int h = 0; h < tl->chessplate->size(); h++)
+      {
+	if(!tl->chessplate->at(h)->get_Alive())
+	  continue;
+	
+	ArbreMovement AM(tl->chessplate);
+	arbres.push_back(AM.Generait_arbre(tl->chessplate->at(h),e.coord,1));
+      }
+    
+      for(int i = 0; i < arbres.size(); i++)
+      {
+	cout << "prev: "<<arbre[j].prev
+	     <<"   x: "<<arbre[j].c.x()
+	     <<"   y: "<<arbre[j].c.y()<<endl;
+      }
     }
     //END
   }

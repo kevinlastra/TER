@@ -35,6 +35,8 @@ class ChessPlate
   //check si entre 2 coordoner il n'existe pas de piece
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);
+
+  
 };
 
 #endif

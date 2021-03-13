@@ -3,6 +3,7 @@
 
 #include "TimeDivision.h"
 #include "Piece.h"
+#include "ArbreMovement.h"
 #include <stdlib.h>
 #include <iostream>
 

@@ -1,0 +1,7 @@
+#include "ArbreMovement.h"
+
+ArbreMovement::ArbreMovement(){}
+
+std::vector<Anode> ArbreMovement::Generait_arbre(Piece* p, Coord c, int prof)
+{
+}

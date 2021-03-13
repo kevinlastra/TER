@@ -200,7 +200,7 @@ bool Piece::Test_movements(Coord* c, bool eat, int i)
   case tours:
     return Test_mov_Tour(c, i);
     break;
-  default:
+  default://pion
     if(color)
     {
       if(pos[i].y()+1 == c->y())
@@ -219,8 +219,6 @@ bool Piece::Test_movements(Coord* c, bool eat, int i)
     }
     else
     {
-      //cout << c->x() << "   " << c->y() << endl;
-      //cout << pos.x() << "   "<< pos.y() << endl;
       if(pos[i].y()-1 == c->y())
       {
 	if(pos[i].x() == c->x())
