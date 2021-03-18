@@ -46,7 +46,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
     return;
   }
   
-  bool end = false;
+
   for(int n=0; n<td->size();n++){
 
     tm = td->TimeLine_at(n);
@@ -185,7 +185,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
       //cout << (tour/2)+1 <<": Pnoire -Est ambigue: "<< pNoire->info.ambiguous << "- Fait echec: " << pNoire->info.echec << endl;
       //cout << (tour/2)+1 <<": Pblanche -Est ambigue: "<< pBlanche->info.ambiguous << "- Fait echec: " << pBlanche->info.echec << endl;
       tour= tour+2;
-      
+
     }
   }
 

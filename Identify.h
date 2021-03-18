@@ -23,8 +23,7 @@ class Identify
   //liste de mots, lue par le lecteur ref-> Lecteur.h
   string* liste;
 
-  //liste de 32 pieces
-  ChessPlate* chessplate;
+
   
   TimeLine* tl;
   int MTL_index;

@@ -4,6 +4,7 @@
 ChessPlate::ChessPlate()
 {
   pieces = new Piece*[48];
+  
 
   //pions blanc
   pieces[0] = new Piece(pions,true,1,2);

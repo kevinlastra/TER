@@ -138,6 +138,7 @@ void Identify::interpreteur(string* piece)
 	  act = 0;
 	  
 	}//promotion
+  
 	else if(piece[0][2] >= 65 && piece[0][2] <= 90)
 	{
 	  p = tl->chessplate->find_piece(pions,color,(int)piece[0][0]-96,(int)piece[0][1]-48);
@@ -147,8 +148,7 @@ void Identify::interpreteur(string* piece)
 	  act = 3;
 	  
 	  tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
-	  
-	  p = tl->chessplate->at(chessplate->size());
+    p = tl->chessplate->at(tl->chessplate->size());
 	  p->set_Type(piece[0][2]);
 	  p->set_Color(color);
 	  p->add_movements(0,p->get_last_pos());
