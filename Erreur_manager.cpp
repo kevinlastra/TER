@@ -55,9 +55,14 @@ void Erreur_manager::Pion(Info_Erreur e)
     
       for(int j = 0; j < arbres.size(); j++)
       {
-	cout << "prev: "<<arbres[j].prev
-	     <<"   x: "<<arbres[j].c.x()
-	     <<"   y: "<<arbres[j].c.y()<<endl;
+	for(int z = 0; z < arbres[j].size(); z++)
+	{
+	  cout << "prev: "<<arbres[j][z].prev
+	       <<"   x: "<<arbres[j][z].c.x()
+	       <<"   y: "<<arbres[j][z].c.y()<<endl;
+	}
+	if(arbres[j].size()>0)
+	  cout <<endl;
       }
     }
     //END
