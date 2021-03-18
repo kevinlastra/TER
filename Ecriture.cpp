@@ -31,8 +31,8 @@ void Ecriture::Write(TimeDivision* td, string* path)
   string coupNoir;
   string nomBlanc;
   string nomNoir;
-  MultiTimeLine* mtl = td->get_TimeLine_at(0);
-  TimeLine* tm = mtl->tl;
+  //MultiTimeLine* mtl = td->get_TimeLine_at(0);
+  TimeLine* tm;
 
   int tour = 1;
   
@@ -47,8 +47,9 @@ void Ecriture::Write(TimeDivision* td, string* path)
   }
   
   bool end = false;
-  while(end == false){
-    //Si ce n'est pas la première timeline
+  for(int n=0; n<td->size();n++){
+
+    tm = td->TimeLine_at(n);
     for(int i=0;i<tm->get_size();i+=2){
       
       coupNoir= "";
@@ -184,12 +185,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
       //cout << (tour/2)+1 <<": Pnoire -Est ambigue: "<< pNoire->info.ambiguous << "- Fait echec: " << pNoire->info.echec << endl;
       //cout << (tour/2)+1 <<": Pblanche -Est ambigue: "<< pBlanche->info.ambiguous << "- Fait echec: " << pBlanche->info.echec << endl;
       tour= tour+2;
-      if(mtl->prox_size != 0){
-        mtl = td->get_TimeLine_at(mtl->prox[0]);
-        tm= mtl->tl;
-      }else{
-        end=true;
-      }
+      
     }
   }
 

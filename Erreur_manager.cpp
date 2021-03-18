@@ -53,11 +53,11 @@ void Erreur_manager::Pion(Info_Erreur e)
 	arbres.push_back(AM.Generait_arbre(tl->chessplate->at(h),e.coord,1));
       }
     
-      for(int i = 0; i < arbres.size(); i++)
+      for(int j = 0; j < arbres.size(); j++)
       {
-	cout << "prev: "<<arbre[j].prev
-	     <<"   x: "<<arbre[j].c.x()
-	     <<"   y: "<<arbre[j].c.y()<<endl;
+	cout << "prev: "<<arbres[j].prev
+	     <<"   x: "<<arbres[j].c.x()
+	     <<"   y: "<<arbres[j].c.y()<<endl;
       }
     }
     //END
