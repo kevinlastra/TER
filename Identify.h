@@ -42,7 +42,7 @@ class Identify
 
   //factorize des operation
   void Factorize(Piece**,Coord*,bool,Type,string*,int&);
-  void Tuer(Coord,Info,Type);
+  int Tuer(Coord,Info,Type);
 
 };
 

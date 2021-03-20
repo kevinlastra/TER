@@ -5,6 +5,7 @@
 #include "TimeLine.h"
 #include "Piece.h"
 
+#define MAX_SCORE 6
 
 class TimeDivision
 {
@@ -21,5 +22,13 @@ class TimeDivision
 
   TimeLine* TimeLine_at(int);
   int size();
+
+  //indexs,number of indexs,index to kill
+  void transform_indexs_before_kill(int*,int,int);
+  void remove_tl_at(int);
+
+  void clear_score();
+  //prints
+  void Print_adresse();
 };
 #endif

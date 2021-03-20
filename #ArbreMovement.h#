@@ -33,7 +33,6 @@ class ArbreMovement
 
   Arbre* Generait_arbre(Piece*, Coord, int);
   void AddProfondeur(Type,bool);//tipe de la piece a bouger
-  Piece* get_piece();
   void clean_nodes(Coord);
   //coord final
   void Pawn(int, bool);

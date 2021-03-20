@@ -19,6 +19,7 @@ Identify::Identify(string* l, int size)
     temps_index = i;
     interpreteur(&liste[i]);
   }
+  TD->clear_score();
 }
 Identify::~Identify(){}
 
@@ -37,10 +38,10 @@ void Identify::interpreteur(string* piece)
   
   Info info;
 
-  int nb_timeline = TD->size();
-
   //START CALC
-  for(int i = 0; i < nb_timeline; i++)
+  TD->clear_score();
+  int size = TD->size();
+  for(int i = 0; i < size;i++)
   {
     act = 3;
     p = NULL;
@@ -138,7 +139,6 @@ void Identify::interpreteur(string* piece)
 	  act = 0;
 	  
 	}//promotion
-  
 	else if(piece[0][2] >= 65 && piece[0][2] <= 90)
 	{
 	  p = tl->chessplate->find_piece(pions,color,(int)piece[0][0]-96,(int)piece[0][1]-48);
@@ -148,7 +148,7 @@ void Identify::interpreteur(string* piece)
 	  act = 3;
 	  
 	  tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
-    p = tl->chessplate->at(tl->chessplate->size());
+	  p = tl->chessplate->at(tl->chessplate->size());
 	  p->set_Type(piece[0][2]);
 	  p->set_Color(color);
 	  p->add_movements(0,p->get_last_pos());
@@ -177,15 +177,28 @@ void Identify::interpreteur(string* piece)
     {
       if(act == 1)
       {
-	Tuer(newcoord,info,type);
+	if(Tuer(newcoord,info,type) == -1)
+	{
+	  continue;
+	}
       }
       tl->add_instant_on_top(p,newcoord,int_to_act(act), info);
     }
     else if(p == NULL)
     {
       cout <<endl<<"Erreur: "<< piece[0] << endl<<endl;
+
+      Error.type = NONE;
+      Error.coord = newcoord;
+      Error.action = none;
+      Error.color = temps_index%2==0;
+      Error.info = info;
+      
+      Error.MTL_index = MTL_index;
+      Error.Temps_actuel = temps_index;
       
       Traitement_erreur();
+      cout << "return to Identify (L189 aprox.)"<<endl;
     }
   }
 }
@@ -205,11 +218,12 @@ void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s, int
     act = 1;
   }
 }
-void Identify::Tuer(Coord c, Info info, Type type)
+int Identify::Tuer(Coord c, Info info, Type type)
 {
   cout << "----------Tuer--------"<<endl;
   Piece* piece_to_kill = tl->chessplate->piece_at_coord(c.x(), c.y());
-  //test pour "prise en passant"
+  
+  //Preparation pour traitement d'erreur
   if(piece_to_kill == NULL)
   {
     cout << "Erreur: piece a tuée introuvable"<<endl;
@@ -221,12 +235,15 @@ void Identify::Tuer(Coord c, Info info, Type type)
     
     Error.MTL_index = MTL_index;
     Error.Temps_actuel = temps_index;
-    
+
     Traitement_erreur();
+    cout << "return to Identify (L227 aprox.)"<<endl;
+    return -1;
   }
 
   piece_to_kill->set_Alive(false);
   cout <<"----------Mort-----------"<<endl;
+  return 0;
 }
 
 
@@ -239,7 +256,7 @@ TimeDivision* Identify::get_TimeLines()
 void Identify::Traitement_erreur()
 {
   cout <<"Type: "<<type_to_type_string(Error.type)<<"    x: "
-       <<(char)(96+Error.coord.x())<<"    y: "<<Error.coord.y()+1<<endl;
+       <<(char)(96+Error.coord.x())<<"    y: "<<Error.coord.y()<<endl;
 
   EM->Traiter_Erreur(Error);
 }

@@ -22,7 +22,7 @@ int* TimeDivision::diviser(int nb, int index)
     {
       indexs[i] = TimeLines.size();
       TimeLines.push_back(new TimeLine(TimeLines[index]));
-      cout << "new branch generated at "<<indexs[i]<<endl;
+      cout << "new branch generated at "<<indexs[i]<<"       "<<TimeLines[index]->get_score()<<endl;
     }
   }
   return indexs;
@@ -34,4 +34,39 @@ TimeLine* TimeDivision::TimeLine_at(int i)
 int TimeDivision::size()
 {
   return TimeLines.size();
+}
+void TimeDivision::transform_indexs_before_kill(int* indexs, int size, int i)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(indexs[i] > i)
+    {
+      indexs[i]--;
+    }
+  }
+}
+void TimeDivision::remove_tl_at(int i)
+{
+  cout << "remove branch at "<<i<<endl;
+  TimeLines.erase(TimeLines.begin()+i);
+}
+void TimeDivision::clear_score()
+{
+  int i = 0;
+  while(i < TimeLines.size())
+  {
+    if(TimeLines[i]->get_score() > MAX_SCORE)
+      remove_tl_at(i);
+    else
+      i++;
+  }
+}
+
+//PRINTS
+void TimeDivision::Print_adresse()
+{
+  for(int i = 0; i < TimeLines.size(); i++)
+  {
+    cout << "#   "<<TimeLines[i]<<endl;
+  }
 }

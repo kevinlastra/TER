@@ -124,7 +124,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
       if(i+1!=tm->get_size()){
         pNoire = tm->get_instant_at(i+1); //Piece noire
         Type typeNoir= pNoire->p->get_Type();
-        coupNoir= type_to_pgn[typeNoir ];
+        coupNoir= type_to_pgn[typeNoir];
 
         if(pNoire->info.ambiguous)
         {
@@ -155,10 +155,10 @@ void Ecriture::Write(TimeDivision* td, string* path)
             break;
 
           case Action::promotion:
-          cout << "promo" << endl;
+	    //cout << "promo" << endl;
             coupNoir= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y()) + type_to_pgn[typeNoir];
             i++;
-            cout << "promo effectuee" << endl;
+            //cout << "promo effectuee" << endl;
           break;
           
           default:

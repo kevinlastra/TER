@@ -37,6 +37,7 @@ class TimeLine
 {
  private:
   std::vector<Instant> instants;
+  int score = 0;
   
  public:
   ChessPlate* chessplate;
@@ -55,8 +56,11 @@ class TimeLine
   void remove_at(int);
 
   //return la taille de la liste
-  int get_size();  
-  
+  int get_size();
+  //score
+  void score_kill();
+  void pp_score();
+  int get_score();
   //debug 
   void toString();
   

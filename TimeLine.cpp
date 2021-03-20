@@ -13,6 +13,7 @@ TimeLine::TimeLine(TimeLine* tl)
 {
   chessplate = new ChessPlate(tl->chessplate);
   instants = std::vector<Instant>(tl->get_instants());
+  score = tl->get_score();
 }
 TimeLine::~TimeLine(){}
 Info::Info(){}
@@ -50,13 +51,16 @@ void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
 }
 void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
+  cout << p->toString(true)<<endl;
   instants.at(i).p->set_Type(p->get_Type());
   instants.at(i).p->set_Coord_at(p->get_pos_at(i),i);
+  //instants.at(i).p->add_movements(instants.size(), c); 
   instants.at(i).p->set_Color(p->get_Color());
   
   instants.at(i).i = p->time_to_pos_index(i);
   instants.at(i).a = a;
   instants.at(i).info = info;
+  cout << p->toString(true)<<endl;
 }
 void TimeLine::remove_at(int j)
 {
@@ -66,6 +70,18 @@ void TimeLine::remove_at(int j)
 int TimeLine::get_size()
 {
   return instants.size();
+}
+void TimeLine::score_kill()
+{
+  score = 1000;
+}
+void TimeLine::pp_score()
+{
+  score++;
+}
+int TimeLine::get_score()
+{
+  return score;
 }
 void TimeLine::toString()
 {
@@ -106,7 +122,7 @@ int* TimeLine::get_all_piece_NULL(int& nb)
       nb++;
     }
   }
-  int indexs[nb];
+  int* indexs = new int[nb];
   int j = 0;
   for(int i = 0; i < instants.size(); i++)
   {
