@@ -121,7 +121,7 @@ void Identify::interpreteur(string* piece)
     }
     else if(piece[0] == "_")
     {
-      cout << "piece type = '_'"<<endl;
+      cout << "piece type = '_'   at "<<temps_index<<endl;
       p = new Piece(NONE,color,-1,-1);
       newcoord = Coord(-1,-1);
     }
@@ -164,7 +164,7 @@ void Identify::interpreteur(string* piece)
       else//pion mange
       {
 	info.ambiguous = true;
-	cout <<"-----"<<piece[0]<<endl;
+	//cout <<"-----"<<piece[0]<<endl;
 	p = tl->chessplate->find_piece_ambiguos(pions,color,(int)piece[0][2]-96,
 						(int)piece[0][3]-48,(int)piece[0][0]-96,true);
 	newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
@@ -177,7 +177,7 @@ void Identify::interpreteur(string* piece)
     {
       if(act == 1)
       {
-	if(Tuer(newcoord,info,type) == -1)
+	if(Tuer(p->get_last_time(),newcoord,info,type) == -1)
 	{
 	  continue;
 	}
@@ -196,9 +196,9 @@ void Identify::interpreteur(string* piece)
       
       Error.MTL_index = MTL_index;
       Error.Temps_actuel = temps_index;
-      
+
       Traitement_erreur();
-      cout << "return to Identify (L189 aprox.)"<<endl;
+      //cout << "return to Identify (L189 aprox.)"<<endl;
     }
   }
 }
@@ -218,15 +218,17 @@ void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s, int
     act = 1;
   }
 }
-int Identify::Tuer(Coord c, Info info, Type type)
+int Identify::Tuer(int p_index, Coord c, Info info, Type type)
 {
-  cout << "----------Tuer--------"<<endl;
+  //cout << "----------Tuer--------"<<endl;
   Piece* piece_to_kill = tl->chessplate->piece_at_coord(c.x(), c.y());
   
   //Preparation pour traitement d'erreur
   if(piece_to_kill == NULL)
   {
     cout << "Erreur: piece a tuée introuvable"<<endl;
+    Error.piece_index = p_index;
+    
     Error.type = type;
     Error.coord = c;
     Error.action = eat;
@@ -237,12 +239,12 @@ int Identify::Tuer(Coord c, Info info, Type type)
     Error.Temps_actuel = temps_index;
 
     Traitement_erreur();
-    cout << "return to Identify (L227 aprox.)"<<endl;
+    //cout << "return to Identify (L227 aprox.)"<<endl;
     return -1;
   }
 
   piece_to_kill->set_Alive(false);
-  cout <<"----------Mort-----------"<<endl;
+  //cout <<"----------Mort-----------"<<endl;
   return 0;
 }
 

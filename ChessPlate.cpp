@@ -91,6 +91,7 @@ ChessPlate::ChessPlate(ChessPlate* CP)
   {
     pieces[i] = new Piece();
   }
+  //Print();
 }
 ChessPlate::~ChessPlate()
 {
@@ -130,6 +131,7 @@ void ChessPlate::return_Castling(bool color,Type t, int &a, int &b)
 Piece* ChessPlate::find_piece(Type t, bool color, int x, int y)
 {
   Coord c(x,y);
+  //Print();
   for(int i = 0; i < p_size; i++)
   {
     if(pieces[i]->get_Type() == t &&
@@ -153,10 +155,7 @@ Piece* ChessPlate::find_piece(Type t, bool color, int x, int y)
 	else
 	  continue;
       }
-      else
-      {
-	return pieces[i];
-      }
+      return pieces[i];
    }
  }
  return NULL;
@@ -203,6 +202,22 @@ Piece* ChessPlate::piece_at_coord(int x, int y)
     if(pieces[i]->get_last_pos().x() == x &&
      pieces[i]->get_last_pos().y() == y &&
      pieces[i]->get_Alive())
+    {
+      return pieces[i];
+    }
+  }
+  return NULL;
+}
+Piece* ChessPlate::piece_at_init(int x, int y)
+{
+  if(x==-1 && x==y)
+  {
+    return NULL;
+  }
+  for(int i = 0; i < p_size; i++)
+  {
+    if(pieces[i]->get_pos_at(0).x() == x &&
+       pieces[i]->get_pos_at(0).y() == y)
     {
       return pieces[i];
     }
@@ -272,4 +287,13 @@ bool ChessPlate::check_Rok_path(Coord start, Coord end)
  }
 }
 return true;
+}
+
+void ChessPlate::Print()
+{
+  for(int i = 0; i < p_size; i++)
+  {
+    //cout<<(pieces[i])->toString(true)<<endl;
+    cout<<pieces[i]<<endl;;
+  }
 }

@@ -102,8 +102,6 @@ int Piece::time_to_pos_index(int time)
 {
   for(int i = 1; i < TM_size; i++)
   {
-    //cout <<"------>Time: "<<Temps_movements[i]<<endl;
-    //cout <<"------>x: "<< pos[i].x()<<"    y:"<<pos[i].y()<<endl;
     if(Temps_movements[i] == time)
       return i;
   }
@@ -359,7 +357,8 @@ string Piece::toString(bool cpx)
 	s+=to_string(pos[i].x());
 	s+=",";
 	s+=to_string(pos[i].y());
-	s+=")";
+	s+=")        tl_i:";
+	s+=to_string(Temps_movements[i]);
       }
   }
   s+="\n";

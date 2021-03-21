@@ -25,7 +25,13 @@ int main(int argc, char** argv)
 
   TimeDivision* tl = iden.get_TimeLines();
   //tl->toString();
-
+  
+  for(int i = 0; i < tl->size(); i++)
+  {
+    cout << endl<<endl<<"########  "<<tl->TimeLine_at(i)->get_score()<<"     "<<(tl->TimeLine_at(i))<<endl;
+    tl->TimeLine_at(i)->toString();
+  }
+  
   // Instant* ins = tl->get_instant_at(tl->get_size()-1);
 
 

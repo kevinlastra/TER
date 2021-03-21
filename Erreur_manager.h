@@ -11,6 +11,8 @@ using namespace std;
 
 struct Info_Erreur
 {
+  int piece_index;
+  
   Type type;
   Coord coord;
   Action action;

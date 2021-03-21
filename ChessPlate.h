@@ -32,11 +32,13 @@ class ChessPlate
   //return une piece a une coord especifique, null si rien
   Piece* piece_at_coord(int,int);
 
+  //return
+  Piece* piece_at_init(int,int);
   //check si entre 2 coordoner il n'existe pas de piece
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);
 
-  
+  void Print();
 };
 
 #endif

@@ -17,12 +17,12 @@ int* TimeDivision::diviser(int nb, int index)
   indexs[0] = index;
   if(nb >= 2)
   {
-    cout << "start copying at index "<<indexs[0]<<endl;
+    cout << "start copying at index "<<indexs[0]<<"       "<<TimeLines[indexs[0]]<<endl;
     for(int i = 1; i < nb; i++)
     {
       indexs[i] = TimeLines.size();
       TimeLines.push_back(new TimeLine(TimeLines[index]));
-      cout << "new branch generated at "<<indexs[i]<<"       "<<TimeLines[index]->get_score()<<endl;
+      cout << "new branch generated at "<<indexs[i]<<"       "<<TimeLines[indexs[i]]<<endl;
     }
   }
   return indexs;

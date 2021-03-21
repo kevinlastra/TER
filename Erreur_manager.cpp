@@ -32,16 +32,14 @@ void Erreur_manager::Pion(Info_Erreur e)
     //1)
     
     p = Manger_en_passant(e);
+    tl = TD->TimeLine_at(proxs[0]);
     if(p == NULL)
     {
       cout << "Erreur: impossible de manger en passant, la piece a tuer ne remplit pas tout les condition"<<endl;
-      
-      /*TD->transform_indexs_before_kill(proxs,2,0);
-	TD->remove_tl_at(proxs[0]);*/
+      tl->score_kill();
     }
     else
     {
-      tl = TD->TimeLine_at(proxs[0]);
       tl->add_instant_on_top(p,e.coord,e.action, e.info);
     }
     //2)
@@ -57,8 +55,10 @@ void Erreur_manager::Pion(Info_Erreur e)
     
     std::vector<Arbre*> arbres;
     Piece* piece;
+    Piece* piece_to_kill;
     TimeLine* tl_proxs;
     int* proxs_arbres;
+    
     for(int i = 0; i < nb; i++)
     {
       tl_proxs = TD->TimeLine_at(proxs[i]);
@@ -70,7 +70,7 @@ void Erreur_manager::Pion(Info_Erreur e)
 	  continue;
 	
 	ArbreMovement AM(tl_proxs->chessplate);
-	Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),e.coord,1);
+	Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),h,e.coord,1);
 	if(a->arbre_struct.size() > 0)
 	  arbres.push_back(a);
       }
@@ -80,21 +80,40 @@ void Erreur_manager::Pion(Info_Erreur e)
 	continue;
       }
       proxs_arbres = TD->diviser(arbres.size(), proxs[i]);
+      //----
+      /*cout << "###########"<<endl;
+      TD->TimeLine_at(proxs_arbres[0])->toString();
+      cout << "###########"<<endl;
+      TD->TimeLine_at(proxs_arbres[1])->toString();
+      //---
+      exit(1);*/
       //UTILISER ARBRE
       for(int j = 0; j < arbres.size(); j++)
       {
-	if(arbres[j]->arbre_struct.size() == 0)
-	  continue;
 	tl_proxs = TD->TimeLine_at(proxs_arbres[j]);
 	
-	piece = arbres[j]->piece;
-	for(int z = 0; z < arbres[j]->arbre_struct.size()-1; z++)
+	piece = tl_proxs->chessplate->at(arbres[j]->index);
+
+	if(j == 0)
 	{
-	  cout << "    x: "<<arbres[j]->arbre_struct[z].c.x()<<"     y:"<<arbres[j]->arbre_struct[z].c.y()<<"     tl: "<<proxs_arbres[j]<<"     "<<null_pieces[i]<<endl;
-	  //piece->add_movements(e.MTL_index, arbres[j]->arbre_struct[z].c);
-	  
-	  tl_proxs->update_at(piece, e.action, e.info, null_pieces[i]);
+	  cout << " index: "<<arbres[j]->index<<"    "<<piece<<"    "<<tl_proxs<<"    "<<piece<<endl;
+	  //tl_proxs->chessplate->Print();
 	}
+	for(int z = 1; z < arbres[j]->arbre_struct.size(); z++)
+	{
+	  //cout << "+++++++++++++++++++++++++++"<<endl;
+	  piece->add_movements(null_pieces[i],
+			       arbres[j]->arbre_struct[z].c);
+	  //cout << piece->toString(true)<<endl;
+	  
+	  tl_proxs->update_at(piece, none, Info(), null_pieces[i]);
+	  //cout <<"##############################"<<endl;
+	}
+	piece->set_Alive(false);
+	tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index), e.coord,
+				     e.action, e.info);
+	//cout <<"##############################"<<endl;
+	//tl_proxs->toString();
       }
     }
     //END

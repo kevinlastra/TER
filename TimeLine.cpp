@@ -12,11 +12,33 @@ TimeLine::TimeLine(ChessPlate* c)
 TimeLine::TimeLine(TimeLine* tl)
 {
   chessplate = new ChessPlate(tl->chessplate);
-  instants = std::vector<Instant>(tl->get_instants());
+  //instants = std::vector<Instant>(tl->get_instants());
+  std::vector<Instant> ins = tl->get_instants();
+  Coord c;
+  Piece* p;
+  for(int i = 0; i < tl->get_size(); i++)
+  {
+    c = ins[i].p->get_pos_at(0);
+    p = chessplate->piece_at_init(c.x(),c.y());
+    if(p != NULL)
+    {
+      Instant a(ins[i].i, p,
+		ins[i].a,ins[i].info);
+    
+      instants.push_back(a);
+    }
+    else
+    {
+      Instant a(ins[i].i, new Piece(ins[i].p),
+		ins[i].a,ins[i].info);
+    
+      instants.push_back(a);
+    }
+  }
   score = tl->get_score();
 }
 TimeLine::~TimeLine(){}
-Info::Info(){}
+Info::Info(){echec=false;ambiguous=false;}
 Info::Info(bool e, bool a)
 {
   echec = e;
@@ -51,16 +73,11 @@ void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
 }
 void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
-  cout << p->toString(true)<<endl;
-  instants.at(i).p->set_Type(p->get_Type());
-  instants.at(i).p->set_Coord_at(p->get_pos_at(i),i);
-  //instants.at(i).p->add_movements(instants.size(), c); 
-  instants.at(i).p->set_Color(p->get_Color());
+  instants.at(i).p = p;
   
   instants.at(i).i = p->time_to_pos_index(i);
   instants.at(i).a = a;
   instants.at(i).info = info;
-  cout << p->toString(true)<<endl;
 }
 void TimeLine::remove_at(int j)
 {
@@ -94,11 +111,13 @@ void TimeLine::toString()
       cout <<i<<". ";
 
     j = instants[i].p->time_to_pos_index(i);
-    cout<< instants[i].p->toString_At(j)
-	<<"    Action: "<<instants[i].a
-	<<"    Echec? "<<instants[i].info.echec
-	<<"    Ambiguous? "<<instants[i].info.ambiguous
-	<<endl<<endl;
+    //cout<< instants[i].p->toString_At(j)
+    cout << instants[i].p->toString(true)
+	 <<"   "<<instants[i].p<<endl
+	 <<"    Action: "<<instants[i].a
+	 <<"    Echec? "<<instants[i].info.echec
+	 <<"    Ambiguous? "<<instants[i].info.ambiguous
+	 <<endl<<endl;
     
   }
 }
