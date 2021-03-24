@@ -26,7 +26,10 @@ class Identify
 
   
   TimeLine* tl;
+
+  //index du timeline traiter
   int MTL_index;
+  //temps de lecture pour construir le tl
   int temps_index;
  public:
   //constructeur et destructeur

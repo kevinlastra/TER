@@ -6,37 +6,48 @@
 #include "ChessPlate.h"
 #include <vector>
 
+//## ERREUR POSSIBLE ##
+//cette classe n'a pas ete tester pour des profondeur > 1
+//#####################
 
+//Node pour construir l'arbre de movement
 struct Anode
 {
-  Coord c;
-  int prev;
-  int nb_succ;
+  Coord c;            //coordoner du node
+  int prev;           //node parent
+  int nb_succ;        //nombre de succeseur
 
-  Anode(Coord, int);
+  Anode(Coord, int);  //constructeur
 };
 struct Arbre
 {
-  std::vector<Anode> arbre_struct;
-  int index;//reference de la piece dans le tl
+  std::vector<Anode> arbre_struct;   //arbre de coordoner
+  int index;                         //reference de la piece dans le tl
 
-  Arbre(Anode,int);
+  Arbre(Anode,int);                  //constructeur
 };
+
+
 class ArbreMovement
 {
  private:
-  Arbre* arbre;
-  ChessPlate* chessplate;
-  Piece* piece;
+  Arbre* arbre;            //pointeur de struct Arbre
+  ChessPlate* chessplate;  //pointeur sur chessplate
+  Piece* piece;            //pointeur sur une piece pour construir l'arbre
   
  public:
   ArbreMovement(ChessPlate*);
   ~ArbreMovement();
 
   Arbre* Generait_arbre(Piece*,int, Coord, int);
+
+  //ajout un niveau de profondeur
   void AddProfondeur(Type);//tipe de la piece a bouger
+
+  //nettoi les branches pour les quelle la feuille n'arrive pas a la coordoner
   void clean_nodes(Coord);
-  //coord final
+  
+  //ajout un movement selon le type de piece
   void Pawn(int);
   void Rok(int);
   void Knigth(int);

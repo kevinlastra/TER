@@ -38,6 +38,7 @@ class ChessPlate
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);
 
+  //print tous les piece du chessplate
   void Print();
 };
 

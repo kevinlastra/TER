@@ -57,10 +57,12 @@ class TimeLine
 
   //return la taille de la liste
   int get_size();
+  
   //score
-  void score_kill();
-  void pp_score();
-  int get_score();
+  void score_kill(); //score = 1000, cette operation ser a tue le tl dans le prochain balayage
+  void pp_score();   //score++
+  int get_score();   
+  
   //debug 
   void toString();
   
@@ -71,7 +73,7 @@ class TimeLine
   std::vector<Instant> get_instants();
   Coord* get_next_coord(int);
 
-  //
+  //return tous les piece de type NULL
   int* get_all_piece_NULL(int&);
 };
 

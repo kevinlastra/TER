@@ -25,8 +25,15 @@ class TimeDivision
 
   //indexs,number of indexs,index to kill
   void transform_indexs_before_kill(int*,int,int);
+
+  //## ADVERTISEMENT ##
+  //detruire un tl peut decaler la lecture des tl
+  //pour detruir un tl, on doit attendre que tous les tl soient traites
+  //
+  //detruit le tl a un index i
   void remove_tl_at(int);
 
+  //nettoi tous les tl dont le score est superieur a MAX_SCORE
   void clear_score();
   //prints
   void Print_adresse();
