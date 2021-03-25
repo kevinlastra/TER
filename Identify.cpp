@@ -206,15 +206,16 @@ void Identify::Factorize(Piece** p, Coord* c, bool color, Type t, string* s, int
 {
   if(s[0][1] != 'x')
   {
-    *p = tl->chessplate->find_piece(t,color,(int)s[0][1]-96,(int)s[0][2]-48);
     *c = Coord((int)s[0][1]-96,(int)s[0][2]-48);
+    *p = tl->chessplate->find_piece(t,color,(int)s[0][1]-96,(int)s[0][2]-48);
+    
     act = 0;
   }
   else
   {
-    *p = tl->chessplate->find_piece(t,color, (int)s[0][2]-96, (int)s[0][3]-48);
     *c = Coord((int)s[0][2]-96,(int)s[0][3]-48);
-
+    *p = tl->chessplate->find_piece(t,color, (int)s[0][2]-96, (int)s[0][3]-48);
+    
     act = 1;
   }
 }

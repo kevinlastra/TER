@@ -12,7 +12,6 @@ TimeLine::TimeLine(ChessPlate* c)
 TimeLine::TimeLine(TimeLine* tl)
 {
   chessplate = new ChessPlate(tl->chessplate);
-  //instants = std::vector<Instant>(tl->get_instants());
   std::vector<Instant> ins = tl->get_instants();
   Coord c;
   Piece* p;

@@ -13,6 +13,9 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
   case pions:
     Pion(e);
     break;
+  default:
+    TD->TimeLine_at(e.MTL_index)->score_kill();
+    break;
   }
 }
 void Erreur_manager::Pion(Info_Erreur e)
@@ -97,23 +100,22 @@ void Erreur_manager::Pion(Info_Erreur e)
 	if(j == 0)
 	{
 	  cout << " index: "<<arbres[j]->index<<"    "<<piece<<"    "<<tl_proxs<<"    "<<piece<<endl;
-	  //tl_proxs->chessplate->Print();
 	}
 	for(int z = 1; z < arbres[j]->arbre_struct.size(); z++)
 	{
-	  //cout << "+++++++++++++++++++++++++++"<<endl;
 	  piece->add_movements(null_pieces[i],
 			       arbres[j]->arbre_struct[z].c);
-	  //cout << piece->toString(true)<<endl;
 	  
-	  tl_proxs->update_at(piece, none, Info(), null_pieces[i]);
-	  //cout <<"##############################"<<endl;
+	  tl_proxs->update_at(piece, Action::move, Info(), null_pieces[i]);
 	}
 	piece->set_Alive(false);
-	tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index), e.coord,
-				     e.action, e.info);
-	//cout <<"##############################"<<endl;
+	cout <<"tl size: "<< tl_proxs->get_size()<<endl;
+	cout << tl_proxs->get_instant_at(tl_proxs->get_size()-1)->p->toString()<<endl;
+	tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index),
+				     e.coord, e.action, e.info);
+	//cout <<"tl size: "<< tl_proxs->get_size()<<endl;
 	//tl_proxs->toString();
+	//exit(1);
       }
     }
     //END
