@@ -47,7 +47,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
   }
   
 
-  
+    //selection de la Timeline si pas d'erreur timeline 0 sinon le nb de timeline est > 1 donc on selectionne la première timeline corrigée
     if(td->size()>1){
       tm = td->TimeLine_at(1);
     }else{
