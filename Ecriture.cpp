@@ -47,9 +47,9 @@ void Ecriture::Write(TimeDivision* td, string* path)
   }
   
 
-  for(int n=0; n<td->size();n++){
+  
 
-    tm = td->TimeLine_at(n);
+    tm = td->TimeLine_at(0);
     for(int i=0;i<tm->get_size();i+=2){
       
       coupNoir= "";
@@ -187,7 +187,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
       tour= tour+2;
 
     }
-  }
+  
 
 
   //Fermeture du fichier
