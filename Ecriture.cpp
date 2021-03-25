@@ -47,12 +47,10 @@ void Ecriture::Write(TimeDivision* td, string* path)
   }
   
 
-    //selection de la Timeline si pas d'erreur timeline 0 sinon le nb de timeline est > 1 donc on selectionne la première timeline corrigée
-    if(td->size()>1){
-      tm = td->TimeLine_at(1);
-    }else{
-      tm = td->TimeLine_at(0);
-    }
+    //selection de la première timeline de la liste (ici la timeline 0, on pourra plus tard choisir de selectionner une timeline au choix ou bien selon le score)
+    
+    tm = td->TimeLine_at(0);
+    
     for(int i=0;i<tm->get_size();i+=2){
       
       coupNoir= "";
@@ -64,22 +62,17 @@ void Ecriture::Write(TimeDivision* td, string* path)
       
       coupBlanc+= type_to_pgn[typeBlanc]; //string dans lequel les coups de cette ligne seront ecrits
       
-      //if(pBlanche->info.ambiguous){
-      // coupBlanc += intToStr(tm->get_instant_at(pBlanche->p->time_to_previous_pos_time(i))->p->get_pos_at(tm->get_instant_at(pBlanche->p->time_to_previous_pos_time(i))->i).x());
-      //}
+      
       
       //Coup joueur blanc
       if(pBlanche->info.ambiguous)
       {
         int lastTime = pBlanche->p->time_to_previous_pos_time(i);
         if(lastTime>=0){
-          //cout << lastTime << endl;
+          
           pLast = tm->get_instant_at(lastTime);
           coupBlanc += intToStr(pLast->p->get_pos_at(pLast->i).x());
           
-          //cout  << coupBlanc<<" : " << lastTime << endl;
-          //cout << pBlanche->p->toString() << "       lastTime: "<< lastTime << "     y:"<< pLast->p->get_pos_at(pLast->i).y() <<endl;
-        
         }else{
           coupBlanc+= intToStr(pBlanche->p->get_pos_at(0).x());
         }
@@ -91,11 +84,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
           coupBlanc+="x";
 
         case Action::move:
-            //cout <<"x: "<< pBlanche->p->get_pos_at(pBlanche->i).x() << "y: "<< pBlanche->p->get_pos_at(pBlanche->i).y()  <<endl;
-            //a ajouter: gestion des coups ambigus (peut-être dans tm->get_instance_at(i))
-            //On écrit le coup sous la forme : type du coup + coordonnées d'arrivées en x (transformées en string) + coordonnées d'arrivées en y
-          coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());
-          
+          coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());  
           break;
 
           //en cas de roque:
@@ -147,7 +136,6 @@ void Ecriture::Write(TimeDivision* td, string* path)
             coupNoir+="x";
 
           case Action::move:
-            //a ajouter: gestion des coups ambigus (peut-être dans tm->get_instance_at(i))
             coupNoir+= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y());
             break;
 
@@ -158,10 +146,8 @@ void Ecriture::Write(TimeDivision* td, string* path)
             break;
 
           case Action::promotion:
-	    //cout << "promo" << endl;
             coupNoir= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y()) + type_to_pgn[typeNoir];
             i++;
-            //cout << "promo effectuee" << endl;
           break;
           
           default:
@@ -178,15 +164,11 @@ void Ecriture::Write(TimeDivision* td, string* path)
 
 
       //Ecriture sur dans le fichier passé en argument
-      //cout << (tour/2)+1 << ": Blanc: " << pBlanche->a << "Noir : "  << pNoire->a << endl;
-      //cout << "coordonnées blanche : x : " << pBlanche->p->get_pos_at(pBlanche->i).x() << " y : " << pBlanche->p->get_pos_at(pBlanche->i).y() << " affiché: " << intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) << endl;
       file << (tour/2)+1 << ". " << coupBlanc;
       if(coupNoir!=""){
         file << " " << coupNoir;
       }
       file << endl;
-      //cout << (tour/2)+1 <<": Pnoire -Est ambigue: "<< pNoire->info.ambiguous << "- Fait echec: " << pNoire->info.echec << endl;
-      //cout << (tour/2)+1 <<": Pblanche -Est ambigue: "<< pBlanche->info.ambiguous << "- Fait echec: " << pBlanche->info.echec << endl;
       tour= tour+2;
 
     }
