@@ -177,7 +177,7 @@ void Identify::interpreteur(string* piece)
     {
       if(act == 1)
       {
-	if(Tuer(p->get_last_time(),newcoord,info,type) == -1)
+	if(Tuer(tl->chessplate->index_of(p),newcoord,info,type) == -1)
 	{
 	  continue;
 	}
@@ -227,7 +227,7 @@ int Identify::Tuer(int p_index, Coord c, Info info, Type type)
   //Preparation pour traitement d'erreur
   if(piece_to_kill == NULL)
   {
-    cout << "Erreur: piece a tuée introuvable"<<endl;
+    cout << "Erreur: piece a tuée introuvable.  index: "<<p_index<<endl;
     Error.piece_index = p_index;
     
     Error.type = type;

@@ -50,19 +50,9 @@ void Ecriture::Write(TimeDivision* td, string* path)
     //selection de la première timeline de la liste (ici la timeline 0, on pourra plus tard choisir de selectionner une timeline au choix ou bien selon le score)
     
     tm = td->TimeLine_at(0);
-    cout << "TimeLine index: 0"<<endl;
     
     for(int i=0;i<tm->get_size();i+=2)
-    {
-      cout << "Index: "<<i<<endl;
-      cout << tm->get_instant_at(i)->p->toString(1)<<endl;
-
-      if(i+1 < tm->get_size())
-      {
-	cout << "Index: "<<i+1<<endl;
-	cout << tm->get_instant_at(i+1)->p->toString(1)<<endl;
-      }
-      
+    {      
       coupNoir= "";
       coupBlanc= "";
       pBlanche = tm->get_instant_at(i); //Piece blanche

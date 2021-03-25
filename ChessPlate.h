@@ -34,6 +34,8 @@ class ChessPlate
 
   //return
   Piece* piece_at_init(int,int);
+  //return l'index d'une piece donner
+  int index_of(Piece*);
   //check si entre 2 coordoner il n'existe pas de piece
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);

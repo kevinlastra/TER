@@ -46,78 +46,7 @@ void Erreur_manager::Pion(Info_Erreur e)
       tl->add_instant_on_top(p,e.coord,e.action, e.info);
     }
     //2)
-
-    
-    cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;
-    
-    tl = TD->TimeLine_at(proxs[1]);
-    int nb = 0;
-    int* null_pieces = tl->get_all_piece_NULL(nb);
-
-    proxs = TD->diviser(nb,proxs[1]);
-    
-    std::vector<Arbre*> arbres;
-    Piece* piece;
-    Piece* piece_to_kill;
-    TimeLine* tl_proxs;
-    int* proxs_arbres;
-    
-    for(int i = 0; i < nb; i++)
-    {
-      tl_proxs = TD->TimeLine_at(proxs[i]);
-      
-      //GEN ARBRE
-      for(int h = 0; h < tl->chessplate->size(); h++)
-      {
-	if(!tl_proxs->chessplate->at(h)->get_Alive())
-	  continue;
-	
-	ArbreMovement AM(tl_proxs->chessplate);
-	Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),h,e.coord,1);
-	if(a->arbre_struct.size() > 0)
-	  arbres.push_back(a);
-      }
-      if(arbres.size() == 0)
-      {
-	tl_proxs->score_kill();
-	continue;
-      }
-      proxs_arbres = TD->diviser(arbres.size(), proxs[i]);
-      //----
-      /*cout << "###########"<<endl;
-      TD->TimeLine_at(proxs_arbres[0])->toString();
-      cout << "###########"<<endl;
-      TD->TimeLine_at(proxs_arbres[1])->toString();
-      //---
-      exit(1);*/
-      //UTILISER ARBRE
-      for(int j = 0; j < arbres.size(); j++)
-      {
-	tl_proxs = TD->TimeLine_at(proxs_arbres[j]);
-	
-	piece = tl_proxs->chessplate->at(arbres[j]->index);
-
-	if(j == 0)
-	{
-	  cout << " index: "<<arbres[j]->index<<"    "<<piece<<"    "<<tl_proxs<<"    "<<piece<<endl;
-	}
-	for(int z = 1; z < arbres[j]->arbre_struct.size(); z++)
-	{
-	  piece->add_movements(null_pieces[i],
-			       arbres[j]->arbre_struct[z].c);
-	  
-	  tl_proxs->update_at(piece, Action::move, Info(), null_pieces[i]);
-	}
-	piece->set_Alive(false);
-	cout <<"tl size: "<< tl_proxs->get_size()<<endl;
-	cout << tl_proxs->get_instant_at(tl_proxs->get_size()-1)->p->toString()<<endl;
-	tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index),
-				     e.coord, e.action, e.info);
-	//cout <<"tl size: "<< tl_proxs->get_size()<<endl;
-	//tl_proxs->toString();
-	//exit(1);
-      }
-    }
+    Oublie_conscient(e,proxs);
     //END
   }
 }
@@ -171,4 +100,62 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
   }
 
   return p;
+}
+void Erreur_manager::Oublie_conscient(Info_Erreur e, int* proxs)
+{    
+  cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;
+    
+  TimeLine* tl = TD->TimeLine_at(proxs[1]);
+  int nb = 0;
+  int* null_pieces = tl->get_all_piece_NULL(nb);
+
+  proxs = TD->diviser(nb,proxs[1]);
+    
+  std::vector<Arbre*> arbres;
+  Piece* piece;
+  Piece* piece_to_kill;
+  TimeLine* tl_proxs;
+  int* proxs_arbres;
+    
+  for(int i = 0; i < nb; i++)
+  {
+    tl_proxs = TD->TimeLine_at(proxs[i]);
+    
+    //GEN ARBRE
+    for(int h = 0; h < tl->chessplate->size(); h++)
+    {
+      if(!tl_proxs->chessplate->at(h)->get_Alive())
+	continue;
+      
+      ArbreMovement AM(tl_proxs->chessplate);
+      Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),h,e.coord,1);
+      if(a->arbre_struct.size() > 0)
+	arbres.push_back(a);
+    }
+    if(arbres.size() == 0)
+    {
+      tl_proxs->score_kill();
+      continue;
+    }
+    proxs_arbres = TD->diviser(arbres.size(), proxs[i]);
+    for(int j = 0; j < arbres.size(); j++)
+    {
+      tl_proxs = TD->TimeLine_at(proxs_arbres[j]);
+      
+      piece = tl_proxs->chessplate->at(arbres[j]->index);
+      
+      for(int z = 1; z < arbres[j]->arbre_struct.size(); z++)
+      {
+	piece->add_movements(null_pieces[i],
+			     arbres[j]->arbre_struct[z].c);
+	
+	tl_proxs->update_at(piece, Action::move, Info(), null_pieces[i]);
+      }
+      piece->set_Alive(false);
+
+      cout << "index: "<<e.piece_index<<endl;
+      tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index),
+				   e.coord, e.action, e.info);
+    }
+  }
 }

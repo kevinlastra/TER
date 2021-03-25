@@ -224,6 +224,15 @@ Piece* ChessPlate::piece_at_init(int x, int y)
   }
   return NULL;
 }
+int ChessPlate::index_of(Piece* p)
+{
+  for(int i = 0; i < p_size; i++)
+  {
+    if(p == pieces[i])
+      return i;
+  }
+  return -1;
+}
 bool ChessPlate::check_Bishop_path(Coord start, Coord end)
 {
   int x = (start.x() > end.x())?-1:1;

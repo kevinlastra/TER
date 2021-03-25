@@ -25,13 +25,13 @@ int main(int argc, char** argv)
 
   TimeDivision* tl = iden.get_TimeLines();
   //tl->toString();
-  
-  for(int i = 0; i < 1/*tl->size()*/; i++)
+  /*
+  for(int i = 0; i < tl->size(); i++)
   {
     cout << endl<<endl<<"########  "<<tl->TimeLine_at(i)->get_score()<<"     "<<(tl->TimeLine_at(i))<<endl;
     tl->TimeLine_at(i)->toString();
   }
-  
+  */
   // Instant* ins = tl->get_instant_at(tl->get_size()-1);
 
 
@@ -46,9 +46,7 @@ int main(int argc, char** argv)
   string write_path= "output/result.pgn";
   Ecriture ecriture;
   ecriture.Write(tl,&write_path);
-  /*
   Comparer comparer;
   comparer.Compare(argv[1],"output/result.pgn");
-  */
   return 1;
 }

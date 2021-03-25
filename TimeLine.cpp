@@ -56,7 +56,7 @@ void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
   Instant ins(p->time_to_pos_index(instants.size()), p, a, inf);
   
   ins.i = p->time_to_pos_index(instants.size());
-  
+
   p->add_movements(instants.size(), c);  
 
   instants.push_back(ins);
