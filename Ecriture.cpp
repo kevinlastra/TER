@@ -48,8 +48,11 @@ void Ecriture::Write(TimeDivision* td, string* path)
   
 
   
-
-    tm = td->TimeLine_at(0);
+    if(td->size()>1){
+      tm = td->TimeLine_at(1);
+    }else{
+      tm = td->TimeLine_at(0);
+    }
     for(int i=0;i<tm->get_size();i+=2){
       
       coupNoir= "";
