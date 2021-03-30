@@ -137,6 +137,24 @@ void Identify::interpreteur(string* piece)
 	  
 	  newcoord = Coord((int)piece[0][0]-96,(int)piece[0][1]-48);
 	  act = 0;
+
+    //tests
+    /*
+    Error.type = NONE;
+    Error.coord = newcoord;
+    Error.action = none;
+    Error.color = temps_index%2==0;
+    Error.info = info;
+        
+    Error.MTL_index = MTL_index;
+    Error.Temps_actuel = temps_index;
+    if(EM->Verif_echec(Error)){
+      cout<<"Echec correct"<<endl;
+    }else{
+      cout<<"erreur d'echec"<<endl;
+    }
+    */
+
 	  
 	}//promotion
 	else if(piece[0][2] >= 65 && piece[0][2] <= 90)
@@ -169,7 +187,23 @@ void Identify::interpreteur(string* piece)
 						(int)piece[0][3]-48,(int)piece[0][0]-96,true);
 	newcoord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
 	act = 1;
-      }
+  //tests
+  /*
+  Error.type = NONE;
+  Error.coord = newcoord;
+  Error.action = none;
+  Error.color = temps_index%2==0;
+  Error.info = info;
+      
+  Error.MTL_index = MTL_index;
+  Error.Temps_actuel = temps_index;
+  if(EM->Erreur_eat(Error)){
+    cout<<"eat correct"<<endl;
+  }else{
+    cout<<"erreur de eat"<<endl;
+  }
+  */
+  }
     }
 
     

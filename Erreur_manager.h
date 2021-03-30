@@ -47,6 +47,8 @@ class Erreur_manager
   //traitement de "l'erreur" manger en passant
   Piece* Manger_en_passant(Info_Erreur);
   void Oublie_conscient(Info_Erreur,int*);
+  bool Verif_eat(Info_Erreur);
+  //bool Verif_echec(Info_Erreur);
 };
 
 #endif

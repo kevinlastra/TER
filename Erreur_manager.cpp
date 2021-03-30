@@ -159,3 +159,77 @@ void Erreur_manager::Oublie_conscient(Info_Erreur e, int* proxs)
     }
   }
 }
+
+//vérifie le coup doit engendrer un eat
+bool Erreur_manager::Verif_eat(Info_Erreur e)
+{    
+  Piece* p = NULL;
+  int pPosX; 
+  int pPosY;
+  //position de la pièce jouée
+  
+
+  TimeLine* tl = TD->TimeLine_at(e.MTL_index);
+
+  //pour chaque coup joué avant ce tour
+  for(int i=0;i<=e.Temps_actuel;i++)
+  { 
+    p = tl->get_instant_at(e.MTL_index)->p;
+    //on récupère le dernier moment ou la pièce a été jouée
+    int lastTime = p->time_to_previous_pos_time(i);
+
+    //si c'est le dernier coup ou la pièce a été jouée 
+    if(lastTime==i);
+    {
+      //si la pièce est encore en vie et que c'est une pièce adverse
+      if(p->get_Alive()||p->get_Color()!=e.color)
+      {
+        pPosX = p->get_pos_at(lastTime).x();
+        pPosY = p->get_pos_at(lastTime).y();
+        //Si le coordonnée du coup sont égales a celle de pièce
+        if(e.coord.x()==pPosX||e.coord.y()==pPosY)
+        {
+          return true; //la pièce doit être mangée
+        }
+      }
+    }
+  }
+  //aucune pièce n'a pu être mangée par ce coup
+  return false;
+}
+
+/*
+bool Erreur_manager::Verif_echec(Info_Erreur e)
+{    
+  int roiX;
+  int roiY;
+  bool roiRecu = false;
+  int ex;
+  int ey;
+  TimeLine* tl = TD->TimeLine_at(e.MTL_index);
+  //1: on recupère le roi adverse si il n'a pas été joué on utilise les coord de debut
+  for(int i=0;i<=e.Temps_actuel;i++)
+  { 
+    while(!roiRecu)
+    {
+      p = tl->get_instant_at(e.MTL_index)->p;
+      int lastTime = p->time_to_previous_pos_time(i);
+      if(lastTime==i)
+      {
+        if(p->get_Type()==Type::roi||p->get_Color()!=e.color)
+        {
+          roiX = p->get_pos_at(lastTime).x();
+          roiY = p->get_pos_at(lastTime).y();
+          
+          roiRecu=true;
+        }
+      }
+    }
+  }
+  //2: on teste pour chaque prochain coup de la pièce si il peut toucher les coordonnées du roi
+  
+  return false;
+}
+*/
+
+
