@@ -17,12 +17,10 @@ int* TimeDivision::diviser(int nb, int index)
   indexs[0] = index;
   if(nb >= 2)
   {
-    cout << "start copying at index "<<indexs[0]<<"       "<<TimeLines[indexs[0]]<<endl;
     for(int i = 1; i < nb; i++)
     {
       indexs[i] = TimeLines.size();
       TimeLines.push_back(new TimeLine(TimeLines[index]));
-      cout << "new branch generated at "<<indexs[i]<<"       "<<TimeLines[indexs[i]]<<endl;
     }
   }
   return indexs;
@@ -47,7 +45,6 @@ void TimeDivision::transform_indexs_before_kill(int* indexs, int size, int i)
 }
 void TimeDivision::remove_tl_at(int i)
 {
-  cout << "remove branch at "<<i<<endl;
   TimeLines.erase(TimeLines.begin()+i);
 }
 void TimeDivision::clear_score()

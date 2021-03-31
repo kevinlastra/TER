@@ -6,15 +6,14 @@ Erreur_manager::Erreur_manager(TimeDivision* td){TD=td;}
 
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-  TD->TimeLine_at(e.MTL_index)->pp_score();
-  cout << "score["<<e.MTL_index<<"]: "<<TD->TimeLine_at(e.MTL_index)->get_score()<<endl;
-  switch(e.type)
+  TD->TimeLine_at(e.tl_index)->pp_score();
+  switch(e.info_piece->type)
   {
   case pions:
     Pion(e);
     break;
   default:
-    TD->TimeLine_at(e.MTL_index)->score_kill();
+    TD->TimeLine_at(e.tl_index)->score_kill();
     break;
   }
 }
@@ -24,9 +23,9 @@ void Erreur_manager::Pion(Info_Erreur e)
   TimeLine* tl;
   int* proxs;
   
-  if(e.action == eat)
+  if(e.info_piece->action == eat)
   {
-    proxs = TD->diviser(2,e.MTL_index);
+    proxs = TD->diviser(2,e.tl_index);
     
     //je suppose 2 posibiliter:
     //      1) manger en passant.
@@ -38,12 +37,12 @@ void Erreur_manager::Pion(Info_Erreur e)
     tl = TD->TimeLine_at(proxs[0]);
     if(p == NULL)
     {
-      cout << "Erreur: impossible de manger en passant, la piece a tuer ne remplit pas tout les condition"<<endl;
+      //cout << "Erreur: impossible de manger en passant, la piece a tuer ne remplit pas tout les condition"<<endl;
       tl->score_kill();
     }
     else
     {
-      tl->add_instant_on_top(p,e.coord,e.action, e.info);
+      tl->add_instant_on_top(p,e.info_piece->coord,e.info_piece->action, e.info_piece->info);
     }
     //2)
     Oublie_conscient(e,proxs);
@@ -55,21 +54,21 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
   Coord c;
   int index;
   Piece* p = NULL;  
-  TimeLine* tl = TD->TimeLine_at(e.MTL_index);
-  if(e.color)
+  TimeLine* tl = TD->TimeLine_at(e.tl_index);
+  if(e.info_piece->color)
   {
-    p = tl->chessplate->piece_at_coord(e.coord.x(), e.coord.y()-1);
+    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x(), e.info_piece->coord.y()-1);
     
     if(p == NULL)
     {
-      cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
+      //cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
       //p = Traitement_erreur();
     }
     else
     {
       c = p->get_pos_at(p->get_TM_size()-2);
       index = p->get_movements_at(p->get_TM_size()-1);
-      if(index != e.Temps_actuel-1 || c.x() != p->get_last_pos().x() ||
+      if(index != e.tl_instance_index-1 || c.x() != p->get_last_pos().x() ||
 	 c.y() != p->get_last_pos().y() + 2)
       {
 	return NULL;
@@ -78,11 +77,11 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
   }
   else
   {
-    p = tl->chessplate->piece_at_coord(e.coord.x(), e.coord.y()+1);
+    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x(), e.info_piece->coord.y()+1);
     
     if(p == NULL)
     {
-      cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
+      //cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
       
       //p = Traitement_erreur();
     }
@@ -91,7 +90,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
       c = p->get_pos_at(p->get_TM_size()-2);
       index = p->get_movements_at(p->get_TM_size()-1);
       
-      if(index != e.Temps_actuel-1 || c.x() != p->get_last_pos().x() ||
+      if(index != e.tl_instance_index-1 || c.x() != p->get_last_pos().x() ||
 	 c.y() != p->get_last_pos().y()-2)
       {
 	return NULL;
@@ -103,7 +102,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
 }
 void Erreur_manager::Oublie_conscient(Info_Erreur e, int* proxs)
 {    
-  cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;
+  //cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;
     
   TimeLine* tl = TD->TimeLine_at(proxs[1]);
   int nb = 0;
@@ -128,7 +127,7 @@ void Erreur_manager::Oublie_conscient(Info_Erreur e, int* proxs)
 	continue;
       
       ArbreMovement AM(tl_proxs->chessplate);
-      Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),h,e.coord,1);
+      Arbre* a = AM.Generait_arbre(tl_proxs->chessplate->at(h),h,e.info_piece->coord,1);
       if(a->arbre_struct.size() > 0)
 	arbres.push_back(a);
     }
@@ -153,9 +152,9 @@ void Erreur_manager::Oublie_conscient(Info_Erreur e, int* proxs)
       }
       piece->set_Alive(false);
 
-      cout << "index: "<<e.piece_index<<endl;
       tl_proxs->add_instant_on_top(tl_proxs->chessplate->at(e.piece_index),
-				   e.coord, e.action, e.info);
+				   e.info_piece->coord, e.info_piece->action,
+				   e.info_piece->info);
     }
   }
 }
@@ -169,25 +168,25 @@ bool Erreur_manager::Verif_eat(Info_Erreur e)
   //position de la pièce jouée
   
 
-  TimeLine* tl = TD->TimeLine_at(e.MTL_index);
+  TimeLine* tl = TD->TimeLine_at(e.tl_index);
 
   //pour chaque coup joué avant ce tour
-  for(int i=0;i<=e.Temps_actuel;i++)
+  for(int i=0;i<=e.tl_instance_index;i++)
   { 
-    p = tl->get_instant_at(e.MTL_index)->p;
+    p = tl->get_instant_at(e.tl_index)->p;
     //on récupère le dernier moment ou la pièce a été jouée
     int lastTime = p->time_to_previous_pos_time(i);
 
     //si c'est le dernier coup ou la pièce a été jouée 
-    if(lastTime==i);
+    if(lastTime==i)
     {
       //si la pièce est encore en vie et que c'est une pièce adverse
-      if(p->get_Alive()||p->get_Color()!=e.color)
+      if(p->get_Alive()||p->get_Color()!=e.info_piece->color)
       {
         pPosX = p->get_pos_at(lastTime).x();
         pPosY = p->get_pos_at(lastTime).y();
         //Si le coordonnée du coup sont égales a celle de pièce
-        if(e.coord.x()==pPosX||e.coord.y()==pPosY)
+        if(e.info_piece->coord.x()==pPosX||e.info_piece->coord.y()==pPosY)
         {
           return true; //la pièce doit être mangée
         }

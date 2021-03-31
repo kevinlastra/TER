@@ -28,7 +28,7 @@ class Identify
   TimeLine* tl;
 
   //index du timeline traiter
-  int MTL_index;
+  int TL_index;
   //temps de lecture pour construir le tl
   int temps_index;
  public:
@@ -44,8 +44,10 @@ class Identify
   void interpreteur(string*);
 
   //factorize des operation
-  void Factorize(Piece**,Coord*,bool,Type,string*,int&);
-  int Tuer(int,Coord,Info,Type);
+  void Factorize(Piece**,Info_piece*,string*);
+  
+  //index de la piece assasin, coord de la piece a tuer
+  int Tuer(int,Info_piece*);
 
 };
 
