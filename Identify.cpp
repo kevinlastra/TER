@@ -201,6 +201,7 @@ void Identify::interpreteur(string* piece)
 						(int)piece[0][3]-48,
 						(int)piece[0][0]-96,
 						true);
+	info_piece->x = (int)piece[0][0]-96;
 	info_piece->coord = Coord((int)piece[0][2]-96,
 				 (int)piece[0][3]-48);
 	info_piece->action = int_to_act(1);
@@ -240,8 +241,10 @@ void Identify::interpreteur(string* piece)
     }
     else if(p == NULL)
     {
-      cout <<endl<<"Erreur: "<< piece[0] << endl<<endl;
+      cout <<endl<<"Erreur: "<< piece[0] << endl;
 
+      Error.piece_index = -1;
+      
       Error.info_piece = info_piece;
       
       Error.tl_index = TL_index;

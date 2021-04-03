@@ -15,7 +15,7 @@ struct Anode
 {
   Coord c;            //coordoner du node
   int prev;           //node parent
-  int nb_succ;        //nombre de succeseur
+  std::vector<int> child_indexs;
 
   Anode(Coord, int);  //constructeur
 };
@@ -25,6 +25,9 @@ struct Arbre
   int index;                         //reference de la piece dans le tl
 
   Arbre(Anode,int);                  //constructeur
+
+  int nb_chemin();
+  std::vector<Anode> chemin_at(int);
 };
 
 

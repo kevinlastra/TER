@@ -78,7 +78,7 @@ ChessPlate::ChessPlate()
   pieces[46] = new Piece();
   pieces[47] = new Piece();
 }
-ChessPlate::ChessPlate(ChessPlate* CP)
+ChessPlate::ChessPlate(const ChessPlate* CP)
 {
   pieces = new Piece*[48];
   
@@ -302,7 +302,7 @@ void ChessPlate::Print()
 {
   for(int i = 0; i < p_size; i++)
   {
-    //cout<<(pieces[i])->toString(true)<<endl;
-    cout<<pieces[i]<<endl;;
+    cout<<(pieces[i])->toString(true)<<endl;
+    //cout<<pieces[i]<<endl;
   }
 }

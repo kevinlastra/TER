@@ -13,8 +13,6 @@
 //              -- none: cas de base
 enum Action {move, eat, change, promotion, none};
 
-//structure qui permet la lecture correct de TimeLine
-//pour un instant j, i est l'index de la coordoner dans p
 struct Info
 {
   bool echec;//la piece a l'instant i est on echec avec le roi
@@ -23,6 +21,8 @@ struct Info
   Info();
   Info(bool, bool);
 };
+//structure qui permet la lecture correct de TimeLine
+//pour un instant j, i est l'index de la coordoner dans p
 struct Instant
 {
   int i;

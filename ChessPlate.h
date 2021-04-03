@@ -3,15 +3,15 @@
 
 #include "Piece.h"
 #include "Coord.h"
-
 class ChessPlate
 {
  private:
   Piece** pieces;
   int p_size = 32;
+
  public:
   ChessPlate();
-  ChessPlate(ChessPlate*);
+  ChessPlate(const ChessPlate*);
   ~ChessPlate();
 
   Piece* at(int);

@@ -16,6 +16,9 @@ struct Info_piece
   Action action;
   bool color;
   Info info;
+
+  //cas ou type = pion
+  int x;//example dxe3  var x = d
 };
 //struct en construction, tous les info ne sont pas utiliser
 struct Info_Erreur
@@ -51,7 +54,14 @@ class Erreur_manager
 
   //traitement de "l'erreur" manger en passant
   Piece* Manger_en_passant(Info_Erreur);
-  void Oublie_conscient(Info_Erreur,int*);
+
+  //3 cas possible
+  //A) Je n'exist pas.  B) La piece que je veut tuer n'existe pas.
+  //C) Il existe une piece dans mon chemin qui ne devrait pas exister
+  //Info Erreur, index timeline, profondeur dans l'arbre
+  void Oublie_conscient_cas_A(Info_Erreur,int,int);
+  void Oublie_conscient_cas_B(Info_Erreur,int);
+  std::vector<Arbre*> Gen_Arbre(TimeLine*,Coord,int);
   bool Verif_eat(Info_Erreur);
   //bool Verif_echec(Info_Erreur);
 };

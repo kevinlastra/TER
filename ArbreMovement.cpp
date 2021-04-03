@@ -12,25 +12,42 @@ Arbre* ArbreMovement::Generait_arbre(Piece* p,int i, Coord c, int prof)
   {
     AddProfondeur(p->get_Type());
   }
-  clean_nodes(c);
+  if(arbre->arbre_struct.size() > 0)
+  {
+    clean_nodes(c);
+  }
   return arbre;
 }
 void ArbreMovement::clean_nodes(Coord c)
 {
   bool find;
+  int prev;
   do
   {
     find = false;
     for(int i = arbre->arbre_struct.size()-1; i >=  0; i--)
     {
-      if(arbre->arbre_struct[i].nb_succ == 0 && (arbre->arbre_struct[i].c.x() != c.x() || arbre->arbre_struct[i].c.y() != c.y()))
+      if(arbre->arbre_struct[i].child_indexs.size() == 0 &&
+	 (arbre->arbre_struct[i].c.x() != c.x() || arbre->arbre_struct[i].c.y() != c.y()))
       {
 	find = true;
-
-	if(arbre->arbre_struct[i].prev != -1)
-	  arbre->arbre_struct[arbre->arbre_struct[i].prev].nb_succ--;
-	
+	prev = arbre->arbre_struct[i].prev;
+	if(prev != -1)
+	  for(int j = 0; j < arbre->arbre_struct[prev].child_indexs.size(); j++)
+	  {
+	    if(arbre->arbre_struct[prev].child_indexs[j] == i)
+	    {
+	      arbre->arbre_struct[prev].child_indexs.erase(arbre->arbre_struct[prev].child_indexs.begin()+j);
+	    }
+	  }
 	arbre->arbre_struct.erase(arbre->arbre_struct.begin()+i);
+	for(int j = i; j < arbre->arbre_struct.size(); j++)
+	{
+	  if(arbre->arbre_struct[j].prev >= i)
+	  {
+	    arbre->arbre_struct[j].prev--;
+	  }
+	}
 	break;
       }
     }
@@ -42,7 +59,7 @@ void ArbreMovement::AddProfondeur(Type t)
   int size = arbre->arbre_struct.size();
   for(int i = 0; i < size; i++)
   {
-    if(arbre->arbre_struct[i].nb_succ == 0)
+    if(arbre->arbre_struct[i].child_indexs.size() == 0)
     {
       switch(t)
       {
@@ -77,21 +94,25 @@ void ArbreMovement::Pawn(int i)
 	    arbre->arbre_struct[i].c.y()+1*u);
     
     Anode node(c,i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
+    
     arbre->arbre_struct.push_back(node);
 
     if(arbre->arbre_struct[i].c.x()+1 < 9)
     {
       Coord c1(arbre->arbre_struct[i].c.x()+1, arbre->arbre_struct[i].c.y()+1*u);
       Anode node1(c1,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node1);
     }
     if(arbre->arbre_struct[i].c.x()-1 > 0)
     {
       Coord c2(arbre->arbre_struct[i].c.x()-1, arbre->arbre_struct[i].c.y()+1*u);
       Anode node2(c2,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node2);
     }
   }
@@ -99,7 +120,8 @@ void ArbreMovement::Pawn(int i)
   {
     Coord c3(arbre->arbre_struct[i].c.x(), arbre->arbre_struct[i].c.y()+2*u);
     Anode node3(c3,i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node3);
   }
 }
@@ -111,7 +133,8 @@ void ArbreMovement::Rok(int i)
     {
       Coord c(j, arbre->arbre_struct[i].c.y());
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
 
@@ -119,7 +142,8 @@ void ArbreMovement::Rok(int i)
     {
       Coord c(arbre->arbre_struct[i].c.x(), j);
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
   }
@@ -130,56 +154,64 @@ void ArbreMovement::Knigth(int i)
   {
     Coord c(arbre->arbre_struct[i].c.x()-1, arbre->arbre_struct[i].c.y()+2);
     Anode node(c, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node);
   }
   if(arbre->arbre_struct[i].c.x()+1 <= 8 && arbre->arbre_struct[i].c.y()+2 <= 8)
   {
     Coord c1(arbre->arbre_struct[i].c.x()+1, arbre->arbre_struct[i].c.y()+2);
     Anode node1(c1, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node1);
   }
   if(arbre->arbre_struct[i].c.x()-1 > 0 && arbre->arbre_struct[i].c.y()-2 > 0)
   {
     Coord c2(arbre->arbre_struct[i].c.x()-1, arbre->arbre_struct[i].c.y()-2);
     Anode node2(c2, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node2);
   }
   if(arbre->arbre_struct[i].c.x()+1 <= 8 && arbre->arbre_struct[i].c.y()-2 > 0)
   {
     Coord c3(arbre->arbre_struct[i].c.x()+1, arbre->arbre_struct[i].c.y()-2);
     Anode node3(c3, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node3);
   }
   if(arbre->arbre_struct[i].c.x()+2 <= 8 && arbre->arbre_struct[i].c.y()+1 <= 8)
   {
     Coord c4(arbre->arbre_struct[i].c.x()+2, arbre->arbre_struct[i].c.y()+1);
     Anode node4(c4, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node4);
   }
   if(arbre->arbre_struct[i].c.x()+2 <= 8 && arbre->arbre_struct[i].c.y()-1 > 0)
   {
     Coord c5(arbre->arbre_struct[i].c.x()+2, arbre->arbre_struct[i].c.y()-1);
     Anode node5(c5, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node5);
   }
   if(arbre->arbre_struct[i].c.x()-2 > 0 && arbre->arbre_struct[i].c.y()+1 <= 8)
   {
     Coord c6(arbre->arbre_struct[i].c.x()-2, arbre->arbre_struct[i].c.y()+1);
     Anode node6(c6, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node6);
   }
   if(arbre->arbre_struct[i].c.x()-2 > 0 && arbre->arbre_struct[i].c.y()-1 > 0)
   {
     Coord c7(arbre->arbre_struct[i].c.x()-2, arbre->arbre_struct[i].c.y()-1);
     Anode node7(c7, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node7);
   }
 }
@@ -192,7 +224,8 @@ void ArbreMovement::Bishop(int i)
     {
       Coord c(arbre->arbre_struct[i].c.x()+j, arbre->arbre_struct[i].c.y()+j);
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
 
@@ -200,7 +233,8 @@ void ArbreMovement::Bishop(int i)
     {
       Coord c(arbre->arbre_struct[i].c.x()-j, arbre->arbre_struct[i].c.y()+j);
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
 
@@ -208,7 +242,8 @@ void ArbreMovement::Bishop(int i)
     {
       Coord c(arbre->arbre_struct[i].c.x()-j, arbre->arbre_struct[i].c.y()-j);
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
 
@@ -216,7 +251,8 @@ void ArbreMovement::Bishop(int i)
     {
       Coord c(arbre->arbre_struct[i].c.x()+j, arbre->arbre_struct[i].c.y()-j);
       Anode node(c, i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node);
     }
   }
@@ -228,7 +264,8 @@ void ArbreMovement::King(int i)
     Coord c(arbre->arbre_struct[i].c.x()+1,
 	    arbre->arbre_struct[i].c.y());
     Anode node(c, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node);
   }
   if(arbre->arbre_struct[i].c.x()-1 > 0)
@@ -236,7 +273,8 @@ void ArbreMovement::King(int i)
     Coord c1(arbre->arbre_struct[i].c.x()-1,
 	     arbre->arbre_struct[i].c.y());
     Anode node1(c1, i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node1);
   }
   
@@ -246,7 +284,8 @@ void ArbreMovement::King(int i)
 	    arbre->arbre_struct[i].c.y()+1);
     
     Anode node2(c2,i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node2);
 
     if(arbre->arbre_struct[i].c.x()+1 < 9)
@@ -254,7 +293,8 @@ void ArbreMovement::King(int i)
       Coord c3(arbre->arbre_struct[i].c.x()+1,
 	       arbre->arbre_struct[i].c.y()+1);
       Anode node3(c3,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node3);
     }
     if(arbre->arbre_struct[i].c.x()-1 > 0)
@@ -262,7 +302,8 @@ void ArbreMovement::King(int i)
       Coord c4(arbre->arbre_struct[i].c.x()-1,
 	       arbre->arbre_struct[i].c.y()+1);
       Anode node4(c4,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node4);
     }
   }
@@ -272,7 +313,8 @@ void ArbreMovement::King(int i)
 	     arbre->arbre_struct[i].c.y()-1);
     
     Anode node5(c5,i);
-    arbre->arbre_struct[i].nb_succ++;
+    arbre->arbre_struct[i].child_indexs
+      .push_back(arbre->arbre_struct.size());
     arbre->arbre_struct.push_back(node5);
 
     if(arbre->arbre_struct[i].c.x()+1 < 9)
@@ -280,7 +322,8 @@ void ArbreMovement::King(int i)
       Coord c6(arbre->arbre_struct[i].c.x()+1,
 	       arbre->arbre_struct[i].c.y()-1);
       Anode node6(c6,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node6);
     }
     if(arbre->arbre_struct[i].c.x()-1 > 0)
@@ -288,7 +331,8 @@ void ArbreMovement::King(int i)
       Coord c7(arbre->arbre_struct[i].c.x()-1,
 	       arbre->arbre_struct[i].c.y()-1);
       Anode node7(c7,i);
-      arbre->arbre_struct[i].nb_succ++;
+      arbre->arbre_struct[i].child_indexs
+	.push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node7);
     }
   }
@@ -303,10 +347,50 @@ Anode::Anode(Coord c_, int prev_)
 {
   c = c_;
   prev = prev_;
-  nb_succ=0;
 }
 Arbre::Arbre(Anode a, int i)
 {
   arbre_struct.push_back(a);
   index = i;
+}
+
+int Arbre::nb_chemin()
+{
+  int cpt = 0;
+  for(int i = 0; i < arbre_struct.size(); i++)
+  {
+    if(arbre_struct[i].child_indexs.size() == 0)
+    {
+      cpt++;
+    }
+  }
+  
+  return cpt;
+}
+std::vector<Anode> Arbre::chemin_at(int i)
+{
+  int index;
+  int cpt = 0;
+  for(int j = 0; j < arbre_struct.size(); j++)
+  {
+    if(arbre_struct[j].child_indexs.size() == 0)
+    {
+      if(cpt == i)
+      {
+	index = j;
+	break;
+      }      
+      cpt++;
+    }
+  }
+
+  std::vector<Anode> list;
+  Anode node = arbre_struct[index];
+  while(node.prev != -1)
+  {
+    list.insert(list.begin(),node);
+    node = arbre_struct[node.prev];
+  }
+  
+  return list;
 }

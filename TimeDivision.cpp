@@ -19,6 +19,7 @@ int* TimeDivision::diviser(int nb, int index)
   {
     for(int i = 1; i < nb; i++)
     {
+      cout << "CREATING "<<TimeLines.size()<<endl;
       indexs[i] = TimeLines.size();
       TimeLines.push_back(new TimeLine(TimeLines[index]));
     }
@@ -45,6 +46,7 @@ void TimeDivision::transform_indexs_before_kill(int* indexs, int size, int i)
 }
 void TimeDivision::remove_tl_at(int i)
 {
+  cout << "DELETING "<<i<<endl;
   TimeLines.erase(TimeLines.begin()+i);
 }
 void TimeDivision::clear_score()
