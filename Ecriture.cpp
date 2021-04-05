@@ -104,19 +104,21 @@ void Ecriture::Write(TimeDivision* td, string* path)
             break;
 
           case Action::none:
-            coupBlanc += "_";
+            coupBlanc = "_";
             break;
 
 
           default:
-            cout << "coordonnée x:" << pBlanche->p->get_pos_at(pBlanche->i).x() << " coordonnée y:" << pBlanche->p->get_pos_at(pBlanche->i).y() << " type blanc:" << type_to_pgn[typeBlanc] << endl;
-            cout << "a:" << pBlanche->a << endl;
-            cerr << "impossible de passer son tour aux echecs" << endl;
+            coupBlanc = "_";
+            
 
         }
         if(pBlanche->info.echec){
           coupBlanc += "+";
         }
+        
+        
+
         
         //coup joueur noir
         if(i+1!=tm->get_size()){
@@ -157,14 +159,11 @@ void Ecriture::Write(TimeDivision* td, string* path)
             break;
 
             case Action::none:
-              coupNoir += "_";
+              coupNoir = "_";
             break;
             
             default:
-              cout << "coordonnée x:" << pNoire->p->get_pos_at(pNoire->i).x() << " coordonnée y:" << pNoire->p->get_pos_at(pNoire->i).y() << " type noir:" << type_to_pgn[tm->get_instant_at(i+2)->p->get_Type()] << endl;
-              cout << "a:" << pNoire->a << endl;
-              cerr << "impossible de passer son tour aux echecs" << endl;
-
+              coupNoir = "_";
           }
           if(pNoire->info.echec){
             coupNoir+= "+";
