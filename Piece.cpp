@@ -242,6 +242,9 @@ bool Piece::Test_mov_Tour(Coord* c, int i)
 }
 bool Piece::Test_mov_Fous(Coord* c, int i)
 {
+  if(pos[i].x() == c->x() || pos[i].y() == c->y())
+    return false;
+  
   int x = pos[i].x()-c->x();
   if(x < 0)
     x*=-1;

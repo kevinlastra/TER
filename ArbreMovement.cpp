@@ -8,13 +8,24 @@ Arbre* ArbreMovement::Generait_arbre(Piece* p,int i, Coord c, int prof)
   piece = p;
   Anode node(p->get_last_pos(),-1);
   arbre = new Arbre(node, i);
-  for(int i = 0; i < prof; i++)
+  for(int j = 0; j < prof; j++)
   {
     AddProfondeur(p->get_Type());
   }
   if(arbre->arbre_struct.size() > 0)
   {
     clean_nodes(c);
+  }
+  return arbre;
+}
+Arbre* ArbreMovement::Generait_arbre(int i, int prof)
+{
+  piece = chessplate->at(i);
+  Anode node(piece->get_last_pos(),-1);
+  arbre = new Arbre(node, i);
+  for(int j = 0; j < prof; j++)
+  {
+    AddProfondeur(piece->get_Type());
   }
   return arbre;
 }
@@ -88,7 +99,9 @@ void ArbreMovement::AddProfondeur(Type t)
 void ArbreMovement::Pawn(int i)
 {
   int u = piece->get_Color()?1:-1;
-  if(arbre->arbre_struct[i].c.y()+1*u < 9 && arbre->arbre_struct[i].c.y()+1*u > 0)
+  
+  if(arbre->arbre_struct[i].c.y()+1*u < 9
+     && arbre->arbre_struct[i].c.y()+1*u > 0)
   {
     Coord c(arbre->arbre_struct[i].c.x(),
 	    arbre->arbre_struct[i].c.y()+1*u);
@@ -101,7 +114,8 @@ void ArbreMovement::Pawn(int i)
 
     if(arbre->arbre_struct[i].c.x()+1 < 9)
     {
-      Coord c1(arbre->arbre_struct[i].c.x()+1, arbre->arbre_struct[i].c.y()+1*u);
+      Coord c1(arbre->arbre_struct[i].c.x()+1,
+	       arbre->arbre_struct[i].c.y()+1*u);
       Anode node1(c1,i);
       arbre->arbre_struct[i].child_indexs
       .push_back(arbre->arbre_struct.size());
@@ -109,16 +123,20 @@ void ArbreMovement::Pawn(int i)
     }
     if(arbre->arbre_struct[i].c.x()-1 > 0)
     {
-      Coord c2(arbre->arbre_struct[i].c.x()-1, arbre->arbre_struct[i].c.y()+1*u);
+      Coord c2(arbre->arbre_struct[i].c.x()-1,
+	       arbre->arbre_struct[i].c.y()+1*u);
       Anode node2(c2,i);
       arbre->arbre_struct[i].child_indexs
       .push_back(arbre->arbre_struct.size());
       arbre->arbre_struct.push_back(node2);
     }
   }
-  if(arbre->arbre_struct[i].c.y()+2*u < 9 && arbre->arbre_struct[i].c.y()+2*u > 0 && piece->get_TM_size() == 1)
+  if(arbre->arbre_struct[i].c.y()+2*u < 9
+     && arbre->arbre_struct[i].c.y()+2*u > 0
+     && piece->get_TM_size() == 1)
   {
-    Coord c3(arbre->arbre_struct[i].c.x(), arbre->arbre_struct[i].c.y()+2*u);
+    Coord c3(arbre->arbre_struct[i].c.x(),
+	     arbre->arbre_struct[i].c.y()+2*u);
     Anode node3(c3,i);
     arbre->arbre_struct[i].child_indexs
       .push_back(arbre->arbre_struct.size());

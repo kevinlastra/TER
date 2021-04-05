@@ -24,6 +24,7 @@ int main(int argc, char** argv)
   Identify iden(s,size);
 
   TimeDivision* tl = iden.get_TimeLines();
+  cout <<"  NB TIMELINES "<< tl->size()<<endl;
   //tl->toString();
   /*
   for(int i = 0; i < tl->size(); i++)

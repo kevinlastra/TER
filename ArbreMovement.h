@@ -22,7 +22,7 @@ struct Anode
 struct Arbre
 {
   std::vector<Anode> arbre_struct;   //arbre de coordoner
-  int index;                         //reference de la piece dans le tl
+  int index;                         //reference de la piece dans chessplate
 
   Arbre(Anode,int);                  //constructeur
 
@@ -42,8 +42,8 @@ class ArbreMovement
   ArbreMovement(ChessPlate*);
   ~ArbreMovement();
 
-  Arbre* Generait_arbre(Piece*,int, Coord, int);
-
+  Arbre* Generait_arbre(Piece*, int, Coord, int);
+  Arbre* Generait_arbre(int, int);
   //ajout un niveau de profondeur
   void AddProfondeur(Type);//tipe de la piece a bouger
 

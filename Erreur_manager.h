@@ -52,6 +52,7 @@ class Erreur_manager
   //detection d'un erreur de notation apres un oublie volontaire ("_")
   void Pion(Info_Erreur);
 
+  void Piece_rampant(Info_Erreur);
   //traitement de "l'erreur" manger en passant
   Piece* Manger_en_passant(Info_Erreur);
 
@@ -59,9 +60,14 @@ class Erreur_manager
   //A) Je n'exist pas.  B) La piece que je veut tuer n'existe pas.
   //C) Il existe une piece dans mon chemin qui ne devrait pas exister
   //Info Erreur, index timeline, profondeur dans l'arbre
-  void Oublie_conscient_cas_A(Info_Erreur,int,int);
+  void Oublie_conscient_cas_A(Info_Erreur,int);
   void Oublie_conscient_cas_B(Info_Erreur,int);
+  void Oublie_conscient_cas_C(Info_Erreur,int);
   std::vector<Arbre*> Gen_Arbre(TimeLine*,Coord,int);
+  std::vector<Arbre*> Gen_Arbre(TimeLine*,std::vector<int>,int);
+  std::vector<int> get_piece_in_path(ChessPlate*,Coord,Coord,Type);
+  //coordoner, type et couleur
+  bool check_ambiguiter(TimeLine*, Coord, Type, bool);
   bool Verif_eat(Info_Erreur);
   //bool Verif_echec(Info_Erreur);
 };
