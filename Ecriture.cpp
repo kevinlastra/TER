@@ -167,11 +167,11 @@ void Ecriture::Write(TimeDivision* td, string* path)
             if(pNoire->info.echec){
               coupNoir+= "+";
             }
+            }else{
+              coupNoir = "_";
+            }
           }
           
-        }else{
-          coupNoir = "_";
-        }
 
 
         //Ecriture sur dans le fichier passé en argument
