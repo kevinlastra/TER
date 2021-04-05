@@ -61,112 +61,112 @@ void Ecriture::Write(TimeDivision* td, string* path)
         
         Type typeBlanc= pBlanche->p->get_Type();
 
-        
-        coupBlanc+= type_to_pgn[typeBlanc]; //string dans lequel les coups de cette ligne seront ecrits
-        
-        
-        
-        //Coup joueur blanc
-        if(pBlanche->info.ambiguous)
-        {
-          int lastTime = pBlanche->p->time_to_previous_pos_time(i);
-          if(lastTime>=0){
-            
-            pLast = tm->get_instant_at(lastTime);
-            coupBlanc += intToStr(pLast->p->get_pos_at(pLast->i).x());
-            
-          }else{
-            coupBlanc+= intToStr(pBlanche->p->get_pos_at(0).x());
-          }
-        }
-        
-        switch(pBlanche->a){
-            
-          case Action::eat:
-            coupBlanc+="x";
-
-          case Action::move:
-            coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());  
-            break;
-
-            //en cas de roque:
-          case Action::change:
-              //Si petit roque (donc le roi a été deplacé en g et la tour en f)
-            coupBlanc=get_str_castling(pBlanche->p->get_pos_at(pBlanche->i).x());
-            i++;
-            break;
-
-          case Action::promotion:
-            //cout<< "promo" << endl;
-            coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y()) + type_to_pgn[tm->get_instant_at(i+1)->p->get_Type()];
-            i++;
-            //cout << "promo effectuee" << endl;
-            break;
-
-          case Action::none:
-            coupBlanc = "_";
-            break;
-
-
-          default:
-            coupBlanc = "_";
-            
-
-        }
-        if(pBlanche->info.echec){
-          coupBlanc += "+";
-        }
-        
-        
-
-        
-        //coup joueur noir
-        if(i+1!=tm->get_size()){
-          pNoire = tm->get_instant_at(i+1); //Piece noire
-          Type typeNoir= pNoire->p->get_Type();
-          coupNoir= type_to_pgn[typeNoir];
-
-          if(pNoire->info.ambiguous)
+        if(typeBlanc!= Type::NONE){
+          coupBlanc+= type_to_pgn[typeBlanc]; //string dans lequel les coups de cette ligne seront ecrits
+          
+          
+          
+          //Coup joueur blanc
+          if(pBlanche->info.ambiguous)
           {
-            
-            int lastTime = pNoire->p->time_to_previous_pos_time(i+1);
-            if(lastTime >= 0){
+            int lastTime = pBlanche->p->time_to_previous_pos_time(i);
+            if(lastTime>=0){
+              
               pLast = tm->get_instant_at(lastTime);
-              coupNoir += intToStr(pLast->p->get_pos_at(pLast->i).x());
+              coupBlanc += intToStr(pLast->p->get_pos_at(pLast->i).x());
+              
             }else{
-              coupNoir+= intToStr(pNoire->p->get_pos_at(0).x());
+              coupBlanc+= intToStr(pBlanche->p->get_pos_at(0).x());
             }
           }
-
-          switch(pNoire->a){
-
+          
+          switch(pBlanche->a){
+              
             case Action::eat:
-              coupNoir+="x";
+              coupBlanc+="x";
 
             case Action::move:
-              coupNoir+= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y());
+              coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y());  
               break;
 
-            //en cas de roque:
+              //en cas de roque:
             case Action::change:
-              coupNoir=get_str_castling(pNoire->p->get_pos_at(pNoire->i).x());
+                //Si petit roque (donc le roi a été deplacé en g et la tour en f)
+              coupBlanc=get_str_castling(pBlanche->p->get_pos_at(pBlanche->i).x());
               i++;
               break;
 
             case Action::promotion:
-              coupNoir= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y()) + type_to_pgn[typeNoir];
+              //cout<< "promo" << endl;
+              coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x()) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y()) + type_to_pgn[tm->get_instant_at(i+1)->p->get_Type()];
               i++;
-            break;
+              //cout << "promo effectuee" << endl;
+              break;
 
-            case Action::none:
-              coupNoir = "_";
-            break;
-            
+
             default:
-              coupNoir = "_";
+              cout << "coordonnée x:" << pBlanche->p->get_pos_at(pBlanche->i).x() << " coordonnée y:" << pBlanche->p->get_pos_at(pBlanche->i).y() << " type blanc:" << type_to_pgn[typeBlanc] << endl;
+              cout << "a:" << pBlanche->a << endl;
+              cerr << "impossible de passer son tour aux echecs" << endl;
+
           }
-          if(pNoire->info.echec){
-            coupNoir+= "+";
+          if(pBlanche->info.echec){
+            coupBlanc += "+";
+          }
+        }else{
+          coupBlanc = "_";
+        }
+        
+        //coup joueur noir
+        
+        if(i+1!=tm->get_size()){
+          pNoire = tm->get_instant_at(i+1); //Piece noire
+          Type typeNoir= pNoire->p->get_Type();
+
+          if(typeNoir!=Type::NONE){
+            coupNoir= type_to_pgn[typeNoir];
+
+            if(pNoire->info.ambiguous)
+            {
+              
+              int lastTime = pNoire->p->time_to_previous_pos_time(i+1);
+              if(lastTime >= 0){
+                pLast = tm->get_instant_at(lastTime);
+                coupNoir += intToStr(pLast->p->get_pos_at(pLast->i).x());
+              }else{
+                coupNoir+= intToStr(pNoire->p->get_pos_at(0).x());
+              }
+            }
+
+            switch(pNoire->a){
+
+              case Action::eat:
+                coupNoir+="x";
+
+              case Action::move:
+                coupNoir+= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y());
+                break;
+
+              //en cas de roque:
+              case Action::change:
+                coupNoir=get_str_castling(pNoire->p->get_pos_at(pNoire->i).x());
+                i++;
+                break;
+
+              case Action::promotion:
+                coupNoir= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y()) + type_to_pgn[typeNoir];
+                i++;
+              break;
+              
+              default:
+                cout << "coordonnée x:" << pNoire->p->get_pos_at(pNoire->i).x() << " coordonnée y:" << pNoire->p->get_pos_at(pNoire->i).y() << " type noir:" << type_to_pgn[tm->get_instant_at(i+2)->p->get_Type()] << endl;
+                cout << "a:" << pNoire->a << endl;
+                cerr << "impossible de passer son tour aux echecs" << endl;
+
+            }
+            if(pNoire->info.echec){
+              coupNoir+= "+";
+            }
           }
           
         }
