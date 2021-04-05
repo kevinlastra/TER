@@ -169,6 +169,8 @@ void Ecriture::Write(TimeDivision* td, string* path)
             }
           }
           
+        }else{
+          coupNoir = "_";
         }
 
 
