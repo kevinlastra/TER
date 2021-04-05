@@ -103,6 +103,10 @@ void Ecriture::Write(TimeDivision* td, string* path)
             //cout << "promo effectuee" << endl;
             break;
 
+          case Action::none:
+            coupBlanc += "_";
+            break;
+
 
           default:
             cout << "coordonnée x:" << pBlanche->p->get_pos_at(pBlanche->i).x() << " coordonnée y:" << pBlanche->p->get_pos_at(pBlanche->i).y() << " type blanc:" << type_to_pgn[typeBlanc] << endl;
@@ -150,6 +154,10 @@ void Ecriture::Write(TimeDivision* td, string* path)
             case Action::promotion:
               coupNoir= intToStr(pNoire->p->get_pos_at(pNoire->i).x()) + std::to_string(pNoire->p->get_pos_at(pNoire->i).y()) + type_to_pgn[typeNoir];
               i++;
+            break;
+
+            case Action::none:
+              coupNoir += "_";
             break;
             
             default:
