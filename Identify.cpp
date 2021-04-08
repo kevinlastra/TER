@@ -16,7 +16,7 @@ Identify::Identify(string* l, int size)
   
   for(int i = 0; i < size; i++)
   {
-    cout << "  "<<liste[i]<<endl;
+    cout <<liste[i]<<endl;
     temps_index = i;
     interpreteur(&liste[i]);
   }
@@ -128,7 +128,6 @@ void Identify::interpreteur(string* piece)
     }
     else if(piece[0] == "_")
     {
-      cout << "piece type = '_'   at "<<temps_index<<endl;
       p = new Piece(NONE,info_piece->color,-1,-1);
       info_piece->coord = Coord(-1,-1);
     }
@@ -290,7 +289,6 @@ int Identify::Tuer(int p_index, Info_piece* ip)
   }
   else  //Preparation pour traitement d'erreur
   {
-    cout << "Erreur: piece a tuée introuvable. "<<endl;
     Error.piece_index = p_index;
     
     Error.info_piece = ip;
@@ -312,8 +310,8 @@ TimeDivision* Identify::get_TimeLines()
 
 void Identify::Traitement_erreur()
 {
-  /*
-  cout <<"Indentify -TE-   Type: "<<type_to_type_string(Error.info_piece->type)
+  
+  /*cout <<"Indentify -TE-   Type: "<<type_to_type_string(Error.info_piece->type)
        <<"    x: "
        <<(char)(96+Error.info_piece->coord.x())<<"    y: "
        <<Error.info_piece->coord.y()<<endl;

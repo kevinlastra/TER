@@ -106,7 +106,6 @@ void Piece::pp_TM_sup(int i)
   {
     if(Temps_movements[j] == i)
     {
-      cout << "tm j: "<<Temps_movements[j]+1<<endl;
       Temps_movements[j]++;
       break;
     }

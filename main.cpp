@@ -24,26 +24,13 @@ int main(int argc, char** argv)
   Identify iden(s,size);
 
   TimeDivision* tl = iden.get_TimeLines();
-  //tl->clear_tl();
-  /*for(int i = 0; i < 1; i++)
-  {
-    tl->TimeLine_at(i)->toString();
-    }*/
+  tl->clear_tl();
   cout <<"  NB TIMELINES "<< tl->size()<<endl;
-  // Instant* ins = tl->get_instant_at(tl->get_size()-1);
-
-
-
-  /*int j = 0;
-  cout << "i: "<<ins->i<<"   Action: "<<ins->a
-       <<"  Piece("<<ins->p->get_pos_at(ins->i).x()
-       <<","<<ins->p->get_pos_at(ins->i).y()<<"):"
-       <<ins->p->get_Type()<<endl;;
   
-  */
   string write_path= "output/result.pgn";
   Ecriture ecriture;
   ecriture.Write(tl,&write_path);
+  
   //Comparer comparer;
   //comparer.Compare(argv[1],"output/result.pgn");
   return 1;

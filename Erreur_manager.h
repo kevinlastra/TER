@@ -66,7 +66,8 @@ class Erreur_manager
   void Oublie_conscient_cas_B(Info_Erreur,int);
   void Oublie_conscient_cas_C(Info_Erreur,int);
   //time line index, color
-  void Oublie_conscient_cas_castling(int);
+  void Oublie_conscient_cas_castling(Info_Erreur,bool,int);
+  void castling_extension(TimeLine*,Info_Erreur,Coord);
   //tl,coord, prof, color
   std::vector<Arbre*> Gen_Arbre(TimeLine*,Coord,int);
   std::vector<Arbre*> Gen_Arbre(TimeLine*,std::vector<int>,int);

@@ -5,11 +5,18 @@
 Erreur_manager::Erreur_manager(TimeDivision* td){TD=td;}
 
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
-{
+{/*
+  cout <<"ERREUR - TE -   T: "
+       <<type_to_type_string(e.info_piece->type)
+       <<"   x: "<<e.info_piece->coord.x()
+       <<"   y: "<<e.info_piece->coord.y()
+       <<"      tl: "<<e.tl_index
+       <<"      i: "<<e.tl_instance_index
+       <<endl;*/
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   tl->pp_score();
   int* proxs_castling = TD->diviser(2, e.tl_index);
-  Oublie_conscient_cas_castling(proxs_castling[0]);
+  Oublie_conscient_cas_castling(e,true,proxs_castling[0]);
   e.tl_index = proxs_castling[1];
   
   switch(e.info_piece->type)
@@ -135,9 +142,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
     
     if(p == NULL)
     {
-      //cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
-      
-      //p = Traitement_erreur();
+      tl->score_kill();
     }
     else
     {
@@ -223,7 +228,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	  if(piece_to_kill != NULL)
 	    piece_to_kill->set_Alive(false);
 	  else
-	    cout <<"ERREUR - Erreur manager - piece_to_kill not found"<<endl;
+	    tl->score_kill();
 	}
 	e.info_piece->info.ambiguous = check_ambiguiter(tl_prox, chemin[1].c, piece->get_Type(), piece->get_Color(), null_pieces[i]);
 	tl_prox->add_instant_on_top(tl_prox->chessplate->at(arbres[j]->index),
@@ -383,7 +388,7 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
     }
   }
 }
-void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
+void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int tl_index)
 {
   bool color = true;
   int nb = 0;
@@ -391,7 +396,7 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
   int* null_indexs = tl->get_all_piece_NULL(nb);
   
   int* indexs = TD->diviser(nb,tl_index);
-  int* KQ_indexs;
+  int* K_indexs;
   Piece* a;
   Piece* b;
 
@@ -404,10 +409,10 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
       //WHITE
       //tour 16(1,1) 17(8,1)
       //roi 28(5,1)
-      //dame 30(4,1)
       
-      KQ_indexs = TD->diviser(2,indexs[i]);
-      tl = TD->TimeLine_at(KQ_indexs[0]);
+      K_indexs = TD->diviser(2,indexs[i]);
+      
+      tl = TD->TimeLine_at(K_indexs[0]);
       a = tl->chessplate->at(17);
       b = tl->chessplate->at(28);
       
@@ -416,37 +421,43 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
 	 && a->get_TM_size() == 1
 	 && b->get_TM_size() == 1)
       {
-	cout << " index: "<<null_indexs[i]<<endl;
-	tl->toString();
-	tl->update_at(a, Action::change, Info(), null_indexs[i]);
-	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
-	a->add_movements(null_indexs[i], Coord(7,1));
-	b->add_movements(null_indexs[i]+1, Coord(6,1));	
-	tl->toString();
-	exit(1);
+	tl->update_at(b, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
+	b->add_movements(null_indexs[i], Coord(7,1));
+	a->add_movements(null_indexs[i]+1, Coord(6,1));
+
+	if(repair)
+	  castling_extension(tl,e,Coord(6,1));
       }
       else
       {
 	tl->score_kill();
+	continue;
       }
       
-      tl = TD->TimeLine_at(KQ_indexs[1]);
+      tl = TD->TimeLine_at(K_indexs[1]);
       a = tl->chessplate->at(16);
-      b = tl->chessplate->at(30);
+      b = tl->chessplate->at(28);
       
       if(tl->chessplate->piece_at_coord(2,1) == NULL
 	 && tl->chessplate->piece_at_coord(3,1) == NULL
+	 && tl->chessplate->piece_at_coord(4,1) == NULL
 	 && a->get_TM_size() == 1
 	 && b->get_TM_size() == 1)
       {
-	tl->update_at(a, Action::change, Info(), null_indexs[i]);
-	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
-	a->add_movements(null_indexs[i], Coord(3,1));
-	b->add_movements(null_indexs[i]+1, Coord(2,1));
+	tl->update_at(b, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
+	b->add_movements(null_indexs[i], Coord(3,1));
+	a->add_movements(null_indexs[i]+1, Coord(4,1));
+
+	
+	if(repair)
+	  castling_extension(tl,e,Coord(4,1));
       }
       else
       {
 	tl->score_kill();
+	continue;
       }
     }
     else
@@ -454,9 +465,8 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
       //BLACK
       //tour 18(1,8) 19(8,8)
       //roi 29(5,8)
-      //dame 31(4,8)
-      KQ_indexs = TD->diviser(2,indexs[i]);
-      tl = TD->TimeLine_at(KQ_indexs[0]);
+      K_indexs = TD->diviser(2,indexs[i]);
+      tl = TD->TimeLine_at(K_indexs[0]);
       a = tl->chessplate->at(19);
       b = tl->chessplate->at(29);
       
@@ -465,33 +475,90 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
 	 && a->get_TM_size() == 1
 	 && b->get_TM_size() == 1)
       {
-	tl->update_at(a, Action::change, Info(), null_indexs[i]);
-	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
-	a->add_movements(null_indexs[i], Coord(7,8));
-	b->add_movements(null_indexs[i]+1, Coord(6,8));
+	tl->update_at(b, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
+	b->add_movements(null_indexs[i], Coord(7,8));
+	a->add_movements(null_indexs[i]+1, Coord(6,8));
+
+	if(repair)
+	  castling_extension(tl,e,Coord(6,8));
       }
       else
       {
 	tl->score_kill();
+	continue;
       }
       
-      tl = TD->TimeLine_at(KQ_indexs[1]);
+      tl = TD->TimeLine_at(K_indexs[1]);
       a = tl->chessplate->at(18);
-      b = tl->chessplate->at(31);
+      b = tl->chessplate->at(29);
       if(tl->chessplate->piece_at_coord(2,8) == NULL
 	 && tl->chessplate->piece_at_coord(3,8) == NULL
+	 && tl->chessplate->piece_at_coord(4,8) == NULL
 	 && a->get_TM_size() == 1
 	 && b->get_TM_size() == 1)
       {
-	tl->update_at(a, Action::change, Info(), null_indexs[i]);
-	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]);
-	a->add_movements(null_indexs[i], Coord(3,8));
-	b->add_movements(null_indexs[i]+1, Coord(2,8));
+	tl->update_at(b, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]);
+	b->add_movements(null_indexs[i], Coord(3,8));
+	a->add_movements(null_indexs[i]+1, Coord(4,8));
+
+	if(repair)
+	  castling_extension(tl,e,Coord(4,8));
       }
       else
       {
 	tl->score_kill();
+	continue;
       }
+    }
+  }
+}
+void Erreur_manager::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
+{
+  Piece* piece;
+  if(e.piece_index == -1)
+  {
+    piece = tl->chessplate->piece_at_coord(c.x(), c.y());
+    if(e.info_piece->type == tours
+       && !tl->chessplate->check_Rok_path(c, e.info_piece->coord))
+      {
+	tl->score_kill();
+	return;
+      }
+    tl->add_instant_on_top(piece,
+			   e.info_piece->coord,
+			   e.info_piece->action,
+			   e.info_piece->info);
+  }
+  else
+  {
+    if(e.info_piece->type == tours
+       && !tl->chessplate->check_Rok_path(c,
+					  e.info_piece->coord))
+    {
+      tl->score_kill();
+      return;
+    }
+    piece = tl->chessplate->at(e.piece_index);
+    piece->add_movements(e.tl_instance_index, e.info_piece->coord);
+    tl->add_instant_on_top(piece,
+			   e.info_piece->coord,
+			   e.info_piece->action,
+			   e.info_piece->info); 
+  }
+  if(e.info_piece->action == eat)
+  {
+    piece = tl->chessplate->piece_at_coord(e.info_piece->coord.x(),
+				       e.info_piece->coord.y());
+    if(piece == NULL)
+    {
+      tl->score_kill();
+      return;
+    }
+    else
+    {
+      piece->set_Alive(false);
     }
   }
 }
@@ -586,7 +653,8 @@ bool Erreur_manager::check_ambiguiter(TimeLine* tl, Coord coord, Type type, bool
 }
 void Erreur_manager::fill_none_piece()
 {
-  for(int h = 0; h < TD->size(); h++)
+  int size = TD->size();
+  for(int h = 0; h < size; h++)
   {
     TimeLine* tl = TD->TimeLine_at(h);
     if(tl->get_score() > MAX_SCORE)
@@ -617,12 +685,11 @@ void Erreur_manager::fill_none_piece()
     for(int i = 0; i < nb_null_piece; i++)
     {
       alive_tl_indexs = TD->diviser(arbres.size()+1, null_tl_indexs[i]);
-      Oublie_conscient_cas_castling(alive_tl_indexs[arbres.size()]);
+      Oublie_conscient_cas_castling(Info_Erreur(),false, alive_tl_indexs[arbres.size()]);
       for(int j = 0; j < arbres.size(); j++)
       {
 	arbre_struct_indexs = TD->diviser(arbres[j]->arbre_struct.size(),
 					  alive_tl_indexs[j]);
-	
 	for(int k = 0; k < arbres[j]->arbre_struct.size(); k++)
 	{	
 	  tl = TD->TimeLine_at(arbre_struct_indexs[k]);

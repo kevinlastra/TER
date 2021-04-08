@@ -36,7 +36,10 @@ TimeLine::TimeLine(TimeLine* tl)
   }
   score = tl->get_score();
 }
-TimeLine::~TimeLine(){}
+TimeLine::~TimeLine()
+{
+  delete chessplate;
+}
 Info::Info(){echec=false;ambiguous=false;}
 Info::Info(bool e, bool a)
 {
@@ -70,7 +73,6 @@ void TimeLine::add_instant_at(Piece* p, Action a, Info inf, int j)
 
   for(int i = j+1; i < instants.size(); i++)
   {
-    cout << "   i: "<<i<<endl;
     instants[i].p->pp_TM_sup(i-1);
   }
 }
@@ -144,19 +146,13 @@ void TimeLine::Check_timeline()
   int index = 0;
   int* tm;
   bool ERROR = false;
-  //chessplate->Print();
-  //toString();
+  
   for(int i = 0; i < instants.size(); i++)
-  {/*
-    cout <<" i: "<<i<<"    "
-	 <<(type_to_type_string(instants[i].p->get_Type()))
-	 <<"   act: "<<instants[i].a
-	 <<endl;*/
+  {
     //FROM
     tm = instants[i].p->get_TM();
     for(int j = 0; j < instants[i].p->get_TM_size(); j++)
     {
-      //cout << "    tm["<<j<<"]: "<<tm[j]<<endl;
       if(tm[j] == i)
       {
 	index = j;
@@ -215,7 +211,6 @@ void TimeLine::Check_timeline()
 	    k_piece = chess->piece_at_coord(c2.x(),c2.y()+1);
 	  if(k_piece == NULL)
 	  {
-	    cout << "ERROR 2"<<endl;
 	    score_kill();
 	    break;
 	  }
