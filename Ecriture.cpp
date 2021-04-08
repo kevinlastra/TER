@@ -92,6 +92,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
               //en cas de roque:
             case Action::change:
                 //Si petit roque (donc le roi a été deplacé en g et la tour en f)
+              cout<<"piece blanche rok x: "<< intToStr(pBlanche->p->get_pos_at(pBlanche->i).x())<<endl;
               coupBlanc=get_str_castling(pBlanche->p->get_pos_at(pBlanche->i).x());
               i++;
               break;
@@ -149,6 +150,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
 
               //en cas de roque:
               case Action::change:
+              cout<<"piece noire rok x: "<< intToStr(pNoire->p->get_pos_at(pNoire->i).x())<<endl;
                 coupNoir=get_str_castling(pNoire->p->get_pos_at(pNoire->i).x());
                 i++;
                 break;

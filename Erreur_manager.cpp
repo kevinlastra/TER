@@ -420,8 +420,8 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
 	tl->toString();
 	tl->update_at(a, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
-	a->add_movements(null_indexs[i], Coord(6,1));
-	b->add_movements(null_indexs[i]+1, Coord(7,1));	
+	a->add_movements(null_indexs[i], Coord(7,1));
+	b->add_movements(null_indexs[i]+1, Coord(6,1));	
 	tl->toString();
 	exit(1);
       }
@@ -467,8 +467,8 @@ void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
       {
 	tl->update_at(a, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
-	a->add_movements(null_indexs[i], Coord(6,8));
-	b->add_movements(null_indexs[i]+1, Coord(7,8));
+	a->add_movements(null_indexs[i], Coord(7,8));
+	b->add_movements(null_indexs[i]+1, Coord(6,8));
       }
       else
       {
