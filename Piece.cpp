@@ -88,7 +88,30 @@ Coord Piece::get_last_pos()
 {
   return pos[TM_size-1];
 }
-
+int Piece::get_index_pos_inf(int i)
+{
+  
+  for(int j = 0; j < TM_size; j++)
+  {
+    if(Temps_movements[j] > i)
+    {
+      return j-1;
+    }
+  }
+  return TM_size-1;
+}
+void Piece::pp_TM_sup(int i)
+{
+  for(int j = 0; j < get_TM_size(); j++)
+  {
+    if(Temps_movements[j] == i)
+    {
+      cout << "tm j: "<<Temps_movements[j]+1<<endl;
+      Temps_movements[j]++;
+      break;
+    }
+  }
+}
 int Piece::get_last_time()
 {
   return Temps_movements[TM_size-1];

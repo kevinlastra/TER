@@ -19,7 +19,6 @@ int* TimeDivision::diviser(int nb, int index)
   {
     for(int i = 1; i < nb; i++)
     {
-      //cout << "CREATING "<<TimeLines.size()<<endl;
       indexs[i] = TimeLines.size();
       TimeLines.push_back(new TimeLine(TimeLines[index]));
     }
@@ -60,7 +59,18 @@ void TimeDivision::clear_score()
       i++;
   }
 }
-
+void TimeDivision::clear_tl()
+{
+  int i = 0;
+  while(i < TimeLines.size())
+  {
+    TimeLine_at(i)->Check_timeline();
+    if(TimeLines[i]->get_score() > MAX_SCORE)
+      remove_tl_at(i);
+    else
+      i++;
+  }
+}
 //PRINTS
 void TimeDivision::Print_adresse()
 {

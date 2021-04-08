@@ -57,7 +57,11 @@ class Piece
   Coord get_pos_at(int);
   //renvoi position en haut de la liste
   Coord get_last_pos();
-
+  //
+  int get_index_pos_inf(int);
+  //
+  void pp_TM_sup(int);
+  //
   int get_last_time();
   //renvoi le temps ou la il a
   //bouger dans la position i de la liste

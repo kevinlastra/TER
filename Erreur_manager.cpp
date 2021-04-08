@@ -6,8 +6,12 @@ Erreur_manager::Erreur_manager(TimeDivision* td){TD=td;}
 
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-  TD->TimeLine_at(e.tl_index)->pp_score();
-  //cout <<"tl index: "<<e.tl_index<<"    score: "<< TD->TimeLine_at(e.tl_index)->get_score()<<endl;
+  TimeLine* tl = TD->TimeLine_at(e.tl_index);
+  tl->pp_score();
+  int* proxs_castling = TD->diviser(2, e.tl_index);
+  Oublie_conscient_cas_castling(proxs_castling[0]);
+  e.tl_index = proxs_castling[1];
+  
   switch(e.info_piece->type)
   {
   case pions:
@@ -18,7 +22,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
   case tours:
     Piece_rampant(e);
     break;
-  default:
+  default:    
     if(e.piece_index != -1 && e.info_piece->action == eat)
     {
       Oublie_conscient_cas_B(e,e.tl_index);
@@ -29,6 +33,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
     }
     else
     {
+      cout << "ERREUR AUCUN CAS DETECTER - Erreur manager"<<endl;
       TD->TimeLine_at(e.tl_index)->score_kill();
     }
     break;
@@ -65,8 +70,11 @@ void Erreur_manager::Pion(Info_Erreur e)
     //END
   }
 
-  //je n'exist pas
-  Oublie_conscient_cas_A(e,e.tl_index);
+  if(e.piece_index == -1)
+  {
+    //je n'exist pas
+    Oublie_conscient_cas_A(e,e.tl_index);
+  }
 }
 void Erreur_manager::Piece_rampant(Info_Erreur e)
 {
@@ -83,9 +91,16 @@ void Erreur_manager::Piece_rampant(Info_Erreur e)
     //2)
     Oublie_conscient_cas_A(e,proxs[1]);
   }
-  else if(e.info_piece->action == eat)
+  else 
   {
-    Oublie_conscient_cas_B(e, e.tl_index);
+    if(e.info_piece->action == eat)
+    {
+      Oublie_conscient_cas_B(e, e.tl_index);
+    }
+    else
+    {
+      Oublie_conscient_cas_C(e, e.tl_index);
+    }
   }
 }
 Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
@@ -188,7 +203,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	  continue;
 	piece = tl_prox->chessplate->at(arbres[j]->index);
 	//-------------
-	info.ambiguous = check_ambiguiter(tl_prox, chemin[0].c, piece->get_Type(), piece->get_Color());
+	info.ambiguous = check_ambiguiter(tl_prox, chemin[0].c, piece->get_Type(), piece->get_Color(), null_pieces[i]);
 	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[0].c.x(), chemin[0].c.y());
 	if(piece_to_kill != NULL)
 	{
@@ -201,6 +216,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	piece->add_movements(null_pieces[i], chemin[0].c);
 	//-------------------
 	//-------------------
+
 	if(e.info_piece->action == eat)
 	{
 	  piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[1].c.x(), chemin[1].c.y());
@@ -209,7 +225,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	  else
 	    cout <<"ERREUR - Erreur manager - piece_to_kill not found"<<endl;
 	}
-	e.info_piece->info.ambiguous = check_ambiguiter(tl_prox, chemin[1].c, piece->get_Type(), piece->get_Color());
+	e.info_piece->info.ambiguous = check_ambiguiter(tl_prox, chemin[1].c, piece->get_Type(), piece->get_Color(), null_pieces[i]);
 	tl_prox->add_instant_on_top(tl_prox->chessplate->at(arbres[j]->index),
 				    e.info_piece->coord, e.info_piece->action,
 				    e.info_piece->info);
@@ -219,8 +235,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
   }
 }
 void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl)
-{    
-  //cout << "Erreur coord x: "<<e.coord.x()<<"  y: "<<e.coord.y()<<endl;    
+{
   TimeLine* tl = TD->TimeLine_at(index_tl);
   int nb = 0;
   
@@ -251,7 +266,7 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl)
       tl_prox = TD->TimeLine_at(proxs_arbres[j]);
 
       piece = tl_prox->chessplate->at(arbres[j]->index);
-      info.ambiguous = check_ambiguiter(tl_prox, arbres[j]->arbre_struct[1].c, piece->get_Type(), piece->get_Color());
+      info.ambiguous = check_ambiguiter(tl_prox, arbres[j]->arbre_struct[1].c, piece->get_Type(), piece->get_Color(), null_pieces[i]);
       //-----
       
       piece_to_kill = tl_prox->chessplate->piece_at_coord(arbres[j]->arbre_struct[1].c.x(), arbres[j]->arbre_struct[1].c.y());
@@ -277,11 +292,12 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl)
       tl_prox->add_instant_on_top(tl_prox->chessplate->at(e.piece_index),
 				  e.info_piece->coord, e.info_piece->action,
 				  e.info_piece->info);
+      //tl_prox->toString();
     }
   }
 }
 void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
-{
+{  
   int nb = 0;
   
   TimeLine* tl = TD->TimeLine_at(index_tl);
@@ -341,7 +357,7 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
 	  
 	  piece = tl->chessplate->at(arbres[j]->index);
 	  info.ambiguous = check_ambiguiter(tl, arbres[j]->arbre_struct[h].c,
-					    piece->get_Type(), piece->get_Color());
+					    piece->get_Type(), piece->get_Color(), null_pieces[k]);
 	  //------------
 	  piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[h].c.x(),
 							 arbres[j]->arbre_struct[h].c.y());
@@ -367,13 +383,127 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
     }
   }
 }
+void Erreur_manager::Oublie_conscient_cas_castling(int tl_index)
+{
+  bool color = true;
+  int nb = 0;
+  TimeLine* tl = TD->TimeLine_at(tl_index);
+  int* null_indexs = tl->get_all_piece_NULL(nb);
+  
+  int* indexs = TD->diviser(nb,tl_index);
+  int* KQ_indexs;
+  Piece* a;
+  Piece* b;
+
+  for(int i = 0; i < nb; i++)
+  {
+    if(null_indexs[i]-1 > 0)
+      color = !tl->get_instant_at(null_indexs[i]-1)->p->get_Color();
+    if(color)
+    {
+      //WHITE
+      //tour 16(1,1) 17(8,1)
+      //roi 28(5,1)
+      //dame 30(4,1)
+      
+      KQ_indexs = TD->diviser(2,indexs[i]);
+      tl = TD->TimeLine_at(KQ_indexs[0]);
+      a = tl->chessplate->at(17);
+      b = tl->chessplate->at(28);
+      
+      if(tl->chessplate->piece_at_coord(7,1) == NULL
+	 && tl->chessplate->piece_at_coord(6,1) == NULL
+	 && a->get_TM_size() == 1
+	 && b->get_TM_size() == 1)
+      {
+	cout << " index: "<<null_indexs[i]<<endl;
+	tl->toString();
+	tl->update_at(a, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
+	a->add_movements(null_indexs[i], Coord(6,1));
+	b->add_movements(null_indexs[i]+1, Coord(7,1));	
+	tl->toString();
+	exit(1);
+      }
+      else
+      {
+	tl->score_kill();
+      }
+      
+      tl = TD->TimeLine_at(KQ_indexs[1]);
+      a = tl->chessplate->at(16);
+      b = tl->chessplate->at(30);
+      
+      if(tl->chessplate->piece_at_coord(2,1) == NULL
+	 && tl->chessplate->piece_at_coord(3,1) == NULL
+	 && a->get_TM_size() == 1
+	 && b->get_TM_size() == 1)
+      {
+	tl->update_at(a, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
+	a->add_movements(null_indexs[i], Coord(3,1));
+	b->add_movements(null_indexs[i]+1, Coord(2,1));
+      }
+      else
+      {
+	tl->score_kill();
+      }
+    }
+    else
+    {
+      //BLACK
+      //tour 18(1,8) 19(8,8)
+      //roi 29(5,8)
+      //dame 31(4,8)
+      KQ_indexs = TD->diviser(2,indexs[i]);
+      tl = TD->TimeLine_at(KQ_indexs[0]);
+      a = tl->chessplate->at(19);
+      b = tl->chessplate->at(29);
+      
+      if(tl->chessplate->piece_at_coord(7,8) == NULL
+	 && tl->chessplate->piece_at_coord(6,8) == NULL
+	 && a->get_TM_size() == 1
+	 && b->get_TM_size() == 1)
+      {
+	tl->update_at(a, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]+1);
+	a->add_movements(null_indexs[i], Coord(6,8));
+	b->add_movements(null_indexs[i]+1, Coord(7,8));
+      }
+      else
+      {
+	tl->score_kill();
+      }
+      
+      tl = TD->TimeLine_at(KQ_indexs[1]);
+      a = tl->chessplate->at(18);
+      b = tl->chessplate->at(31);
+      if(tl->chessplate->piece_at_coord(2,8) == NULL
+	 && tl->chessplate->piece_at_coord(3,8) == NULL
+	 && a->get_TM_size() == 1
+	 && b->get_TM_size() == 1)
+      {
+	tl->update_at(a, Action::change, Info(), null_indexs[i]);
+	tl->add_instant_at(b, Action::change, Info(), null_indexs[i]);
+	a->add_movements(null_indexs[i], Coord(3,8));
+	b->add_movements(null_indexs[i]+1, Coord(2,8));
+      }
+      else
+      {
+	tl->score_kill();
+      }
+    }
+  }
+}
 std::vector<Arbre*> Erreur_manager::Gen_Arbre(TimeLine* tl, Coord c, int prof)
 {
   //GEN ARBRE
   std::vector<Arbre*> arbres;
+  Piece* piece;
   for(int h = 0; h < tl->chessplate->size(); h++)
   {
-    if(!tl->chessplate->at(h)->get_Alive())
+    piece = tl->chessplate->at(h);
+    if(!piece->get_Alive())
       continue;
     
     ArbreMovement AM(tl->chessplate);
@@ -437,7 +567,7 @@ std::vector<int> Erreur_manager::get_piece_in_path(ChessPlate* chess, Coord c1, 
   }
   return piece_indexs;
 }
-bool Erreur_manager::check_ambiguiter(TimeLine* tl, Coord coord, Type type, bool couleur)
+bool Erreur_manager::check_ambiguiter(TimeLine* tl, Coord coord, Type type, bool couleur, int index)
 {
   int size = tl->chessplate->size();
   Piece* piece;
@@ -447,12 +577,87 @@ bool Erreur_manager::check_ambiguiter(TimeLine* tl, Coord coord, Type type, bool
     piece = tl->chessplate->at(i);
     if(piece->get_Type() == type
        && piece->get_Color() == couleur
-       && piece->Test_movements(&coord, false, piece->get_TM_size()-1))
+       && piece->Test_movements(&coord, false, piece->get_index_pos_inf(index)))
     {
       cpt++;
     }
   }
   return cpt == 2;
+}
+void Erreur_manager::fill_none_piece()
+{
+  for(int h = 0; h < TD->size(); h++)
+  {
+    TimeLine* tl = TD->TimeLine_at(h);
+    if(tl->get_score() > MAX_SCORE)
+      continue;
+    
+    int nb_null_piece = 0;
+    int* null_indexs = tl->get_all_piece_NULL(nb_null_piece);
+    
+    if(nb_null_piece == 0)
+      continue;
+    
+    int chess_size = tl->chessplate->size();
+    std::vector<int> alive_pieces;
+    for(int i = 0; i < chess_size; i++)
+    {
+      if(tl->chessplate->at(i)->get_Alive())
+      {
+	alive_pieces.push_back(i);
+      }
+    }
+    std::vector<Arbre*> arbres = Gen_Arbre(tl, alive_pieces, 1);;
+    Info info;
+    int* null_tl_indexs = TD->diviser(nb_null_piece, h);
+    int* alive_tl_indexs;
+    int* arbre_struct_indexs;
+    Piece* piece_to_kill;
+    Piece* piece;
+    for(int i = 0; i < nb_null_piece; i++)
+    {
+      alive_tl_indexs = TD->diviser(arbres.size()+1, null_tl_indexs[i]);
+      Oublie_conscient_cas_castling(alive_tl_indexs[arbres.size()]);
+      for(int j = 0; j < arbres.size(); j++)
+      {
+	arbre_struct_indexs = TD->diviser(arbres[j]->arbre_struct.size(),
+					  alive_tl_indexs[j]);
+	
+	for(int k = 0; k < arbres[j]->arbre_struct.size(); k++)
+	{	
+	  tl = TD->TimeLine_at(arbre_struct_indexs[k]);
+	  tl->pp_score();
+	  piece = tl->chessplate->at(arbres[j]->index);
+
+	  
+	  info.ambiguous = check_ambiguiter(tl,
+					    arbres[j]->arbre_struct[k].c,
+					    piece->get_Type(),
+					    piece->get_Color(),
+					    null_indexs[i]);
+	
+	  piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[k].c.x(),
+							 arbres[j]->arbre_struct[k].c.y());
+
+	
+	  if(piece_to_kill != NULL)
+	  {
+	    piece_to_kill->set_Alive(false);
+	    
+	    if(piece->get_Type() == pions)
+	      info.ambiguous = true;
+	    tl->update_at(piece, Action::eat, info, null_indexs[i]);
+	  }
+	  else
+	  {
+	    tl->update_at(piece, Action::move, info, null_indexs[i]);
+	  }
+	  piece->add_movements(null_indexs[i],
+			       arbres[j]->arbre_struct[k].c);
+	}
+      }
+    }
+  }
 }
 //vérifie le coup doit engendrer un eat
 bool Erreur_manager::Verif_eat(Info_Erreur e)

@@ -61,14 +61,18 @@ void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 
   instants.push_back(ins);
 }
-void TimeLine::add_instant_at(Piece* p, Coord c, Action a, Info inf, int j)
+void TimeLine::add_instant_at(Piece* p, Action a, Info inf, int j)
 {
   Instant ins(p->time_to_pos_index(instants.size()), p, a, inf);
   
   std::vector<Instant>::iterator it=instants.begin();
   instants.insert(it+j, ins);
-  
-  p->add_movements(j, c);
+
+  for(int i = j+1; i < instants.size(); i++)
+  {
+    cout << "   i: "<<i<<endl;
+    instants[i].p->pp_TM_sup(i-1);
+  }
 }
 void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
@@ -131,12 +135,105 @@ Coord* TimeLine::get_next_coord(int i)
   
   Coord* nextCoord = instants.at(nextTime).p->get_Coords();
 }
+void TimeLine::Check_timeline()
+{
+  ChessPlate* chess = new ChessPlate();
+  Piece* piece;
+  Piece* k_piece;
+  Coord c1, c2;
+  int index = 0;
+  int* tm;
+  bool ERROR = false;
+  //chessplate->Print();
+  //toString();
+  for(int i = 0; i < instants.size(); i++)
+  {/*
+    cout <<" i: "<<i<<"    "
+	 <<(type_to_type_string(instants[i].p->get_Type()))
+	 <<"   act: "<<instants[i].a
+	 <<endl;*/
+    //FROM
+    tm = instants[i].p->get_TM();
+    for(int j = 0; j < instants[i].p->get_TM_size(); j++)
+    {
+      //cout << "    tm["<<j<<"]: "<<tm[j]<<endl;
+      if(tm[j] == i)
+      {
+	index = j;
+	break;
+      }
+    }
+    c1 = Coord(instants[i].p->get_pos_at(index-1).x(),
+	      instants[i].p->get_pos_at(index-1).y());
+    
+    piece = chess->piece_at_coord(c1.x(),c1.y());
+    //TO
+    index = instants[i].p->time_to_pos_index(i);
+    c2 = Coord(instants[i].p->get_pos_at(index).x(),
+	      instants[i].p->get_pos_at(index).y());
+    
+    if(piece != NULL)
+    {
+      if(piece->Test_movements(&c2, instants[i].a == eat, piece->get_TM_size()-1))
+      {
+	switch(piece->get_Type())
+	{
+	case tours:
+	  if(instants[i].a != change)
+	    ERROR = !chess->check_Rok_path(c1,c2);
+	  break;
+	case fous:
+	  ERROR = !chess->check_Bishop_path(c1,c2);
+	  break;
+	case dame:
+	  ERROR = !chess->check_Rok_path(c1,c2)
+	    && !chess->check_Bishop_path(c1,c2);
+	  break;
+	}
+      }
+    }
+    else
+    {
+      ERROR = true;
+    }
+    
+    if(ERROR)
+    {
+      score_kill();
+      break;
+    }
+    else
+    {
+      if(instants[i].a == eat)
+      {
+	k_piece = chess->piece_at_coord(c2.x(),c2.y());
+	if(k_piece == NULL && piece->get_Type())
+	{
+	  if(piece->get_Color())
+	    k_piece = chess->piece_at_coord(c2.x(),c2.y()-1);
+	  else
+	    k_piece = chess->piece_at_coord(c2.x(),c2.y()+1);
+	  if(k_piece == NULL)
+	  {
+	    cout << "ERROR 2"<<endl;
+	    score_kill();
+	    break;
+	  }
+	}
+	k_piece->set_Alive(false);
+      }
+      piece->add_movements(i,c2);
+    }
+  }
+}
 int* TimeLine::get_all_piece_NULL(int& nb)
 {
+  nb = 0;
   for(int i = 0; i < instants.size(); i++)
   {
     if(instants[i].p->get_Type() == NONE)
     {
+      //cout <<"  NONE at "<<i<<endl;
       nb++;
     }
   }

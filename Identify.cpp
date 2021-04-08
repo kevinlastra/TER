@@ -16,9 +16,11 @@ Identify::Identify(string* l, int size)
   
   for(int i = 0; i < size; i++)
   {
+    cout << "  "<<liste[i]<<endl;
     temps_index = i;
     interpreteur(&liste[i]);
   }
+  EM->fill_none_piece();
   TD->clear_score();
 }
 Identify::~Identify(){}
@@ -241,7 +243,7 @@ void Identify::interpreteur(string* piece)
     }
     else if(p == NULL)
     {
-      cout <<endl<<"Erreur: "<< piece[0] << endl;
+      //cout <<endl<<"Erreur: "<< piece[0] << endl;
 
       Error.piece_index = -1;
       
@@ -251,7 +253,6 @@ void Identify::interpreteur(string* piece)
       Error.tl_instance_index = temps_index;
 
       Traitement_erreur();
-      //cout << "return to Identify (L189 aprox.)"<<endl;
     }
   }
 }
@@ -281,8 +282,13 @@ int Identify::Tuer(int p_index, Info_piece* ip)
   //cout << "----------Tuer--------"<<endl;
   Piece* piece_to_kill = tl->chessplate->piece_at_coord(ip->coord.x(), ip->coord.y());
   
-  //Preparation pour traitement d'erreur
-  if(piece_to_kill == NULL)
+  if(piece_to_kill != NULL
+     && piece_to_kill->get_Color() != tl->chessplate->at(p_index)->get_Color())
+  {
+    piece_to_kill->set_Alive(false);
+    return 0;
+  }
+  else  //Preparation pour traitement d'erreur
   {
     cout << "Erreur: piece a tuée introuvable. "<<endl;
     Error.piece_index = p_index;
@@ -293,13 +299,8 @@ int Identify::Tuer(int p_index, Info_piece* ip)
     Error.tl_instance_index = temps_index;
 
     Traitement_erreur();
-    //cout << "return to Identify (L227 aprox.)"<<endl;
     return -1;
   }
-
-  piece_to_kill->set_Alive(false);
-  //cout <<"----------Mort-----------"<<endl;
-  return 0;
 }
 
 
@@ -311,10 +312,11 @@ TimeDivision* Identify::get_TimeLines()
 
 void Identify::Traitement_erreur()
 {
-  cout <<"Type: "<<type_to_type_string(Error.info_piece->type)
+  /*
+  cout <<"Indentify -TE-   Type: "<<type_to_type_string(Error.info_piece->type)
        <<"    x: "
        <<(char)(96+Error.info_piece->coord.x())<<"    y: "
        <<Error.info_piece->coord.y()<<endl;
-
+  */
   EM->Traiter_Erreur(Error);
 }

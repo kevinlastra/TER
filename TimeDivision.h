@@ -32,9 +32,9 @@ class TimeDivision
   //
   //detruit le tl a un index i
   void remove_tl_at(int);
-
   //nettoi tous les tl dont le score est superieur a MAX_SCORE
   void clear_score();
+  void clear_tl();
   //prints
   void Print_adresse();
 };

@@ -50,7 +50,7 @@ class TimeLine
 
   //Generation du TimeLine
   void add_instant_on_top(Piece*,Coord,Action,Info);
-  void add_instant_at(Piece*,Coord,Action,Info,int);
+  void add_instant_at(Piece*,Action,Info,int);
   
   void update_at(Piece*,Action,Info,int);
   void remove_at(int);
@@ -72,6 +72,9 @@ class TimeLine
   Instant* get_instant_at(int);
   std::vector<Instant> get_instants();
   Coord* get_next_coord(int);
+
+  //
+  void Check_timeline();
 
   //return tous les piece de type NULL
   int* get_all_piece_NULL(int&);

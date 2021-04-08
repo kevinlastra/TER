@@ -24,15 +24,12 @@ int main(int argc, char** argv)
   Identify iden(s,size);
 
   TimeDivision* tl = iden.get_TimeLines();
-  cout <<"  NB TIMELINES "<< tl->size()<<endl;
-  //tl->toString();
-  /*
-  for(int i = 0; i < tl->size(); i++)
+  //tl->clear_tl();
+  /*for(int i = 0; i < 1; i++)
   {
-    cout << endl<<endl<<"########  "<<tl->TimeLine_at(i)->get_score()<<"     "<<(tl->TimeLine_at(i))<<endl;
     tl->TimeLine_at(i)->toString();
-  }
-  */
+    }*/
+  cout <<"  NB TIMELINES "<< tl->size()<<endl;
   // Instant* ins = tl->get_instant_at(tl->get_size()-1);
 
 
