@@ -64,6 +64,12 @@ bool Piece::get_Alive()
 {
   return alive;
 }
+bool Piece::piece_rampant()
+{
+  if(type == dame || type == tours || type == fous)
+    return true;
+  return false;
+}
 int Piece::get_TM_size()
 {
   return TM_size;

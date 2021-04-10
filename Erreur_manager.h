@@ -43,7 +43,7 @@ class Erreur_manager
  public:
   //constructeur
   Erreur_manager(TimeDivision*);
-
+  ~Erreur_manager();
   //debut du traitment des erreur
   void Traiter_Erreur(Info_Erreur);
 
@@ -68,14 +68,16 @@ class Erreur_manager
   //time line index, color
   void Oublie_conscient_cas_castling(Info_Erreur,bool,int);
   void castling_extension(TimeLine*,Info_Erreur,Coord);
+  //
+  bool check_piece_rampant_movement(TimeLine*,Type,Coord, Coord);
   //tl,coord, prof, color
-  std::vector<Arbre*> Gen_Arbre(TimeLine*,Coord,int);
+  std::vector<Arbre*> Gen_Arbre(TimeLine*,Coord,int,bool);
   std::vector<Arbre*> Gen_Arbre(TimeLine*,std::vector<int>,int);
   std::vector<int> get_piece_in_path(ChessPlate*,Coord,Coord,Type);
   //coordoner, type, couleur, temps dans tl
   bool check_ambiguiter(TimeLine*, Coord, Type, bool,int);
   //
-  void fill_none_piece();
+  bool fill_none_piece();
   //
   bool Verif_eat(Info_Erreur);
   //bool Verif_echec(Info_Erreur);

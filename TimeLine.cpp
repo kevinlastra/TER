@@ -57,11 +57,8 @@ Instant::Instant(int index, Piece* piece, Action act, Info inf)
 void TimeLine::add_instant_on_top(Piece* p, Coord c, Action a, Info inf)
 {
   Instant ins(p->time_to_pos_index(instants.size()), p, a, inf);
-  
   ins.i = p->time_to_pos_index(instants.size());
-
   p->add_movements(instants.size(), c);  
-
   instants.push_back(ins);
 }
 void TimeLine::add_instant_at(Piece* p, Action a, Info inf, int j)
@@ -86,6 +83,7 @@ void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 }
 void TimeLine::remove_at(int j)
 {
+  
   instants.erase(instants.begin()+j);
 }
 
@@ -146,11 +144,13 @@ void TimeLine::Check_timeline()
   int index = 0;
   int* tm;
   bool ERROR = false;
-  
-  for(int i = 0; i < instants.size(); i++)
+
+  int size = instants.size();
+  for(int i = 0; i < size; i++)
   {
     //FROM
     tm = instants[i].p->get_TM();
+    
     for(int j = 0; j < instants[i].p->get_TM_size(); j++)
     {
       if(tm[j] == i)
@@ -167,7 +167,7 @@ void TimeLine::Check_timeline()
     index = instants[i].p->time_to_pos_index(i);
     c2 = Coord(instants[i].p->get_pos_at(index).x(),
 	      instants[i].p->get_pos_at(index).y());
-    
+
     if(piece != NULL)
     {
       if(piece->Test_movements(&c2, instants[i].a == eat, piece->get_TM_size()-1))
@@ -203,23 +203,43 @@ void TimeLine::Check_timeline()
       if(instants[i].a == eat)
       {
 	k_piece = chess->piece_at_coord(c2.x(),c2.y());
-	if(k_piece == NULL && piece->get_Type())
+	if(k_piece == NULL && piece->get_Type() == pions)
 	{
 	  if(piece->get_Color())
 	    k_piece = chess->piece_at_coord(c2.x(),c2.y()-1);
 	  else
 	    k_piece = chess->piece_at_coord(c2.x(),c2.y()+1);
-	  if(k_piece == NULL)
-	  {
-	    score_kill();
-	    break;
-	  }
 	}
+	
+	if(k_piece == NULL)
+	{
+	  score_kill();
+	  break;
+	}
+	
 	k_piece->set_Alive(false);
       }
       piece->add_movements(i,c2);
     }
   }
+  delete chess;
+}
+bool TimeLine::get_color(int i)
+{
+  bool color = true;
+  int j = 1;
+  if(instants[0].a == change)
+  {
+    j = 2;
+    color = false;
+  }
+  for(; j < instants.size() && j < i; j++)
+  {
+    color = !color;
+    if(instants[j].a == change)
+      i++;
+  }
+  return color;
 }
 int* TimeLine::get_all_piece_NULL(int& nb)
 {

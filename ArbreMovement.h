@@ -14,10 +14,11 @@
 struct Anode
 {
   Coord c;            //coordoner du node
+  int prof;
   int prev;           //node parent
-  std::vector<int> child_indexs;
 
-  Anode(Coord, int);  //constructeur
+  Anode(Coord, int, int);  //constructeur
+  Anode();
 };
 struct Arbre
 {
@@ -26,8 +27,8 @@ struct Arbre
 
   Arbre(Anode,int);                  //constructeur
 
-  int nb_chemin();
-  std::vector<Anode> chemin_at(int);
+  int nb_chemin(int);
+  std::vector<Anode> chemin_at(int,int);
 };
 
 
@@ -45,18 +46,18 @@ class ArbreMovement
   Arbre* Generait_arbre(Piece*, int, Coord, int);
   Arbre* Generait_arbre(int, int);
   //ajout un niveau de profondeur
-  void AddProfondeur(Type);//tipe de la piece a bouger
+  void AddProfondeur(Type, int);//tipe de la piece a bouger
 
   //nettoi les branches pour les quelle la feuille n'arrive pas a la coordoner
-  void clean_nodes(Coord);
+  void clean_nodes(Coord,int);
   
   //ajout un movement selon le type de piece
-  void Pawn(int);
-  void Rok(int);
-  void Knigth(int);
-  void Bishop(int);
-  void King(int);
-  void Queen(int);
+  void Pawn(int,int);
+  void Rok(int,int);
+  void Knigth(int,int);
+  void Bishop(int,int);
+  void King(int,int);
+  void Queen(int,int);
 };
 
 #endif

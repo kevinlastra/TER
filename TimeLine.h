@@ -75,7 +75,8 @@ class TimeLine
 
   //
   void Check_timeline();
-
+  //
+  bool get_color(int);
   //return tous les piece de type NULL
   int* get_all_piece_NULL(int&);
 };

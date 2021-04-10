@@ -9,7 +9,12 @@ TimeDivision::TimeDivision()
 {
   TimeLines.push_back(new TimeLine);
 }
-TimeDivision::~TimeDivision(){}
+TimeDivision::~TimeDivision()
+{
+  for(int i = 0; i < TimeLines.size(); i++)
+    delete TimeLines[i];
+  TimeLines.clear();
+}
 int* TimeDivision::diviser(int nb, int index)
 {
   
@@ -45,30 +50,55 @@ void TimeDivision::transform_indexs_before_kill(int* indexs, int size, int i)
 }
 void TimeDivision::remove_tl_at(int i)
 {
-  TimeLines.erase(TimeLines.begin()+i);
+  delete TimeLines[i];
+  TimeLines[i] = nullptr;
 }
 void TimeDivision::clear_score()
 {
   int i = 0;
+  int cpt = 0;
+  
+  std::vector<TimeLine*> temp;
   while(i < TimeLines.size())
   {
-    if(TimeLines[i]->get_score() > MAX_SCORE)
+    if(TimeLines[i]->get_score() >= MAX_SCORE)
+    {
       remove_tl_at(i);
+    }
     else
-      i++;
+      temp.push_back(TimeLines[i]);
+    i++;
+    //cout << "removing    "<<i<<" of "<<size<<endl;
+    //cpt++;
   }
+  TimeLines = temp;
 }
 void TimeDivision::clear_tl()
 {
   int i = 0;
+  
+  int cpt = 0;
   while(i < TimeLines.size())
   {
-    TimeLine_at(i)->Check_timeline();
+    TimeLines[i]->Check_timeline();
     if(TimeLines[i]->get_score() > MAX_SCORE)
+    {
       remove_tl_at(i);
-    else
-      i++;
+    }
+    i++;
+    //cout << "removing    "<<i<<" of "<<size<<endl;
+    //cpt++;
   }
+  std::vector<TimeLine*> temp;
+  
+  for(i = 0; i < TimeLines.size(); i++)
+  {
+    if(TimeLines[i] != nullptr)
+    {
+      temp.push_back(TimeLines[i]);
+    }
+  }
+  TimeLines = temp;
 }
 //PRINTS
 void TimeDivision::Print_adresse()

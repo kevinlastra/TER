@@ -20,10 +20,14 @@ Identify::Identify(string* l, int size)
     temps_index = i;
     interpreteur(&liste[i]);
   }
-  EM->fill_none_piece();
-  TD->clear_score();
+  while(EM->fill_none_piece());
+  //TD->clear_score();
 }
-Identify::~Identify(){}
+Identify::~Identify()
+{
+  delete EM;
+  delete TD;
+}
 
 void Identify::interpreteur(string* piece)
 {
@@ -39,6 +43,7 @@ void Identify::interpreteur(string* piece)
   int size = TD->size();
   for(int i = 0; i < size;i++)
   {
+    //cout << "TIMELINE: "<<i<<"    size: "<<size<<"     "<<piece[0]<<endl;
     p = NULL;
     
     info_piece->action = int_to_act(3);

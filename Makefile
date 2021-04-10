@@ -13,7 +13,7 @@ include $(DEPEND)
 endif
 
 $(PROG): $(SOURCES:.cpp=.o)
-	$(CXX) $^ -o $@; make clean
+	$(CXX) $^ -o $@;
 $(DEPEND): $(SOURCES)
 	$(CXX) -MM $^ > $@
 .cpp.o:

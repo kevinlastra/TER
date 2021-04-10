@@ -45,7 +45,8 @@ class Piece
   Coord* get_Coord();
   bool get_Color();
   bool get_Alive();
-  
+  //dame, fous, tours
+  bool piece_rampant();
   int get_TM_size();
   int get_TM_max_size();
 

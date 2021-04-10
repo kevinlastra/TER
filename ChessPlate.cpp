@@ -157,6 +157,16 @@ Piece* ChessPlate::find_piece(Type t, bool color, int x, int y)
 	  continue;
 	}
       }
+      else if(t == dame)
+      {
+	if(check_Rok_path(pieces[i]->get_last_pos(),c)
+	   && check_Bishop_path(pieces[i]->get_last_pos(),c))
+	  return pieces[i];
+	else
+	{
+	  continue;
+	}
+      }
       return pieces[i];
    }
  }
@@ -176,7 +186,7 @@ Piece* ChessPlate::find_piece_ambiguos(Type t, bool color, int x, int y, int xfr
       if(t == fous)
       {
 	if(check_Bishop_path(pieces[i]->get_last_pos(),c))
-        {
+  { 
 	  return pieces[i];
 	}
 	else  
@@ -236,6 +246,33 @@ int ChessPlate::index_of(Piece* p)
       return i;
   }
   return -1;
+}
+bool ChessPlate::check_king_movement(Coord c)
+{
+  for(int i = 0; i < p_size; i++)
+  {
+    if(pieces[i]->Test_movements(&c,true,pieces[i]->get_TM_size())
+       && pieces[i]->get_Alive())
+    {
+      if(pieces[i]->piece_rampant())
+      {
+	switch(pieces[i]->get_Type())
+	{
+	case dame:
+	  return !check_Bishop_path(pieces[i]->get_last_pos(), c)
+	    && !check_Rok_path(pieces[i]->get_last_pos(), c);
+	case fous:
+	  return !check_Bishop_path(pieces[i]->get_last_pos(), c);
+	case tours:
+	  return !check_Rok_path(pieces[i]->get_last_pos(), c);
+	  break;
+	}
+      }
+      else
+	return false;
+    }
+  }
+  return true;
 }
 bool ChessPlate::check_Bishop_path(Coord start, Coord end)
 {

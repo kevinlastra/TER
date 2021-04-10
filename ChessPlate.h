@@ -37,6 +37,7 @@ class ChessPlate
   //return l'index d'une piece donner
   int index_of(Piece*);
   //check si entre 2 coordoner il n'existe pas de piece
+  bool check_king_movement(Coord);
   bool check_Bishop_path(Coord,Coord);
   bool check_Rok_path(Coord,Coord);
 
