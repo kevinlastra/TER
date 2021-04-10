@@ -17,6 +17,8 @@ TimeDivision::~TimeDivision()
 }
 int* TimeDivision::diviser(int nb, int index)
 {
+  if(nb <= 0)
+    return NULL;
   
   int* indexs = new int[nb];
   indexs[0] = index;
@@ -56,20 +58,22 @@ void TimeDivision::remove_tl_at(int i)
 void TimeDivision::clear_score()
 {
   int i = 0;
-  int cpt = 0;
-  
+  int size = TimeLines.size();
   std::vector<TimeLine*> temp;
+  cout << "Total to delete: "<<TimeLines.size()<<endl;
   while(i < TimeLines.size())
   {
     if(TimeLines[i]->get_score() >= MAX_SCORE)
     {
       remove_tl_at(i);
     }
-    else
-      temp.push_back(TimeLines[i]);
     i++;
     //cout << "removing    "<<i<<" of "<<size<<endl;
-    //cpt++;
+  }
+  for(int i = 0; i < size; i++)
+  {
+    if(TimeLines[i] != nullptr)
+      temp.push_back(TimeLines[i]);
   }
   TimeLines = temp;
 }

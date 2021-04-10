@@ -95,9 +95,9 @@ ChessPlate::ChessPlate(const ChessPlate* CP)
 }
 ChessPlate::~ChessPlate()
 {
-  for(int i = 0; i < p_size; i++)
+  for(int i = 0; i < 48; i++)
     delete pieces[i];
-  delete pieces; 
+  delete[] pieces; 
 }
 Piece* ChessPlate::at(int i)
 {

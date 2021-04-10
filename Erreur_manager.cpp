@@ -5,8 +5,8 @@
 Erreur_manager::Erreur_manager(TimeDivision* td){TD=td;}
 Erreur_manager::~Erreur_manager(){}
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
-{/*
-  cout <<"ERREUR - TE -   T: "
+{
+  /*cout <<"ERREUR - TE -   T: "
        <<"      tl: "<<e.tl_index
        <<"      i: "<<e.tl_instance_index
        <<endl;*/
@@ -42,7 +42,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
     }
     break;
   }
-  delete proxs_castling;
+  delete[] proxs_castling;
 }
 void Erreur_manager::Pion(Info_Erreur e)
 {
@@ -94,7 +94,7 @@ void Erreur_manager::Piece_rampant(Info_Erreur e)
     Oublie_conscient_cas_C(e,proxs[0]);
     //2)
     Oublie_conscient_cas_A(e,proxs[1]);
-    delete proxs;
+    delete[] proxs;
   }
   else 
   {
@@ -159,6 +159,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
 }
 void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 {
+  cout << "CAS A"<<endl;
   TimeLine* tl = TD->TimeLine_at(index_tl);
   int nb = 0;
   
@@ -190,7 +191,6 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
       tl_prox = TD->TimeLine_at(proxs_arbres[j]);
 
       nb_chemin = arbres[j]->nb_chemin(2);
-
       if(tl_prox->chessplate->at(arbres[j]->index)->get_Type() != e.info_piece->type)
       {
 	tl_prox->score_kill();
@@ -209,6 +209,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	}
 	
 	piece = tl_prox->chessplate->at(arbres[j]->index);
+	
 	if(piece->get_Color() != tl_prox->get_color(null_pieces[i]))
 	{
 	  tl->score_kill();
@@ -268,7 +269,8 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 	//-------------------
 	//-------------------
 	
-	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[1].c.x(), chemin[1].c.y());
+	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[1].c.x(),
+							    chemin[1].c.y());
 	if(piece_to_kill != NULL)
 	{
 	  if(piece_to_kill->get_Color() == piece->get_Color())
@@ -301,16 +303,17 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl)
 				    e.info_piece->info);
 	//-----------------------
       }
-      delete proxs_chemins;
+      delete[] proxs_chemins;
       delete arbres[j];
     }
-    delete proxs_arbres;
+    delete[] proxs_arbres;
   }
-  delete proxs;
-  delete null_pieces;
+  delete[] proxs;
+  delete[] null_pieces;
 }
 void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl)
 {
+  cout << "CAS B"<<endl;
   TimeLine* tl = TD->TimeLine_at(index_tl);
   int nb = 0;
   
@@ -403,10 +406,11 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl)
 				  e.info_piece->coord, e.info_piece->action,
 				  e.info_piece->info);
       //tl_prox->toString();
+      delete arbres[j];
     }
-    delete proxs_arbres;
+    delete[] proxs_arbres;
   }
-  delete null_pieces;
+  delete[] null_pieces;
 }
 void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
 {
@@ -414,6 +418,12 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
   int nb = 0;
   TimeLine* tl = TD->TimeLine_at(index_tl);
   int* null_pieces = tl->get_all_piece_NULL(nb);
+  
+  if(nb == 0)
+  {
+    tl->score_kill();
+    return;
+  }
   
   Piece* piece;
   Piece* piece_to_kill;
@@ -433,7 +443,7 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
   if(piece_indexs.size() == 0)
   {
     tl->score_kill();
-    delete null_pieces;
+    delete[] null_pieces;
     return;
   }
   Info info;
@@ -443,10 +453,8 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
   int* proxs_arbres;
   std::vector<int> piece_in_path;
   std::vector<Arbre*> arbres;
-  cout << "after i  "<<piece_indexs.size()<<endl;
   for(int i = 0; i < piece_indexs.size(); i++)
   {
-    cout << "i: "<<i<<endl;
     tl = TD->TimeLine_at(proxs[i]);
     piece_in_path = get_piece_in_path(tl->chessplate,
 				      tl->chessplate->at(piece_indexs[i])->get_last_pos(),
@@ -532,14 +540,15 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl)
 				 e.info_piece->coord, e.info_piece->action,
 				 e.info_piece->info);
 	}
-	delete arbre_proxs;
+	delete[] arbre_proxs;
       }
-      delete null_proxs;
+      delete[] null_proxs;
+      delete arbres[j];
     }
-    delete proxs_arbres;
+    delete[] proxs_arbres;
   }
-  delete proxs;
-  delete null_pieces;
+  delete[] proxs;
+  delete[] null_pieces;
 }
 void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int tl_index)
 {
@@ -556,7 +565,7 @@ void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, i
   for(int i = 0; i < nb; i++)
   {
     if(null_indexs[i]-1 > 0)
-      color = !tl->get_instant_at(null_indexs[i]-1)->p->get_Color();
+      color = !tl->get_color(null_indexs[i]);
     if(color)
     {
       //WHITE
@@ -580,12 +589,14 @@ void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, i
 	a->add_movements(null_indexs[i]+1, Coord(6,1));
 
 	if(repair)
+	{
 	  castling_extension(tl,e,Coord(6,1));
+	}
       }
       else
       {
 	tl->score_kill();
-	delete K_indexs;
+	delete[] K_indexs;
 	continue;
       }
       
@@ -611,7 +622,7 @@ void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, i
       else
       {
 	tl->score_kill();
-	delete K_indexs;
+	delete[] K_indexs;
 	continue;
       }
     }
@@ -643,7 +654,7 @@ void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, i
       else
       {
 	tl->score_kill();
-	delete K_indexs;
+	delete[] K_indexs;
 	continue;
       }
 
@@ -667,13 +678,13 @@ void Erreur_manager::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, i
       else
       {
 	tl->score_kill();
-	delete K_indexs;
+	delete[] K_indexs;
 	continue;
       }
     }
   }
-  delete indexs;
-  delete null_indexs;
+  delete[] indexs;
+  delete[] null_indexs;
 }
 void Erreur_manager::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
 {
@@ -940,8 +951,12 @@ bool Erreur_manager::fill_none_piece()
 	}
 	delete alive_tl_indexs;
       }
-      delete null_tl_indexs;
-      delete null_indexs;
+    for(int i = 0; i < arbres.size(); i++)
+    {
+      delete arbres[i];
+    }
+    delete null_tl_indexs;
+    delete null_indexs;
   }
 }
 //vérifie le coup doit engendrer un eat

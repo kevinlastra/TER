@@ -75,6 +75,7 @@ void TimeLine::add_instant_at(Piece* p, Action a, Info inf, int j)
 }
 void TimeLine::update_at(Piece* p, Action a, Info info, int i)
 {
+  delete instants.at(i).p;
   instants.at(i).p = p;
   
   instants.at(i).i = p->time_to_pos_index(i);
@@ -233,11 +234,12 @@ bool TimeLine::get_color(int i)
     j = 2;
     color = false;
   }
-  for(; j < instants.size() && j < i; j++)
+  for(; j < instants.size() && j <= i; j++)
   {
     color = !color;
+    //cout << "j: " <<j<<"  color: "<<color<<endl;
     if(instants[j].a == change)
-      i++;
+      j++;
   }
   return color;
 }
