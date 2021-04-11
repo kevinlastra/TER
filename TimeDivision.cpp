@@ -40,6 +40,16 @@ int TimeDivision::size()
 {
   return TimeLines.size();
 }
+int TimeDivision::nb_dead_tl()
+{
+  int cpt = 0;
+  for(int i = 0; i < TimeLines.size(); i++)
+  {
+    if(TimeLines[i]->get_score() >= MAX_SCORE)
+      cpt++;
+  }
+  return cpt;
+}
 void TimeDivision::transform_indexs_before_kill(int* indexs, int size, int i)
 {
   for(int i = 0; i < size; i++)
@@ -60,7 +70,6 @@ void TimeDivision::clear_score()
   int i = 0;
   int size = TimeLines.size();
   std::vector<TimeLine*> temp;
-  cout << "Total to delete: "<<TimeLines.size()<<endl;
   while(i < TimeLines.size())
   {
     if(TimeLines[i]->get_score() >= MAX_SCORE)

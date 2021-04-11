@@ -51,9 +51,9 @@ class Erreur_manager
   //Actuellement sont traiter 2 cas:
   //1 - manger en passant
   //detection d'un erreur de notation apres un oublie volontaire ("_")
-  void Pion(Info_Erreur);
+  void Pion(Info_Erreur,int,int*);
 
-  void Piece_rampant(Info_Erreur);
+  void Piece_rampant(Info_Erreur,int,int*);
   //traitement de "l'erreur" manger en passant
   Piece* Manger_en_passant(Info_Erreur);
 
@@ -61,10 +61,10 @@ class Erreur_manager
   //A) Je n'exist pas.
   //B) La piece que je veut tuer n'existe pas.
   //C) Il existe une piece dans mon chemin qui ne devrait pas exister
-  //Info Erreur, index timeline, profondeur dans l'arbre
-  void Oublie_conscient_cas_A(Info_Erreur,int);
-  void Oublie_conscient_cas_B(Info_Erreur,int);
-  void Oublie_conscient_cas_C(Info_Erreur,int);
+  //Info Erreur, index timeline, nb_none_piece, none_piece_indexs
+  void Oublie_conscient_cas_A(Info_Erreur,int,int,int*);
+  void Oublie_conscient_cas_B(Info_Erreur,int,int,int*);
+  void Oublie_conscient_cas_C(Info_Erreur,int,int,int*);
   //time line index, color
   void Oublie_conscient_cas_castling(Info_Erreur,bool,int);
   void castling_extension(TimeLine*,Info_Erreur,Coord);
@@ -78,6 +78,7 @@ class Erreur_manager
   bool check_ambiguiter(TimeLine*, Coord, Type, bool,int);
   //
   bool fill_none_piece();
+
   //
   bool Verif_eat(Info_Erreur);
   //bool Verif_echec(Info_Erreur);

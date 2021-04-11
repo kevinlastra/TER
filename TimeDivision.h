@@ -5,7 +5,7 @@
 #include "TimeLine.h"
 #include "Piece.h"
 
-#define MAX_SCORE 6
+#define MAX_SCORE 8
 
 class TimeDivision
 {
@@ -22,7 +22,7 @@ class TimeDivision
 
   TimeLine* TimeLine_at(int);
   int size();
-
+  int nb_dead_tl();
   //indexs,number of indexs,index to kill
   void transform_indexs_before_kill(int*,int,int);
 

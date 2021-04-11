@@ -16,7 +16,7 @@ Identify::Identify(string* l, int size)
   
   for(int i = 0; i < size; i++)
   {
-    cout <<liste[i]<<endl;
+    //cout <<liste[i]<<endl;
     temps_index = i;
     interpreteur(&liste[i]);
   }
@@ -39,11 +39,15 @@ void Identify::interpreteur(string* piece)
   Piece* p;
 
   //START CALC
+  //cout << "Total to check: "<< TD->size() <<"      dead size: "<<TD->nb_dead_tl()<< endl;
   TD->clear_score();
+  //cout << "Total next to clear: "<<TD->size()<<endl;
   int size = TD->size();
+  cout << "     TD Size: "<<size<<"     "<<piece[0]<<endl;
   for(int i = 0; i < size;i++)
   {
-    //cout << "TIMELINE: "<<i<<"    size: "<<size<<"     "<<piece[0]<<endl;
+    /*cout << "TIMELINE: "<<i<<"    size: "<<size<<"     "<<piece[0]
+      <<"    score: "<<TD->TimeLine_at(i)->get_score()<<endl;*/
     p = NULL;
     
     info_piece->action = int_to_act(3);
@@ -133,6 +137,7 @@ void Identify::interpreteur(string* piece)
     }
     else if(piece[0] == "_")
     {
+      tl->pp_none_p();
       p = new Piece(NONE,info_piece->color,-1,-1);
       info_piece->coord = Coord(-1,-1);
     }

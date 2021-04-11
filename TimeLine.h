@@ -38,7 +38,8 @@ class TimeLine
  private:
   std::vector<Instant> instants;
   int score = 0;
-  
+  //nombre total de piece de type none("_") lit dans le pgn
+  int nb_none_piece = 0;
  public:
   ChessPlate* chessplate;
   
@@ -62,7 +63,9 @@ class TimeLine
   void score_kill(); //score = 1000, cette operation ser a tue le tl dans le prochain balayage
   void pp_score();   //score++
   int get_score();   
-  
+  //
+  void pp_none_p();
+  int get_nb_none_p();
   //debug 
   void toString();
   

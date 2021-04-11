@@ -35,6 +35,7 @@ TimeLine::TimeLine(TimeLine* tl)
     }
   }
   score = tl->get_score();
+  nb_none_piece = tl->get_nb_none_p();
 }
 TimeLine::~TimeLine()
 {
@@ -104,6 +105,8 @@ int TimeLine::get_score()
 {
   return score;
 }
+void TimeLine::pp_none_p(){nb_none_piece++;}
+int TimeLine::get_nb_none_p(){return nb_none_piece;};
 void TimeLine::toString()
 {
   int j;
