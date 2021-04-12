@@ -38,7 +38,10 @@ void Piece::set_Type(char c)
 void Piece::set_Coord_at(Coord c, int i)
 {
   if(i < TM_size)
-    pos[i].update(c.x() ,c.y());
+  {
+    pos[i].x = c.x;
+    pos[i].x = c.y;
+  }
 }
 void Piece::set_Color(bool b)
 {
@@ -208,7 +211,7 @@ bool Piece::Test_movements(Coord* c, bool eat, int i)
   switch(type)
   {
   case roi:
-    d = (c->x()-pos[i].x())*(c->x()-pos[i].x())+(c->y()-pos[i].y())*(c->y()-pos[i].y());
+    d = (c->x-pos[i].x)*(c->x-pos[i].x)+(c->y-pos[i].y)*(c->y-pos[i].y);
     if(d == 1)
     {
       return true;
@@ -229,54 +232,55 @@ bool Piece::Test_movements(Coord* c, bool eat, int i)
   default://pion
     if(color)
     {
-      if(pos[i].y()+1 == c->y())
+      if(pos[i].y+1 == c->y)
       {
-	if(pos[i].x() == c->x())
+	if(pos[i].x == c->x)
 	  return true;
-	if(eat && (pos[i].x()+1 == c->x() || pos[i].x()-1 == c->x()))
+	if(eat && (pos[i].x+1 == c->x || pos[i].x-1 == c->x))
 	{
 	  return true;
 	}
       }
-      else if(pos[i].y()+2 == c->y() && pos[i].x() == c->x())
+      else if(pos[i].y+2 == c->y && pos[i].x == c->x)
       {
 	return true;
       }
     }
     else
     {
-      if(pos[i].y()-1 == c->y())
+      if(pos[i].y-1 == c->y)
       {
-	if(pos[i].x() == c->x())
+	if(pos[i].x == c->x)
 	  return true;
-	if(eat && (pos[i].x()+1 == c->x() || pos[i].x()-1 == c->x()))
+	if(eat && (pos[i].x+1 == c->x || pos[i].x-1 == c->x))
 	{
 	  return true;
 	}
       }
-      else if(pos[i].y()-2 == c->y() && pos[i].x() == c->x())
+      else if(pos[i].y-2 == c->y && pos[i].x == c->x)
 	return true;
     }
     break;
   }
+  return false;
 }
 bool Piece::Test_mov_Tour(Coord* c, int i)
 {
-  if(pos[i].x() == c->x() && pos[i].y() != c->y())
+  if(pos[i].x == c->x && pos[i].y != c->y)
     return true;
-  else if(pos[i].x() != c->x() && pos[i].y() == c->y())
+  else if(pos[i].x != c->x && pos[i].y == c->y)
     return true;
   return false;
 }
 bool Piece::Test_mov_Fous(Coord* c, int i)
 {
-  if(pos[i].x() == c->x() || pos[i].y() == c->y())
+  if(pos[i].x == c->x || pos[i].y == c->y)
     return false;
   
-  int x = pos[i].x()-c->x();
+  int x = pos[i].x-c->x;
   if(x < 0)
     x*=-1;
-  int y = pos[i].y()-c->y();
+  int y = pos[i].y-c->y;
   if(y < 0)
     y*=-1;
   if(x == y)
@@ -285,23 +289,23 @@ bool Piece::Test_mov_Fous(Coord* c, int i)
 }
 bool Piece::Test_mov_Cavaliers(Coord* c, int i)
 {
-  if(pos[i].y()-2 == c->y() &&
-     (pos[i].x()+1==c->x() || pos[i].x()-1==c->x()))
+  if(pos[i].y-2 == c->y &&
+     (pos[i].x+1==c->x || pos[i].x-1==c->x))
   {
     return true;
   }
-  if(pos[i].y()+2 == c->y() &&
-     (pos[i].x()+1==c->x() || pos[i].x()-1==c->x()))
+  if(pos[i].y+2 == c->y &&
+     (pos[i].x+1==c->x || pos[i].x-1==c->x))
   {
     return true;
   }
-  if(pos[i].x()-2 == c->x() &&
-     (pos[i].y()+1==c->y() || pos[i].y()-1==c->y()))
+  if(pos[i].x-2 == c->x &&
+     (pos[i].y+1==c->y || pos[i].y-1==c->y))
   {
     return true;
   }
-  if(pos[i].x()+2 == c->x() &&
-     (pos[i].y()+1==c->y() || pos[i].y()-1==c->y()))
+  if(pos[i].x+2 == c->x &&
+     (pos[i].y+1==c->y || pos[i].y-1==c->y))
   {
     return true;
   }
@@ -340,7 +344,7 @@ string Piece::toString_At(int i)
     s+=" ";
   s+= "Color: ";
   s+=color?"1":"0";
-  s+="   x:"+to_string(pos[i].x())+"    y:"+to_string(pos[i].y())+"\n";
+  s+="   x:"+to_string(pos[i].x)+"    y:"+to_string(pos[i].y)+"\n";
   return  s;
 }
 string Piece::toString(bool cpx)
@@ -385,9 +389,9 @@ string Piece::toString(bool cpx)
     for(int i = 0; i < TM_size; i++)
       {
 	s+="\n        (";
-	s+=to_string(pos[i].x());
+	s+=to_string(pos[i].x);
 	s+=",";
-	s+=to_string(pos[i].y());
+	s+=to_string(pos[i].y);
 	s+=")        tl_i:";
 	s+=to_string(Temps_movements[i]);
       }

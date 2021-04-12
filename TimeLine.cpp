@@ -18,7 +18,7 @@ TimeLine::TimeLine(TimeLine* tl)
   for(int i = 0; i < tl->get_size(); i++)
   {
     c = ins[i].p->get_pos_at(0);
-    p = chessplate->piece_at_init(c.x(),c.y());
+    p = chessplate->piece_at_init(c.x,c.y);
     if(p != NULL)
     {
       Instant a(ins[i].i, p,
@@ -163,14 +163,14 @@ void TimeLine::Check_timeline()
 	break;
       }
     }
-    c1 = Coord(instants[i].p->get_pos_at(index-1).x(),
-	      instants[i].p->get_pos_at(index-1).y());
+    c1 = Coord(instants[i].p->get_pos_at(index-1).x,
+	      instants[i].p->get_pos_at(index-1).y);
     
-    piece = chess->piece_at_coord(c1.x(),c1.y());
+    piece = chess->piece_at_coord(c1.x,c1.y);
     //TO
     index = instants[i].p->time_to_pos_index(i);
-    c2 = Coord(instants[i].p->get_pos_at(index).x(),
-	      instants[i].p->get_pos_at(index).y());
+    c2 = Coord(instants[i].p->get_pos_at(index).x,
+	      instants[i].p->get_pos_at(index).y);
 
     if(piece != NULL)
     {
@@ -206,13 +206,13 @@ void TimeLine::Check_timeline()
     {
       if(instants[i].a == eat)
       {
-	k_piece = chess->piece_at_coord(c2.x(),c2.y());
+	k_piece = chess->piece_at_coord(c2.x,c2.y);
 	if(k_piece == NULL && piece->get_Type() == pions)
 	{
 	  if(piece->get_Color())
-	    k_piece = chess->piece_at_coord(c2.x(),c2.y()-1);
+	    k_piece = chess->piece_at_coord(c2.x,c2.y-1);
 	  else
-	    k_piece = chess->piece_at_coord(c2.x(),c2.y()+1);
+	    k_piece = chess->piece_at_coord(c2.x,c2.y+1);
 	}
 	
 	if(k_piece == NULL)
@@ -231,7 +231,7 @@ void TimeLine::Check_timeline()
 bool TimeLine::get_color(int i)
 {
   bool color = true;
-  
+  //impossible de faire un castling a l'index 0
   for(int j = 1; j < instants.size() && j <= i; j++)
   {
     color = !color;

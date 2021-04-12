@@ -98,16 +98,16 @@ void Identify::interpreteur(string* piece)
 	  tl->chessplate->return_Castling(info_piece->color,roi,a,b);
 	  
 	  p = tl->chessplate->at(a);
-	  info_piece->coord = Coord(p->get_last_pos().x()+2,
-				   p->get_last_pos().y());
+	  info_piece->coord = Coord(p->get_last_pos().x+2,
+				   p->get_last_pos().y);
 	  
 	  
 	  tl->add_instant_on_top(p,info_piece->coord,
 				 int_to_act(2),info_piece->info);
 	  
 	  p = tl->chessplate->at(b);
-	  info_piece->coord = Coord(info_piece->coord.x()-1,
-				   info_piece->coord.y());
+	  info_piece->coord = Coord(info_piece->coord.x-1,
+				   info_piece->coord.y);
 	  
 	  tl->add_instant_on_top(p,info_piece->coord,
 				 int_to_act(2),info_piece->info);
@@ -119,15 +119,15 @@ void Identify::interpreteur(string* piece)
 	  tl->chessplate->return_Castling(info_piece->color,dame,a,b);
 	  
 	  p = tl->chessplate->at(a);
-	  info_piece->coord = Coord(p->get_last_pos().x()-2,
-				   p->get_last_pos().y());
+	  info_piece->coord = Coord(p->get_last_pos().x-2,
+				   p->get_last_pos().y);
 	  
 	  tl->add_instant_on_top(p,info_piece->coord,int_to_act(2),
 				 info_piece->info);
 	  
 	  p = tl->chessplate->at(b);
-	  info_piece->coord = Coord(info_piece->coord.x()+1,
-				   info_piece->coord.y());
+	  info_piece->coord = Coord(info_piece->coord.x+1,
+				   info_piece->coord.y);
 	  
 	  tl->add_instant_on_top(p,info_piece->coord,int_to_act(2),
 				 info_piece->info);
@@ -152,7 +152,6 @@ void Identify::interpreteur(string* piece)
 	  p = tl->chessplate->find_piece(pions,info_piece->color,
 					 (int)piece[0][0]-96,
 					 (int)piece[0][1]-48);
-	  
 	  info_piece->coord = Coord((int)piece[0][0]-96,
 				   (int)piece[0][1]-48);
 	  info_piece->action = int_to_act(0);
@@ -253,7 +252,6 @@ void Identify::interpreteur(string* piece)
     else if(p == NULL)
     {
       //cout <<endl<<"Erreur: "<< piece[0] << endl;
-
       Error.piece_index = -1;
       
       Error.info_piece = info_piece;
@@ -274,7 +272,6 @@ void Identify::Factorize(Piece** p, Info_piece* ip, string* s)
     *p = tl->chessplate->find_piece(ip->type,ip->color,
 				    (int)s[0][1]-96,
 				    (int)s[0][2]-48);
-    
     ip->action = int_to_act(0);
   }
   else
@@ -290,7 +287,7 @@ void Identify::Factorize(Piece** p, Info_piece* ip, string* s)
 int Identify::Tuer(int p_index, Info_piece* ip)
 {
   //cout << "----------Tuer--------"<<endl;
-  Piece* piece_to_kill = tl->chessplate->piece_at_coord(ip->coord.x(), ip->coord.y());
+  Piece* piece_to_kill = tl->chessplate->piece_at_coord(ip->coord.x, ip->coord.y);
   
   if(piece_to_kill != NULL
      && piece_to_kill->get_Color() != tl->chessplate->at(p_index)->get_Color())
@@ -324,8 +321,8 @@ void Identify::Traitement_erreur()
   
   /*cout <<"Indentify -TE-   Type: "<<type_to_type_string(Error.info_piece->type)
        <<"    x: "
-       <<(char)(96+Error.info_piece->coord.x())<<"    y: "
-       <<Error.info_piece->coord.y()<<endl;
+       <<(char)(96+Error.info_piece->coord.x)<<"    y: "
+       <<Error.info_piece->coord.y<<endl;
   */
   EM->Traiter_Erreur(Error);
 }

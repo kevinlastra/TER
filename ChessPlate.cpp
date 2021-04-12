@@ -179,7 +179,7 @@ Piece* ChessPlate::find_piece_ambiguos(Type t, bool color, int x, int y, int xfr
   {
     if(pieces[i]->get_Type() == t &&
      pieces[i]->get_Color() == color &&
-     pieces[i]->get_last_pos().x() == xfrom &&
+     pieces[i]->get_last_pos().x == xfrom &&
      pieces[i]->Test_movements(&c,pawn,pieces[i]->get_TM_size()-1) &&
      pieces[i]->get_Alive())
     {
@@ -213,8 +213,8 @@ Piece* ChessPlate::piece_at_coord(int x, int y)
 {
   for(int i = 0; i < p_size; i++)
   {
-    if(pieces[i]->get_last_pos().x() == x &&
-     pieces[i]->get_last_pos().y() == y &&
+    if(pieces[i]->get_last_pos().x == x &&
+     pieces[i]->get_last_pos().y == y &&
      pieces[i]->get_Alive())
     {
       return pieces[i];
@@ -230,8 +230,8 @@ Piece* ChessPlate::piece_at_init(int x, int y)
   }
   for(int i = 0; i < p_size; i++)
   {
-    if(pieces[i]->get_pos_at(0).x() == x &&
-       pieces[i]->get_pos_at(0).y() == y)
+    if(pieces[i]->get_pos_at(0).x == x &&
+       pieces[i]->get_pos_at(0).y == y)
     {
       return pieces[i];
     }
@@ -276,10 +276,10 @@ bool ChessPlate::check_king_movement(Coord c)
 }
 bool ChessPlate::check_Bishop_path(Coord start, Coord end)
 {
-  int x = (start.x() > end.x())?-1:1;
-  int y = (start.y() > end.y())?-1:1;
+  int x = (start.x > end.x)?-1:1;
+  int y = (start.y > end.y)?-1:1;
 
-  int cnt = start.x()-end.x();
+  int cnt = start.x-end.x;
   cnt = cnt<0?cnt*-1:cnt;
   
   int j = 1;
@@ -287,8 +287,8 @@ bool ChessPlate::check_Bishop_path(Coord start, Coord end)
   {
     for(int i = 0; i < p_size; i++)
     {
-      if(pieces[i]->get_last_pos().x() == start.x()+x*j &&
-        pieces[i]->get_last_pos().y() == start.y()+y*j &&
+      if(pieces[i]->get_last_pos().x == start.x+x*j &&
+        pieces[i]->get_last_pos().y == start.y+y*j &&
         pieces[i]->get_Alive())
 	{
 	  return false;
@@ -302,15 +302,15 @@ bool ChessPlate::check_Rok_path(Coord start, Coord end)
 {
   int mv;
   int i=1;
-  if(start.x() == end.x())
+  if(start.x == end.x)
   {
-    mv = start.y()>end.y()?-1:1;
-    while(start.y()+i*mv != end.y()+mv)
+    mv = start.y>end.y?-1:1;
+    while(start.y+i*mv != end.y+mv)
     {
       for(int j = 0; j < p_size; j++)
       {
-	if(pieces[j]->get_last_pos().x() == start.x() &&
-	   pieces[j]->get_last_pos().y() == start.y()+i*mv &&
+	if(pieces[j]->get_last_pos().x == start.x &&
+	   pieces[j]->get_last_pos().y == start.y+i*mv &&
 	   pieces[j]->get_Alive())
 	{
 	  return false;
@@ -319,15 +319,15 @@ bool ChessPlate::check_Rok_path(Coord start, Coord end)
       i++;
     }
   }
-  else if(start.y() == end.y())
+  else if(start.y == end.y)
   {
-    mv = start.x()>end.x()?-1:1;
-    while(start.x()+i*mv != end.x()+mv)
+    mv = start.x>end.x?-1:1;
+    while(start.x+i*mv != end.x+mv)
     {
       for(int j = 0; j < p_size; j++)
       {
-	if(pieces[j]->get_last_pos().y() == start.y() &&
-	   pieces[j]->get_last_pos().x() == start.x()+i*mv &&
+	if(pieces[j]->get_last_pos().y == start.y &&
+	   pieces[j]->get_last_pos().x == start.x+i*mv &&
 	   pieces[j]->get_Alive())
 	{
 	  return false;

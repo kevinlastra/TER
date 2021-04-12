@@ -1,3 +1,35 @@
+
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@kevinlastra
+kevinlastra /
+TER
+
+1
+0
+
+    0
+
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+
+    Settings
+
+TER/Erreur_manager.cpp
+Kevin version optimiser oublie volontaire
+Latest commit 177ef70 1 hour ago
+History
+1 contributor
+1032 lines (942 sloc) 25.6 KB
 #include "Erreur_manager.h"
 
 
@@ -11,7 +43,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
        <<"      tl: "<<e.tl_index
        <<"      i: "<<e.tl_instance_index
        <<endl;*/
-
+  
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   tl->pp_score();
 
@@ -22,6 +54,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
     tl->score_kill();
     return;
   }
+
   
   int* proxs_castling = TD->diviser(2, e.tl_index);
   Oublie_conscient_cas_castling(e,true,proxs_castling[0]);
@@ -129,7 +162,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   if(e.info_piece->color)
   {
-    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x, e.info_piece->coord.y-1);
+    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x(), e.info_piece->coord.y()-1);
     
     if(p == NULL)
     {
@@ -140,8 +173,8 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
     {
       c = p->get_pos_at(p->get_TM_size()-2);
       index = p->get_movements_at(p->get_TM_size()-1);
-      if(index != e.tl_instance_index-1 || c.x != p->get_last_pos().x ||
-	 c.y != p->get_last_pos().y + 2)
+      if(index != e.tl_instance_index-1 || c.x() != p->get_last_pos().x() ||
+	 c.y() != p->get_last_pos().y() + 2)
       {
 	return NULL;
       }
@@ -149,7 +182,7 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
   }
   else
   {
-    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x, e.info_piece->coord.y+1);
+    p = tl->chessplate->piece_at_coord(e.info_piece->coord.x(), e.info_piece->coord.y()+1);
     
     if(p == NULL)
     {
@@ -160,8 +193,8 @@ Piece* Erreur_manager::Manger_en_passant(Info_Erreur e)
       c = p->get_pos_at(p->get_TM_size()-2);
       index = p->get_movements_at(p->get_TM_size()-1);
       
-      if(index != e.tl_instance_index-1 || c.x != p->get_last_pos().x ||
-	 c.y != p->get_last_pos().y-2)
+      if(index != e.tl_instance_index-1 || c.x() != p->get_last_pos().x() ||
+	 c.y() != p->get_last_pos().y()-2)
       {
 	return NULL;
       }
@@ -185,7 +218,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
   TimeLine* tl_prox;
   int* proxs_arbres;
   int* proxs_chemins;
-
+  
   arbres = Gen_Arbre(tl, e.info_piece->coord,2,e.info_piece->color);
   if(arbres.size() == 0)
   {
@@ -249,7 +282,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 					  piece->get_Color(),
 					  null_pieces[i]);
       
-	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[0].c.x, chemin[0].c.y);
+	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[0].c.x(), chemin[0].c.y());
 	if(piece_to_kill != NULL)
 	{
 	  if(piece_to_kill->get_Color() == piece->get_Color())
@@ -260,7 +293,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 	  
 	  if(piece->get_Type() != pions
 	     || (piece->get_Type() == pions
-		 && piece->get_last_pos().x != chemin[0].c.x))
+		 && piece->get_last_pos().x() != chemin[0].c.x()))
 	  {
 	    piece_to_kill->set_Alive(false);
 	    
@@ -282,8 +315,8 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 	//-------------------
 	//-------------------
 	
-	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[1].c.x,
-							    chemin[1].c.y);
+	piece_to_kill = tl_prox->chessplate->piece_at_coord(chemin[1].c.x(),
+							    chemin[1].c.y());
 	if(piece_to_kill != NULL)
 	{
 	  if(piece_to_kill->get_Color() == piece->get_Color())
@@ -293,7 +326,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 	  }
 	  if((e.info_piece->action == eat && piece->get_Type() != pions)
 	     || (piece->get_Type() == pions
-		 && piece->get_last_pos().x != chemin[1].c.x))
+		 && piece->get_last_pos().x() != chemin[1].c.x()))
 	    piece_to_kill->set_Alive(false);
 	  else
 	    tl->score_kill();
@@ -381,7 +414,7 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_n
 					piece->get_Color(), null_pieces[i]);
       //-----
       
-      piece_to_kill = tl_prox->chessplate->piece_at_coord(arbres[j]->arbre_struct[1].c.x, arbres[j]->arbre_struct[1].c.y);
+      piece_to_kill = tl_prox->chessplate->piece_at_coord(arbres[j]->arbre_struct[1].c.x(), arbres[j]->arbre_struct[1].c.y());
       if(piece_to_kill != NULL)
       {
 	if(piece_to_kill->get_Color() == piece->get_Color())
@@ -391,7 +424,7 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_n
 	}
 	if(piece->get_Type() != pions
 	   || (piece->get_Type() == pions
-		 && piece->get_last_pos().x != arbres[j]->arbre_struct[1].c.x))
+		 && piece->get_last_pos().x() != arbres[j]->arbre_struct[1].c.x()))
 	{
 	  piece_to_kill->set_Alive(false);
 	  
@@ -510,8 +543,8 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_
 	  info.ambiguous = check_ambiguiter(tl, arbres[j]->arbre_struct[h].c,
 					    piece->get_Type(), piece->get_Color(), null_pieces[k]);
 	  //------------
-	  piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[h].c.x,
-							 arbres[j]->arbre_struct[h].c.y);
+	  piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[h].c.x(),
+							 arbres[j]->arbre_struct[h].c.y());
 	  if(piece_to_kill != NULL)
 	  {
 	    if(piece_to_kill->get_Color() == piece->get_Color())
@@ -521,7 +554,7 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_
 	    }
 	    if(piece->get_Type() != pions
 	       || (piece->get_Type() == pions
-		   && piece->get_last_pos().x != arbres[j]->arbre_struct[h].c.x))
+		   && piece->get_last_pos().x() != arbres[j]->arbre_struct[h].c.x()))
 	    {
 	      piece_to_kill->set_Alive(false);
 	    
@@ -687,7 +720,7 @@ void Erreur_manager::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
   Piece* piece;
   if(e.piece_index == -1)
   {
-    piece = tl->chessplate->piece_at_coord(c.x, c.y);
+    piece = tl->chessplate->piece_at_coord(c.x(), c.y());
     if(piece == NULL || (e.info_piece->type == tours
        && !tl->chessplate->check_Rok_path(c, e.info_piece->coord)))
     {
@@ -717,8 +750,8 @@ void Erreur_manager::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
   }
   if(e.info_piece->action == eat)
   {
-    piece = tl->chessplate->piece_at_coord(e.info_piece->coord.x,
-				       e.info_piece->coord.y);
+    piece = tl->chessplate->piece_at_coord(e.info_piece->coord.x(),
+				       e.info_piece->coord.y());
     if(piece == NULL)
     {
       tl->score_kill();
@@ -787,36 +820,36 @@ std::vector<int> Erreur_manager::get_piece_in_path(ChessPlate* chess, Coord c1, 
 {
   std::vector<int> piece_indexs;
   int dst;
-  int x = (c1.x > c2.x)?-1:1;
-  int y = (c1.y > c2.y)?-1:1;
+  int x = (c1.x() > c2.x())?-1:1;
+  int y = (c1.y() > c2.y())?-1:1;
   Piece* p;
   if(t == dame || t == fous)
   {
-    dst = abs(c1.x - c2.x);
+    dst = abs(c1.x() - c2.x());
     for(int i = 1; i <= dst; i++)
     {
-      p = chess->piece_at_coord(c1.x+i*x, c1.y+i*y);
+      p = chess->piece_at_coord(c1.x()+i*x, c1.y()+i*y);
       if(p != NULL)
 	piece_indexs.push_back(chess->index_of(p));
     }
   }
   if(t == dame || t == tours)
   {
-    dst = abs(c1.x - c2.x)+abs(c1.y - c2.y);//1 des 2 est egal a 0
-    if(c1.x == c2.x)
+    dst = abs(c1.x() - c2.x())+abs(c1.y() - c2.y());//1 des 2 est egal a 0
+    if(c1.x() == c2.x())
     {
       for(int i = 1; i <= dst; i++)
       {
-	p = chess->piece_at_coord(c1.x, c1.y+i*y);
+	p = chess->piece_at_coord(c1.x(), c1.y()+i*y);
 	if(p != NULL)
 	  piece_indexs.push_back(chess->index_of(p));
       }
     }
-    else if(c1.y == c2.y)
+    else if(c1.y() == c2.y())
     {
       for(int i = 1; i <= dst; i++)
       {
-	p = chess->piece_at_coord(c1.x+i*x, c1.y);
+	p = chess->piece_at_coord(c1.x()+i*x, c1.y());
 	if(p != NULL)
 	  piece_indexs.push_back(chess->index_of(p));
       }
@@ -910,8 +943,8 @@ bool Erreur_manager::fill_none_piece()
 					      piece->get_Color(),
 					      null_indexs[i]);
 	    
-	    piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[k].c.x,
-							   arbres[j]->arbre_struct[k].c.y);
+	    piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[k].c.x(),
+							   arbres[j]->arbre_struct[k].c.y());
 	    
 	    if(piece_to_kill != NULL)
 	    {
@@ -922,7 +955,7 @@ bool Erreur_manager::fill_none_piece()
 	      }
 	      if(piece->get_Type() != pions
 		 || (piece->get_Type() == pions
-		     && piece->get_last_pos().x != arbres[j]->arbre_struct[k].c.x))
+		     && piece->get_last_pos().x() != arbres[j]->arbre_struct[k].c.x()))
 	      {
 		piece_to_kill->set_Alive(false);
 		
@@ -980,10 +1013,10 @@ bool Erreur_manager::Verif_eat(Info_Erreur e)
       //si la pièce est encore en vie et que c'est une pièce adverse
       if(p->get_Alive()||p->get_Color()!=e.info_piece->color)
       {
-        pPosX = p->get_pos_at(lastTime).x;
-        pPosY = p->get_pos_at(lastTime).y;
+        pPosX = p->get_pos_at(lastTime).x();
+        pPosY = p->get_pos_at(lastTime).y();
         //Si le coordonnée du coup sont égales a celle de pièce
-        if(e.info_piece->coord.x==pPosX||e.info_piece->coord.y==pPosY)
+        if(e.info_piece->coord.x()==pPosX||e.info_piece->coord.y()==pPosY)
         {
           return true; //la pièce doit être mangée
         }
@@ -1014,8 +1047,8 @@ bool Erreur_manager::Verif_echec(Info_Erreur e)
       {
         if(p->get_Type()==Type::roi||p->get_Color()!=e.color)
         {
-          roiX = p->get_pos_at(lastTime).x;
-          roiY = p->get_pos_at(lastTime).y;
+          roiX = p->get_pos_at(lastTime).x();
+          roiY = p->get_pos_at(lastTime).y();
           
           roiRecu=true;
         }
@@ -1026,6 +1059,3 @@ bool Erreur_manager::Verif_echec(Info_Erreur e)
   
   return false;
 }
-*/
-
-
