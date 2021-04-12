@@ -22,13 +22,7 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
     tl->score_kill();
     return;
   }
-  //cout << "         NB: "<<nb<<endl;
 
-  /*if(tl->get_score() > tl->get_nb_none_p())
-  {
-    tl->score_kill();
-    return;
-    }*/
   
   int* proxs_castling = TD->diviser(2, e.tl_index);
   Oublie_conscient_cas_castling(e,true,proxs_castling[0]);
@@ -231,7 +225,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 	{
 	  tl->score_kill();
 	  continue;
-	}
+	  }*/
 	
 	
 	if(piece->get_Type() == roi && tl_prox->chessplate->check_king_movement(chemin[0].c))
@@ -249,7 +243,7 @@ void Erreur_manager::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_n
 	{
 	  tl_prox->score_kill();
 	  continue;
-	  }*/
+	}
 	//-------------
 	info.ambiguous = check_ambiguiter(tl_prox, chemin[0].c,
 					  piece->get_Type(),
@@ -360,11 +354,12 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_n
     {
       tl_prox = TD->TimeLine_at(proxs[i]);
       piece = tl_prox->chessplate->at(arbres[j]->index);
+      
       /*if(piece->get_Color() != tl->get_color(null_pieces[i]))
       {
 	tl->score_kill();
 	continue;
-	}
+	}*/
       
       if(piece->get_Type() == roi && tl_prox->chessplate->check_king_movement(arbres[j]->arbre_struct[1].c))
       {
@@ -379,7 +374,7 @@ void Erreur_manager::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_n
       {
 	tl_prox->score_kill();
 	continue;
-	}*/
+      }
       
       info.ambiguous = check_ambiguiter(tl_prox,
 					arbres[j]->arbre_struct[1].c,
@@ -492,11 +487,12 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_
 	  tl = TD->TimeLine_at(arbre_proxs[h]);
 	  
 	  piece = tl->chessplate->at(arbres[j]->index);
+	  
 	  /*if(piece->get_Color() != tl->get_color(null_pieces[k]))
 	  {
 	    tl->score_kill();
 	    continue;
-	    }
+	    }*/
 	  
 	  if(piece->get_Type() == roi
 	     && tl->chessplate->check_king_movement(arbres[j]->arbre_struct[h].c))
@@ -511,7 +507,7 @@ void Erreur_manager::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_
 	  {
 	    tl->score_kill();
 	    continue;
-	    }*/
+	  }
 	  info.ambiguous = check_ambiguiter(tl, arbres[j]->arbre_struct[h].c,
 					    piece->get_Type(), piece->get_Color(), null_pieces[k]);
 	  //------------
@@ -959,6 +955,7 @@ bool Erreur_manager::fill_none_piece()
     delete null_tl_indexs;
     delete null_indexs;
   }
+  return null_check;
 }
 //vérifie le coup doit engendrer un eat
 bool Erreur_manager::Verif_eat(Info_Erreur e)

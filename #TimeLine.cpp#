@@ -231,7 +231,7 @@ void TimeLine::Check_timeline()
 bool TimeLine::get_color(int i)
 {
   bool color = true;
-  
+  //impossible de faire un castling a l'index 0
   for(int j = 1; j < instants.size() && j <= i; j++)
   {
     color = !color;

@@ -20,7 +20,7 @@ Identify::Identify(string* l, int size)
     temps_index = i;
     interpreteur(&liste[i]);
   }
-  //while(EM->fill_none_piece());
+  while(EM->fill_none_piece());
   //TD->clear_score();
 }
 Identify::~Identify()

@@ -5,7 +5,7 @@
 #include "TimeLine.h"
 #include "Piece.h"
 
-#define MAX_SCORE 8
+#define MAX_SCORE 15
 
 class TimeDivision
 {
