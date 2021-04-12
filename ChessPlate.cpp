@@ -274,6 +274,26 @@ bool ChessPlate::check_king_movement(Coord c)
   }
   return true;
 }
+bool ChessPlate::check_piece_rampant_movement(Type t, Coord c1, Coord c2)
+{
+  switch(t)
+  {
+  case fous:
+    if(check_Bishop_path(c1, c2))
+      return true;
+    break;
+  case tours:
+    if(check_Rok_path(c1, c2))
+      return true;
+    break;
+  case dame:
+  if(check_Bishop_path(c1, c2)
+     || check_Rok_path(c1, c2))
+    return true;
+  break;
+  }
+  return false;
+}
 bool ChessPlate::check_Bishop_path(Coord start, Coord end)
 {
   int x = (start.x > end.x)?-1:1;

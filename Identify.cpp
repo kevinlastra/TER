@@ -260,6 +260,7 @@ void Identify::interpreteur(string* piece)
       Error.tl_instance_index = temps_index;
 
       Traitement_erreur();
+      
     }
   }
   delete info_piece;
@@ -272,6 +273,7 @@ void Identify::Factorize(Piece** p, Info_piece* ip, string* s)
     *p = tl->chessplate->find_piece(ip->type,ip->color,
 				    (int)s[0][1]-96,
 				    (int)s[0][2]-48);
+    
     ip->action = int_to_act(0);
   }
   else
