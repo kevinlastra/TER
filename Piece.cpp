@@ -15,7 +15,7 @@ Piece::Piece(Type t, bool c, int x, int y):Temps_movements(new int[10]),TM_max_s
   color = c;
   alive = true;
 }
-Piece::Piece(Piece* p):Temps_movements(new int[p->get_TM_max_size()]), color(p->get_Color()),pos(new Coord[p->get_TM_max_size()]),type(p->get_Type()),alive(p->get_Alive())
+Piece::Piece(Piece* p):Temps_movements(new int[p->get_TM_max_size()]), color(p->get_Color()),pos(new Coord[p->get_TM_max_size()]),type(p->get_Type()),alive(p->get_Alive()),score(p->get_score())
 {
   TM_size = p->get_TM_size();
   TM_max_size = p->get_TM_max_size();
@@ -51,6 +51,10 @@ void Piece::set_Alive(bool a)
 {
   alive = a;
 }
+void Piece::pp_score()
+{
+  score++;
+}
 Type Piece::get_Type()
 {
   return type;
@@ -66,6 +70,10 @@ bool Piece::get_Color()
 bool Piece::get_Alive()
 {
   return alive;
+}
+int Piece::get_score()
+{
+  return score;
 }
 bool Piece::piece_rampant()
 {

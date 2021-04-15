@@ -26,6 +26,8 @@ class Piece
   int TM_size=0;
   int TM_max_size;
 
+  int score = 0;
+  
   void resize();
  public:
 
@@ -40,11 +42,13 @@ class Piece
   void set_Coord_at(Coord, int);
   void set_Color(bool);
   void set_Alive(bool);
+  void pp_score();
   
   Type get_Type();
   Coord* get_Coord();
   bool get_Color();
   bool get_Alive();
+  int get_score();
   //dame, fous, tours
   bool piece_rampant();
   int get_TM_size();

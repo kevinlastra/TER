@@ -77,6 +77,7 @@ void Erreur_note::Pion(Info_Erreur e,int nb, int* null_pieces)
     }
     else
     {
+      p->pp_score();
       tl->add_instant_on_top(p,e.info_piece->coord,e.info_piece->action, e.info_piece->info);
     }
     //2)
@@ -134,11 +135,13 @@ Piece* Erreur_note::Manger_en_passant(Info_Erreur e)
     {
       //cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
       //p = Traitement_erreur();
+      tl->score_kill();
     }
     else
     {
       c = p->get_pos_at(p->get_TM_size()-2);
       index = p->get_movements_at(p->get_TM_size()-1);
+      
       if(index != e.tl_instance_index-1 || c.x != p->get_last_pos().x ||
 	 c.y != p->get_last_pos().y + 2)
       {
@@ -218,7 +221,6 @@ void Erreur_note::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_null
       {
 	tl_prox = TD->TimeLine_at(proxs[i]);
 	piece = tl_prox->chessplate->at(arbres[j]->index);
-      
 	/*if(piece->get_Color() != tl_prox->get_color(null_pieces[i]))
 	{
 	  tl->score_kill();
@@ -262,6 +264,7 @@ void Erreur_note::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_null
 		 && piece->get_last_pos().x != chemin[0].c.x))
 	  {
 	    piece_to_kill->set_Alive(false);
+	    piece_to_kill->pp_score();
 	    
 	    if(piece->get_Type() == pions)
 	      info.ambiguous = true;
@@ -278,6 +281,7 @@ void Erreur_note::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_null
 	  tl_prox->update_at(piece, Action::move, info, null_pieces[i]);
       
 	piece->add_movements(null_pieces[i], chemin[0].c);
+	piece->pp_score();
 	//-------------------
 	//-------------------
 	
@@ -293,7 +297,10 @@ void Erreur_note::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_null
 	  if((e.info_piece->action == eat && piece->get_Type() != pions)
 	     || (piece->get_Type() == pions
 		 && piece->get_last_pos().x != chemin[1].c.x))
+	  {
 	    piece_to_kill->set_Alive(false);
+	    piece_to_kill->pp_score();
+	  }
 	  else
 	    tl->score_kill();
 	}
@@ -310,9 +317,10 @@ void Erreur_note::Oublie_conscient_cas_A(Info_Erreur e, int index_tl,int nb_null
 							piece->get_Color(),
 							null_pieces[i]);
       
-	tl_prox->add_instant_on_top(tl_prox->chessplate->at(arbres[j]->index),
+	tl_prox->add_instant_on_top(piece,
 				    e.info_piece->coord, e.info_piece->action,
 				    e.info_piece->info);
+	piece->pp_score();
 	//-----------------------
       }
       delete[] proxs;
@@ -326,7 +334,7 @@ void Erreur_note::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_null
 {
   TimeLine* tl = TD->TimeLine_at(index_tl);
   
-  int* proxs;// = TD->diviser(nb,index_tl);
+  int* proxs;
 
   Info info;
   std::vector<Arbre*> arbres;
@@ -409,15 +417,14 @@ void Erreur_note::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_null
 	
       piece->add_movements(null_pieces[i],
 			   arbres[j]->arbre_struct[1].c);
-      
-      
-      //-----
+      piece->pp_score();
+     
       piece->set_Alive(false);
       
       tl_prox->add_instant_on_top(tl_prox->chessplate->at(e.piece_index),
 				  e.info_piece->coord, e.info_piece->action,
 				  e.info_piece->info);
-      //tl_prox->toString();
+      tl_prox->chessplate->at(e.piece_index)->pp_score();
     }
     delete[] proxs;
     delete arbres[j];
@@ -522,9 +529,11 @@ void Erreur_note::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_nul
 		   && piece->get_last_pos().x != arbres[j]->arbre_struct[h].c.x))
 	    {
 	      piece_to_kill->set_Alive(false);
-	    
+	      piece_to_kill->pp_score();
+	      
 	      if(piece->get_Type() == pions)
 		info.ambiguous = true;
+	      
 	      tl->update_at(piece, Action::eat, info, null_pieces[k]);
 	    }
 	    else
@@ -538,10 +547,12 @@ void Erreur_note::Oublie_conscient_cas_C(Info_Erreur e, int index_tl, int nb_nul
 
 	  piece->add_movements(null_pieces[k],
 			       arbres[j]->arbre_struct[h].c);
+	  piece->pp_score();
 	  
 	  tl->add_instant_on_top(tl->chessplate->at(piece_indexs[i]),
 				 e.info_piece->coord, e.info_piece->action,
 				 e.info_piece->info);
+	  tl->chessplate->at(piece_indexs[i])->pp_score();
 	}
 	delete[] arbre_proxs;
       }
@@ -592,7 +603,9 @@ void Erreur_note::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int 
 	tl->update_at(b, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
 	b->add_movements(null_indexs[i], Coord(7,1));
+	b->pp_score();
 	a->add_movements(null_indexs[i]+1, Coord(6,1));
+	a->pp_score();
 	
 	if(repair)
 	{
@@ -615,8 +628,9 @@ void Erreur_note::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int 
 	tl->update_at(b, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
 	b->add_movements(null_indexs[i], Coord(3,1));
+	b->pp_score();
 	a->add_movements(null_indexs[i]+1, Coord(4,1));
-
+	a->pp_score();
 	
 	if(repair)
 	  castling_extension(tl,e,Coord(4,1));
@@ -644,8 +658,10 @@ void Erreur_note::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int 
 	tl->update_at(b, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]+1);
 	b->add_movements(null_indexs[i], Coord(7,8));
+	b->pp_score();
 	a->add_movements(null_indexs[i]+1, Coord(6,8));
-
+	a->pp_score();
+	
 	if(repair)
 	{
 	  castling_extension(tl,e,Coord(6,8));
@@ -666,8 +682,10 @@ void Erreur_note::Oublie_conscient_cas_castling(Info_Erreur e, bool repair, int 
 	tl->update_at(b, Action::change, Info(), null_indexs[i]);
 	tl->add_instant_at(a, Action::change, Info(), null_indexs[i]);
 	b->add_movements(null_indexs[i], Coord(3,8));
+	b->pp_score();
 	a->add_movements(null_indexs[i]+1, Coord(4,8));
-
+	a->pp_score();
+	
 	if(repair)
 	  castling_extension(tl,e,Coord(4,8));
       }
@@ -711,7 +729,8 @@ void Erreur_note::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
     tl->add_instant_on_top(piece,
 			   e.info_piece->coord,
 			   e.info_piece->action,
-			   e.info_piece->info); 
+			   e.info_piece->info);
+    piece->pp_score();
   }
   if(e.info_piece->action == eat)
   {
@@ -725,6 +744,7 @@ void Erreur_note::castling_extension(TimeLine* tl, Info_Erreur e,Coord c)
     else
     {
       piece->set_Alive(false);
+      piece->pp_score();
     }
   }
 }

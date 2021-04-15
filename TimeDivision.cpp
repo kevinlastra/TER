@@ -45,7 +45,8 @@ int TimeDivision::nb_dead_tl()
   int cpt = 0;
   for(int i = 0; i < TimeLines.size(); i++)
   {
-    if(TimeLines[i]->get_score() >= MAX_SCORE)
+    if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
+       || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
       cpt++;
   }
   return cpt;
@@ -72,7 +73,8 @@ void TimeDivision::clear_score()
   std::vector<TimeLine*> temp;
   while(i < TimeLines.size())
   {
-    if(TimeLines[i]->get_score() >= MAX_SCORE)
+    if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
+       || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
     {
       remove_tl_at(i);
     }
@@ -94,7 +96,8 @@ void TimeDivision::clear_tl()
   while(i < TimeLines.size())
   {
     TimeLines[i]->Check_timeline();
-    if(TimeLines[i]->get_score() > MAX_SCORE)
+    if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
+       || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
     {
       remove_tl_at(i);
     }

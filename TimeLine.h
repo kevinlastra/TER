@@ -62,7 +62,8 @@ class TimeLine
   //score
   void score_kill(); //score = 1000, cette operation ser a tue le tl dans le prochain balayage
   void pp_score();   //score++
-  int get_score();   
+  int get_local_score();
+  int get_global_score();
   //
   void pp_none_p();
   int get_nb_none_p();

@@ -34,7 +34,7 @@ TimeLine::TimeLine(TimeLine* tl)
       instants.push_back(a);
     }
   }
-  score = tl->get_score();
+  score = tl->get_local_score();
   nb_none_piece = tl->get_nb_none_p();
 }
 TimeLine::~TimeLine()
@@ -101,9 +101,21 @@ void TimeLine::pp_score()
 {
   score++;
 }
-int TimeLine::get_score()
+int TimeLine::get_local_score()
 {
   return score;
+}
+int TimeLine::get_global_score()
+{
+  int max_sc = 0;
+  int sc = 0;
+  for(int i = 0; i < chessplate->size(); i++)
+  {
+    sc = chessplate->at(i)->get_score();
+    if(sc > max_sc)
+      max_sc = sc;
+  }
+  return max_sc;
 }
 void TimeLine::pp_none_p(){nb_none_piece++;}
 int TimeLine::get_nb_none_p(){return nb_none_piece;};

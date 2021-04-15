@@ -1,0 +1,15 @@
+#ifndef ERREUR_NON_NOTE
+#define ERREUR_NON_NOTE
+
+#include "TimeDivision.h"
+
+class Erreur_non_note
+{
+ private:
+  Erreur_non_note(TimeDivision*);
+  ~Erreur_non_note();
+  
+ public:
+};
+
+#endif

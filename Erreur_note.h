@@ -13,7 +13,7 @@ using namespace std;
 class Erreur_note
 {
  private:
-TimeDivision* TD;
+  TimeDivision* TD;
     
  public:
   Erreur_note(TimeDivision*);

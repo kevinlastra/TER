@@ -23,7 +23,8 @@ bool Erreur_manager::fill_none_piece()
   for(int h = 0; h < size; h++)
   {
     TimeLine* tl = TD->TimeLine_at(h);
-    if(tl->get_score() > MAX_SCORE)
+    if(tl->get_local_score() >= MAX_LOCAL_SCORE
+       || tl->get_global_score() >= MAX_GLOBAL_SCORE)
       continue;
     
     int nb_null_piece = 0;
@@ -61,6 +62,7 @@ bool Erreur_manager::fill_none_piece()
 	    tl = TD->TimeLine_at(arbre_struct_indexs[k]);
 	    tl->pp_score();
 	    piece = tl->chessplate->at(arbres[j]->index);
+	    piece->pp_score();
 	    if(piece->get_Color() != tl->get_color(null_indexs[i]))
 	    {
 	      tl->score_kill();
