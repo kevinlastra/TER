@@ -35,6 +35,10 @@ void Piece::set_Type(char c)
 {
   type = char_to_type(c);
 }
+void Piece::set_Type(Type t)
+{
+  type = t;
+}
 void Piece::set_Coord_at(Coord c, int i)
 {
   if(i < TM_size)

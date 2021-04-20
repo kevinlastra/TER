@@ -1,0 +1,469 @@
+#include "Erreur_non_note.h"
+Erreur_non_note::Erreur_non_note(TimeDivision* td)
+{
+  TD = td;
+}
+Erreur_non_note::~Erreur_non_note(){}
+  
+void Erreur_non_note::Traiter_Erreur(Info_Erreur e)
+{
+  
+  TimeLine* tl = TD->TimeLine_at(e.tl_index);
+  tl->pp_score();
+
+  if(e.piece_index == -1)
+  {
+    if(e.info_piece->type == dame
+       || e.info_piece->type == tours
+       || e.info_piece->type == fous)
+    {
+      int* div_indexs = TD->diviser(2,e.tl_index);
+      Cas_A(e,div_indexs[0]);
+      Cas_C(e,div_indexs[1]);
+      delete[] div_indexs;
+    }
+    else
+      Cas_A(e, e.tl_index);
+  }
+  else 
+  {
+    if(e.info_piece->action == eat)
+    {
+      Cas_B(e);
+    }
+    else
+    {
+      tl->score_kill();
+    }
+  }
+}
+void Erreur_non_note::Cas_A(Info_Erreur e, int tl_index)
+{
+  TimeLine* tl = TD->TimeLine_at(tl_index);
+  std::vector<int> candidas = find_candidate_pieces(tl,e.info_piece);
+  std::vector<Arbre*> arbres;
+  std::vector<Anode> chemin;
+  //prof 1
+  std::vector<int> pos_index_1;
+  //prof 2 & 3
+  std::vector<std::vector<int>> pos_index_sup;
+  //
+  Piece* piece;
+  Piece* piece_to_kill;
+  //
+  Info info;
+  //
+  bool score_kill;
+  //
+  int* candidats_arbres = TD->diviser(candidas.size(), tl_index);
+  int* profs_proxs;
+  int* proxs_arbres;
+  int* proxs_nb_chemin;
+  int* proxs_pos_indexs_sup;
+  int dst;
+  int nb_chemin;
+
+  for(int i = 0; i < candidas.size(); i++)
+  {
+    profs_proxs = TD->diviser(3, candidats_arbres[i]);
+    for(int j = 0; j < 3; j++)
+    {
+      tl = TD->TimeLine_at(profs_proxs[j]);
+
+      dst = get_distance_from_last_movement(tl, tl->chessplate->at(candidas[i]));
+      
+      if(!check_arbre_prof(tl, dst, j+1))
+      {
+	tl->score_kill();
+	continue;
+      }
+      
+      arbres = Gen_Arbre(tl, j+1,
+			 e.info_piece->coord,
+			 e.info_piece->color,
+			 e.info_piece->type);
+      
+      if(arbres.size() == 0)
+      {
+	tl->score_kill();
+	continue;;
+      }
+      
+      switch(j)
+      {
+      case 0:
+	if(dst == tl->get_size()-1)
+	  pos_index_1 = pos_prof_1(tl, tl->chessplate->at(candidas[i])->get_Color());
+	else
+	  pos_index_1 = pos_prof_1(tl, tl->get_size()-dst,
+				   tl->chessplate->at(candidas[i])->get_Color());
+	break;
+      case 1:
+	if(dst == tl->get_size()-1)
+	  pos_index_sup = pos_prof_2(tl,tl->chessplate->at(candidas[i])->get_Color());
+	else
+	  pos_index_sup = pos_prof_2(tl, tl->get_size()-dst);
+	break;
+      case 2:
+	if(dst == tl->get_size()-1)
+	  pos_index_sup = pos_prof_3(tl,tl->chessplate->at(candidas[i])->get_Color());
+	else
+	  pos_index_sup = pos_prof_3(tl, tl->get_size()-dst);
+	break;
+      }
+      
+      proxs_arbres = TD->diviser(arbres.size(), tl_index);
+
+      for(int k = 0; k < arbres.size(); k++)
+      {
+	nb_chemin = arbres[k]->nb_chemin(j+1);
+	
+	proxs_nb_chemin = TD->diviser(nb_chemin, proxs_arbres[k]);
+	for(int h = 0; h < nb_chemin; h++)
+	{	  
+	  chemin = arbres[k]->chemin_at(h, j+1);
+
+	  if(j == 0)
+	  {
+	    tl = TD->TimeLine_at(proxs_nb_chemin[h]);
+	    tl->re_build_chessplate(chemin, pos_index_1);
+	  }
+	  else
+	  {
+	    proxs_pos_indexs_sup = TD->diviser(pos_index_sup.size(),
+					       proxs_nb_chemin[h]);
+	    for(int l = 0; l < pos_index_sup.size(); l++)
+	    {
+	      tl = TD->TimeLine_at(proxs_pos_indexs_sup[l]);
+	      
+	      tl->re_build_chessplate(chemin, pos_index_sup[l]);
+	    }
+	    delete[] proxs_pos_indexs_sup;
+	  }
+	}
+	delete[] proxs_nb_chemin;
+      }
+      delete[] proxs_arbres;
+    }
+    delete[] profs_proxs;
+  }
+  delete[] candidats_arbres;
+}
+void Erreur_non_note::Cas_B(Info_Erreur e)
+{
+  TD->TimeLine_at(e.tl_index)->score_kill();
+}
+void Erreur_non_note::Cas_C(Info_Erreur e, int tl_index)
+{
+  TD->TimeLine_at(e.tl_index)->score_kill();
+}
+
+std::vector<int> Erreur_non_note::find_candidate_pieces(TimeLine* tl, Info_piece* e)
+{
+  Piece* p;
+  std::vector<int> pieces;
+  for(int i = 0; i < tl->chessplate->size(); i++)
+  {
+    p = tl->chessplate->at(i);
+    if(p->get_Type() == e->type
+       && p->get_Color() == e->color
+       && p->get_Alive())
+    {
+      pieces.push_back(i);
+    }
+  }
+  return pieces;
+}
+int Erreur_non_note::get_distance_from_last_movement(TimeLine* tl, Piece* p)
+{
+  int size = tl->get_size();
+  for(int i = size-1; i > 0; i--)
+  {
+    if(tl->get_instant_at(i)->p == p)
+    {
+      return size-i-1;
+    }
+  }
+  return size-1;
+}
+bool Erreur_non_note::check_arbre_prof(TimeLine* tl, int dist, int prof)
+{
+  if(dist == tl->get_size()-1)//donc p n'a jamais bouger
+  {
+    switch(prof)
+    {
+    case 1:
+      return dist >= 1;
+      break;
+    case 2:
+      return dist >= 2;
+      break;
+    case 3:
+      return dist >= 3;
+      break;
+    default:
+      cout << "ENN - CAP - prof > 3 "<<endl;
+      exit(1);
+      break;
+    }
+  }
+  else
+  {
+    if(dist%2==0)
+    {
+      if(prof == 1)
+	return dist >= 2;
+      if(prof == 3)
+	return dist >= 4;
+    }
+    else
+    {
+      if(prof == 2)
+	return dist >= 3;
+    }
+  }
+  return prof;
+}
+std::vector<Arbre*> Erreur_non_note::Gen_Arbre(TimeLine* tl, int prof, Coord c, bool color, Type t)
+{
+  //GEN ARBRE
+  std::vector<Arbre*> arbres;
+  Piece* piece;
+  for(int h = 0; h < tl->chessplate->size(); h++)
+  {
+    piece = tl->chessplate->at(h);
+    if(!piece->get_Alive()
+       && piece->get_Color() != color
+       && piece->get_Type() != t)
+      continue;
+    
+    ArbreMovement AM(tl->chessplate);
+    Arbre* a = AM.Generait_arbre(tl->chessplate->at(h),h,c,prof);
+    if(a->arbre_struct.size() > 0)
+    {
+      arbres.push_back(a);
+    }
+  }
+  return arbres;
+}
+//v1
+std::vector<int> Erreur_non_note::pos_prof_1(TimeLine* tl, bool color)
+{
+  int size = tl->get_size();
+  int start = color?1:0;
+  
+  std::vector<int> indexs;
+  Instant* ins;
+  for(int i = start; i < size; i++)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->p->get_Color() != color)
+    {
+      indexs.push_back(i);
+      if(ins->a == change)
+	i++;
+    }
+  }
+  return indexs;
+}
+//v2
+std::vector<int> Erreur_non_note::pos_prof_1(TimeLine* tl, int index, bool color)
+{
+  int size = tl->get_size();
+  
+  std::vector<int> indexs;
+  Instant* ins = tl->get_instant_at(index+2);
+
+  int start = (ins->a==change?
+	       (tl->get_instant_at(index+1)->a==change?index+3:index+2)
+	       :index+2);
+  
+  for(int i = start; i < size; i++)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->p->get_Color() != color)
+    {
+      indexs.push_back(i);
+      if(ins->a == change)
+	i++;
+    }
+  }
+  return indexs;
+}
+//v1
+std::vector<std::vector<int>> Erreur_non_note::pos_prof_2(TimeLine* tl, bool color)
+{
+  std::vector<std::vector<int>> pairs;
+  
+  int size = tl->get_size();
+  int start = color?0:1;
+
+  Instant* ins;
+  for(int i = start; i < size-1; i+=2)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->a == change)
+    {
+      ins = tl->get_instant_at(i-1);
+      if(ins->a == change)
+	i++;
+    }
+    for(int j = i+2; j < size; j+=2)
+    {
+      std::vector<int> pair;
+      pair.push_back(i);
+
+      ins = tl->get_instant_at(j);
+      if(ins->a == change)
+      {
+	ins = tl->get_instant_at(j-1);
+	if(ins->a == change)
+	  j++;
+      }
+      pair.push_back(j);
+
+      pairs.push_back(pair);
+    }
+  }
+
+  return pairs;
+}
+//v2
+std::vector<std::vector<int>> Erreur_non_note::pos_prof_2(TimeLine* tl, int index)
+{
+  std::vector<std::vector<int>> pairs;
+
+  Instant* ins = tl->get_instant_at(index+2);
+  
+  int size = tl->get_size();
+  int start = (ins->a==change?
+	       (tl->get_instant_at(index+1)->a==change?index+3:index+2)
+	       :index+2);
+
+  for(int i = start; i < size-1; i+=2)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->a == change)
+    {
+      ins = tl->get_instant_at(i-1);
+      if(ins->a == change)
+	i++;
+    }
+    for(int j = i+2; j < size; j+=2)
+    {
+      std::vector<int> pair;
+      pair.push_back(i);
+      ins = tl->get_instant_at(j);
+      if(ins->a == change)
+      {
+	ins = tl->get_instant_at(j-1);
+	if(ins->a == change)
+	  j++;
+      }
+      pair.push_back(j);
+      pairs.push_back(pair);
+    }
+  }
+
+  return pairs;
+}
+//v1
+std::vector<std::vector<int>> Erreur_non_note::pos_prof_3(TimeLine* tl, bool color)
+{
+  std::vector<std::vector<int>> triples;
+  
+  int size = tl->get_size();
+  int start = color?0:1;
+
+  Instant* ins;
+  for(int i = start; i < size-1; i+=2)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->a == change)
+    {
+      ins = tl->get_instant_at(i-1);
+      if(ins->a == change)
+	i++;
+    }
+    for(int j = i+2; j < size; j+=2)
+    {
+      ins = tl->get_instant_at(j);
+      if(ins->a == change)
+      {
+	ins = tl->get_instant_at(j-1);
+	if(ins->a == change)
+	  j++;
+      }
+      for(int z = j+2; z < size; z+=2)
+      {
+	std::vector<int> triple;
+	triple.push_back(i);
+	triple.push_back(j);
+
+	ins = tl->get_instant_at(z);
+	if(ins->a == change)
+	{
+	  ins = tl->get_instant_at(z-1);
+	  if(ins->a == change)
+	    z++;
+	}
+	triple.push_back(z);
+
+	triples.push_back(triple);
+      }
+    }
+  }
+
+  return triples;
+}
+//v2
+std::vector<std::vector<int>> Erreur_non_note::pos_prof_3(TimeLine* tl, int index)
+{
+  std::vector<std::vector<int>> triples;
+  Instant* ins = tl->get_instant_at(index+2);
+  
+  int size = tl->get_size();
+  int start = (ins->a==change?
+	       (tl->get_instant_at(index+1)->a==change?index+3:index+2)
+	       :index+2);
+
+  for(int i = start; i < size-1; i+=2)
+  {
+    ins = tl->get_instant_at(i);
+    if(ins->a == change)
+    {
+      ins = tl->get_instant_at(i-1);
+      if(ins->a == change)
+	i++;
+    }
+    for(int j = i+2; j < size; j+=2)
+    {
+      ins = tl->get_instant_at(j);
+      if(ins->a == change)
+      {
+	ins = tl->get_instant_at(j-1);
+	if(ins->a == change)
+	  j++;
+      }
+      for(int z = j+2; z < size; z+=2)
+      {
+	std::vector<int> triple;
+	triple.push_back(i);
+	triple.push_back(j);
+
+	ins = tl->get_instant_at(z);
+	if(ins->a == change)
+	{
+	  ins = tl->get_instant_at(z-1);
+	  if(ins->a == change)
+	    z++;
+	}
+	triple.push_back(z);
+
+	triples.push_back(triple);
+      }
+    }
+  }
+
+  return triples;
+}

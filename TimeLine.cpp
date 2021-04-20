@@ -227,8 +227,6 @@ void TimeLine::Check_timeline()
             *posRoi)))
             {
               instants[i].info.echec = true;
-              cout<<"kill me plz i: "<<i<<endl;
-              cout<<instants[i].p->toString(true)<<endl;
             }
       }else{
         instants[i].info.echec = false;

@@ -20,8 +20,11 @@ Identify::Identify(string* l, int size)
     temps_index = i;
     interpreteur(&liste[i]);
   }
+  TD->clear_score();
+  cout << "     TD Size: "<<TD->size()<<endl;
   while(EM->fill_none_piece());
-  }
+  cout << "     TD Size: "<<TD->size()<<endl;
+}
 Identify::~Identify()
 {
   delete EM;
@@ -45,8 +48,6 @@ void Identify::interpreteur(string* piece)
   cout << "     TD Size: "<<size<<"     "<<piece[0]<<endl;
   for(int i = 0; i < size;i++)
   {
-    /*cout << "TIMELINE: "<<i<<"    size: "<<size<<"     "<<piece[0]
-      <<"    score: "<<TD->TimeLine_at(i)->get_score()<<endl;*/
     p = NULL;
     
     info_piece->action = int_to_act(3);
@@ -216,7 +217,7 @@ void Identify::interpreteur(string* piece)
           Error.tl_instance_index = temps_index;
           
           Traitement_erreur();
-	      }
+	}
       }
 	    else if(info_piece->action == 0)
       {

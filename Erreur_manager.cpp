@@ -15,11 +15,12 @@ Erreur_manager::~Erreur_manager()
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-	//cout<<"erreur"<<endl;
-	
-  	ENOT->Traiter_Erreur(e);
-	
-	//EN->Traiter_Erreur(e);
+  int* tls = TD->diviser(2,e.tl_index);
+  e.tl_index = tls[0];
+  ENOT->Traiter_Erreur(e);
+  
+  e.tl_index = tls[1];
+  EN->Traiter_Erreur(e);
 }
 
 bool Erreur_manager::fill_none_piece()
@@ -28,6 +29,7 @@ bool Erreur_manager::fill_none_piece()
   int size = TD->size();
   for(int h = 0; h < size; h++)
   {
+    cout<<"h: "<<h<<"   size: "<<size<<endl;
     TimeLine* tl = TD->TimeLine_at(h);
     if(tl->get_local_score() >= MAX_LOCAL_SCORE
        || tl->get_global_score() >= MAX_GLOBAL_SCORE)
@@ -37,6 +39,7 @@ bool Erreur_manager::fill_none_piece()
     int* null_indexs = tl->get_all_piece_NULL(nb_null_piece);
     if(nb_null_piece == 0)
       continue;
+    
     null_check = true;
     int chess_size = tl->chessplate->size();
     std::vector<int> alive_pieces;
@@ -50,15 +53,19 @@ bool Erreur_manager::fill_none_piece()
     std::vector<Arbre*> arbres = Gen_Arbre(tl, alive_pieces, 1);
     
     Info info;
-    int* null_tl_indexs = TD->diviser(nb_null_piece, h);
+    int* null_tl_indexs = TD->diviser(nb_null_piece+1, h);
     int* alive_tl_indexs;
     int* arbre_struct_indexs;
     Piece* piece_to_kill;
     Piece* piece;
+    
+    EN->Oublie_conscient_cas_castling(Info_Erreur(),false,
+				      null_tl_indexs[nb_null_piece],
+				      nb_null_piece,null_indexs);
+
     for(int i = 0; i < nb_null_piece; i++)
     {
-      alive_tl_indexs = TD->diviser(arbres.size()+1, null_tl_indexs[i]);
-      EN->Oublie_conscient_cas_castling(Info_Erreur(),false, alive_tl_indexs[arbres.size()]);
+      alive_tl_indexs = TD->diviser(arbres.size(), null_tl_indexs[i]);
       for(int j = 0; j < arbres.size(); j++)
       {
 	  arbre_struct_indexs = TD->diviser(arbres[j]->arbre_struct.size(),
@@ -69,7 +76,7 @@ bool Erreur_manager::fill_none_piece()
 	    tl->pp_score();
 	    piece = tl->chessplate->at(arbres[j]->index);
 	    piece->pp_score();
-	    if(piece->get_Color() != tl->get_color(null_indexs[i]))
+	    if(piece->get_Color() != tl->get_instant_at(null_indexs[i])->p->get_Color())
 	    {
 	      tl->score_kill();
 	      continue;
@@ -134,8 +141,8 @@ bool Erreur_manager::fill_none_piece()
     {
       delete arbres[i];
     }
-    delete null_tl_indexs;
-    delete null_indexs;
+    //delete[] null_tl_indexs;
+    //delete[] null_indexs;
   }
   return null_check;
 }

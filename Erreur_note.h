@@ -41,8 +41,10 @@ class Erreur_note
   void Oublie_conscient_cas_B(Info_Erreur,int,int,int*);
   void Oublie_conscient_cas_C(Info_Erreur,int,int,int*);
   //time line index, color
-  void Oublie_conscient_cas_castling(Info_Erreur,bool,int);
-  void castling_extension(TimeLine*,Info_Erreur,Coord);
+  void Oublie_conscient_cas_castling(Info_Erreur,bool,int,int,int*);
+  void Error_extension(TimeLine*,Info_Erreur);
+  //
+  void Oublie_conscient_cas_promotion(Info_Erreur,int,int,int*);
   //
   
   //tl,coord, prof, color

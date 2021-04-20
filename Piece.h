@@ -39,6 +39,7 @@ class Piece
 
   //get et set
   void set_Type(char);
+  void set_Type(Type);
   void set_Coord_at(Coord, int);
   void set_Color(bool);
   void set_Alive(bool);
