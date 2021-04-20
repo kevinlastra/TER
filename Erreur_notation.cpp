@@ -38,7 +38,7 @@ bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
 
 
 bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
-  cout<<"err coord"<<endl;
+  //cout<<"err coord"<<endl;
   Info_piece* infP = error.info_piece; 
   bool couleur_piece = infP->color;
   Coord coord_piece = infP->coord;
@@ -47,6 +47,7 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
   TimeLine* next_TL;
   Piece* piece;
   Piece* piece_test;
+  Piece* piece_to_kill;
   std::vector<int> index_type;
   std::vector<Anode> chemin;
   ArbreMovement AM(tl->chessplate);
@@ -58,8 +59,8 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
   bool found = false;
   index_type = Get_index_from_type(type_piece, couleur_piece, tl->chessplate);
   int size= index_type.size();
-  cout<<"var get"<<endl;
-  cout<<"size: "<<size<<endl;
+  //cout<<"var get"<<endl;
+  //cout<<"size: "<<size<<endl;
 
   //tl->pp_score();
 
@@ -85,15 +86,18 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
     arbre = AM.Generait_arbre(index_type[i],1);
     //cout<<"piece recup"<<endl;
     nb_chemins=arbre->nb_chemin(1);
+    
     //cout<<"piece recup"<<endl;
     found = false;
     
     next_tm=TD->diviser(nb_chemins, next_try[i]);
+    //cout<<"nb chemins: "<< nb_chemins<<endl;
       for(int n=0; n< nb_chemins ; n++)
       {
         //cout<<"i:"<<i<<endl;
         
-        next_TL=TD->TimeLine_at(next_tm[n]);
+        tl=TD->TimeLine_at(next_tm[n]);
+        piece = tl->chessplate->at(index_type[i]);
         chemin = arbre->chemin_at(n,1);
         if(chemin.size() == 0)
         {
@@ -101,48 +105,108 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
           //cout<<"SCORE KILL"<<endl;
           continue;
         }
+        //cout<<"x: "<<chemin[0].c.x <<"  y: "<< chemin[0].c.y<<endl;
         //cout<<"tl recup"<<endl;
-        if(error.info_piece->info.ambiguous){
+        /*if(error.info_piece->info.ambiguous){
           piece_test = next_TL->chessplate->find_piece_ambiguos(type_piece,
               couleur_piece,
               chemin[0].c.x,
-              chemin[0].c.y,
+              chemin[0].c.y,  
               piece->get_Coord()->x,
               pion);
 
+          
           if(piece_test==NULL)
           {
             next_TL->score_kill();
             //cout<<"SCORE KILL"<<endl;
             continue;
           }
+          
 
         }else{
           //cout<<"avant find piece"<<endl;
-          piece_test = next_TL->chessplate->find_piece(int_to_type(i),
+          piece_test = next_TL->chessplate->find_piece(type_piece,
            couleur_piece,
 					 chemin[0].c.x,
            chemin[0].c.y);
 
+          
           if(piece_test==NULL)
           {
             next_TL->score_kill();
             //cout<<"SCORE KILL"<<endl;
             continue;
           }
+          */
+          
           //cout<<"après"<<endl;
-        }
-
         
-        found = true;
-        //cout<<"FOUND"<<endl;
-        next_TL->add_instant_on_top(piece_test,
-				  *new Coord(chemin[0].c.x,chemin[0].c.y),
-          infP->action,
-				  infP->info);
+        if(piece->get_Type() == roi && tl->chessplate->check_king_movement(chemin[0].c))
+        {
+          tl->score_kill();
+          continue;
+        }
+	
+	      if(piece->piece_rampant()
+	            && !tl->chessplate->check_piece_rampant_movement(piece->get_Type(),
+					    piece->get_last_pos(),
+					    chemin[0].c))
+        {
+          tl->score_kill();
+          continue;
+        }
+	//-------------
+	/*info.ambiguous = check_ambiguiter(tl, chemin[0].c,
+					  piece->get_Type(),
+					  piece->get_Color(),
+					  null_pieces[i]);
+  */
+        
+        piece_to_kill = tl->chessplate->piece_at_coord(chemin[0].c.x, chemin[0].c.y);
+	      if(piece_to_kill != NULL)
+        {
+          if(error.info_piece->action!= Action::eat){
+            tl->score_kill();
+            continue;
+          }
+          if(piece_to_kill->get_Color() == piece->get_Color())
+          {
+            tl->score_kill();
+            continue;
+          }
+	  
+          if(piece->get_Type() != pions
+            || (piece->get_Type() == pions
+            && piece->get_last_pos().x != chemin[0].c.x))
+          {
+            piece_to_kill->set_Alive(false);
+            piece_to_kill->pp_score();
+            
+          }
+          else
+          {
+            tl->score_kill();
+            continue;
+          }
+          }else{
+            if(error.info_piece->action== Action::eat)
+            {
+              tl->score_kill();
+              continue;
+            }
+          }
 
-        piece_test->add_movements(tl->chessplate->index_of(piece), chemin[0].c);
-        //cout<<"après add instant top"<<endl;
+
+        //cout<<"FOUND"<<endl;
+          tl->add_instant_on_top(tl->chessplate->at(arbre->index),
+            chemin[0].c,
+            infP->action,
+            infP->info);
+
+
+          piece->add_movements(arbre->index, chemin[0].c);
+          //cout<<"après add instant top"<<endl;
 
       }
       delete[] next_tm;

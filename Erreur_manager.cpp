@@ -15,8 +15,11 @@ Erreur_manager::~Erreur_manager()
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
+	//cout<<"erreur"<<endl;
+	
   	ENOT->Traiter_Erreur(e);
-	EN->Traiter_Erreur(e);
+	
+	//EN->Traiter_Erreur(e);
 }
 
 bool Erreur_manager::fill_none_piece()

@@ -16,13 +16,12 @@ Identify::Identify(string* l, int size)
   
   for(int i = 0; i < size; i++)
   {
-    cout <<liste[i]<<endl;
+    //cout <<liste[i]<<endl;
     temps_index = i;
     interpreteur(&liste[i]);
   }
   while(EM->fill_none_piece());
-  //TD->clear_score();
-}
+  }
 Identify::~Identify()
 {
   delete EM;
@@ -43,7 +42,7 @@ void Identify::interpreteur(string* piece)
   TD->clear_score();
   //cout << "Total next to clear: "<<TD->size()<<endl;
   int size = TD->size();
-  //cout << "     TD Size: "<<size<<"     "<<piece[0]<<endl;
+  cout << "     TD Size: "<<size<<"     "<<piece[0]<<endl;
   for(int i = 0; i < size;i++)
   {
     /*cout << "TIMELINE: "<<i<<"    size: "<<size<<"     "<<piece[0]
@@ -155,24 +154,6 @@ void Identify::interpreteur(string* piece)
 	  info_piece->coord = Coord((int)piece[0][0]-96,
 				   (int)piece[0][1]-48);
 	  info_piece->action = int_to_act(0);
-
-    //tests
-    /*
-    Error.type = NONE;
-    Error.coord = newcoord;
-    Error.action = none;
-    Error.color = temps_index%2==0;
-    Error.info = info;
-        
-    Error.MTL_index = MTL_index;
-    Error.Temps_actuel = temps_index;
-    if(EM->Verif_echec(Error)){
-      cout<<"Echec correct"<<endl;
-    }else{
-      cout<<"erreur d'echec"<<endl;
-    }
-    */
-
 	  
 	}//promotion
 	else if(piece[0][2] >= 65 && piece[0][2] <= 90)
@@ -205,7 +186,6 @@ void Identify::interpreteur(string* piece)
       else//pion mange
       {
 	info_piece->info.ambiguous = true;
-	//cout <<"-----"<<piece[0]<<endl;
 	p = tl->chessplate->find_piece_ambiguos(pions,info_piece->color,
 						(int)piece[0][2]-96,
 						(int)piece[0][3]-48,
@@ -215,22 +195,6 @@ void Identify::interpreteur(string* piece)
 	info_piece->coord = Coord((int)piece[0][2]-96,
 				 (int)piece[0][3]-48);
 	info_piece->action = int_to_act(1);
-  //tests
-  /*
-  Error.type = NONE;
-  Error.coord = newcoord;
-  Error.action = none;
-  Error.color = temps_index%2==0;
-  Error.info = info;
-      
-  Error.MTL_index = MTL_index;
-  Error.Temps_actuel = temps_index;
-  if(EM->Erreur_eat(Error)){
-    cout<<"eat correct"<<endl;
-  }else{
-    cout<<"erreur de eat"<<endl;
-  }
-  */
       }
     }
 
@@ -242,7 +206,7 @@ void Identify::interpreteur(string* piece)
       {
         if(Tuer(index, info_piece)==-1)
         {
-          cout<<"traitement"<<endl;
+          //cout<<"traitement"<<endl;
           
           Error.piece_index = index;
       

@@ -24,14 +24,12 @@ Ecriture::~Ecriture(){}
 //Fonction d'écriture avec l'a timeline de la partie et le chemin du fichier dans lequel on écrira.
 void Ecriture::Write(TimeDivision* td, string* path)
 {
-  //cout << "lancement de l'éctriture: " << endl;
   Piece blanc;
   Piece noire;
   string coupBlanc;
   string coupNoir;
   string nomBlanc;
   string nomNoir;
-  //MultiTimeLine* mtl = td->get_TimeLine_at(0);
   TimeLine* tm;
 
   int tour = 1;
