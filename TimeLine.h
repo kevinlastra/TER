@@ -83,6 +83,8 @@ class TimeLine
   bool get_color(int);
   //return tous les piece de type NULL
   int* get_all_piece_NULL(int&);
+
+  Coord* Verif_echec(int);
 };
 
 //transforme un entier dans une action 1-> move 2->eat etc....

@@ -3,6 +3,7 @@
 
 #include "Info.h"
 #include "Erreur_note.h"
+#include "Erreur_notation.h"
 #include "TimeDivision.h"
 #include "Piece.h"
 #include "ArbreMovement.h"
@@ -18,6 +19,7 @@ class Erreur_manager
 
   TimeDivision* TD;
   Erreur_note* EN;
+  Erreur_notation* ENOT;
  public:
   //constructeur
   Erreur_manager(TimeDivision*);

@@ -237,14 +237,39 @@ void Identify::interpreteur(string* piece)
     
     if(p != NULL)
     {
+      int index = tl->chessplate->index_of(p);
       if(info_piece->action == 1)
       {
-	if(Tuer(tl->chessplate->index_of(p),
-		info_piece) == -1)
-	{
-	  continue;
-	}
+        if(Tuer(index, info_piece)==-1)
+        {
+          cout<<"traitement"<<endl;
+          
+          Error.piece_index = index;
+      
+          Error.info_piece = info_piece;
+        
+          Error.tl_index = TL_index;
+          Error.tl_instance_index = temps_index;
+          
+          Traitement_erreur();
+	      }
       }
+	    else if(info_piece->action == 0)
+      {
+        if(Tuer(index, info_piece)==0)
+        {
+          Error.piece_index = index;
+      
+          Error.info_piece = info_piece;
+        
+          Error.tl_index = TL_index;
+          Error.tl_instance_index = temps_index;
+          
+          Traitement_erreur();
+        }  
+      }
+      
+
       tl->add_instant_on_top(p,info_piece->coord,
 			     info_piece->action,
 			     info_piece->info);
@@ -252,6 +277,7 @@ void Identify::interpreteur(string* piece)
     else if(p == NULL)
     {
       //cout <<endl<<"Erreur: "<< piece[0] << endl;
+      
       Error.piece_index = -1;
       
       Error.info_piece = info_piece;
@@ -297,16 +323,8 @@ int Identify::Tuer(int p_index, Info_piece* ip)
     piece_to_kill->set_Alive(false);
     return 0;
   }
-  else  //Preparation pour traitement d'erreur
+  else
   {
-    Error.piece_index = p_index;
-    
-    Error.info_piece = ip;
-    
-    Error.tl_index = TL_index;
-    Error.tl_instance_index = temps_index;
-
-    Traitement_erreur();
     return -1;
   }
 }

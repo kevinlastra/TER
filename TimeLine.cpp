@@ -29,7 +29,7 @@ TimeLine::TimeLine(TimeLine* tl)
     else
     {
       Instant a(ins[i].i, new Piece(ins[i].p),
-		ins[i].a,ins[i].info);
+		    ins[i].a,ins[i].info);
     
       instants.push_back(a);
     }
@@ -216,24 +216,41 @@ void TimeLine::Check_timeline()
     }
     else
     {
+      Coord* posRoi = Verif_echec(i);
+      if(instants[i].p->Test_movements(posRoi,true,instants[i].i))
+      {
+
+        if(!instants[i].p->piece_rampant() 
+            ||(instants[i].p->piece_rampant()
+            && !chessplate->check_piece_rampant_movement(instants[i].p->get_Type(),
+            c1,
+            *posRoi)))
+            {
+              instants[i].info.echec = true;
+              cout<<"kill me plz i: "<<i<<endl;
+              cout<<instants[i].p->toString(true)<<endl;
+            }
+      }else{
+        instants[i].info.echec = false;
+      }
       if(instants[i].a == eat)
       {
-	k_piece = chess->piece_at_coord(c2.x,c2.y);
-	if(k_piece == NULL && piece->get_Type() == pions)
-	{
-	  if(piece->get_Color())
-	    k_piece = chess->piece_at_coord(c2.x,c2.y-1);
-	  else
-	    k_piece = chess->piece_at_coord(c2.x,c2.y+1);
-	}
-	
-	if(k_piece == NULL)
-	{
-	  score_kill();
-	  break;
-	}
-	
-	k_piece->set_Alive(false);
+        k_piece = chess->piece_at_coord(c2.x,c2.y);
+        if(k_piece == NULL && piece->get_Type() == pions)
+        {
+          if(piece->get_Color())
+            k_piece = chess->piece_at_coord(c2.x,c2.y-1);
+          else
+            k_piece = chess->piece_at_coord(c2.x,c2.y+1);
+        }
+        
+        if(k_piece == NULL)
+        {
+          score_kill();
+          break;
+        }
+        
+        k_piece->set_Alive(false);
       }
       piece->add_movements(i,c2);
     }
@@ -296,3 +313,32 @@ Action int_to_act(int i)
     break;
   }
 }
+
+Coord* TimeLine::Verif_echec(int i)
+{
+  Piece* p_Test;
+  bool couleur = instants[i].p->get_Color();
+  //cout<<"recup var"<<endl;
+  int size = chessplate->size();
+  
+  //cout<<"instant recupéré"<<endl;
+  //1: on recupère le roi adverse si il n'a pas été joué on utilise les coord de debut
+  
+    
+    
+      for(int i = 0; i < size; i++)
+      {
+        p_Test = chessplate->at(i);
+          
+        //cout<<"tl size: "<<tl->get_size()<<endl;
+        //p_Test->toString();
+        if(p_Test->get_Type() == roi
+          && p_Test->get_Color() != couleur)
+        {
+          return p_Test->get_Coord();
+        }
+        
+      }
+  return NULL;
+}
+

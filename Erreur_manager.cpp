@@ -6,14 +6,17 @@ Erreur_manager::Erreur_manager(TimeDivision* td)
 {
   TD=td;
   EN = new Erreur_note(TD);
+  ENOT = new Erreur_notation(TD);
 }
 Erreur_manager::~Erreur_manager()
 {
   delete EN;
+  delete ENOT;
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-  EN->Traiter_Erreur(e);
+  	ENOT->Traiter_Erreur(e);
+	EN->Traiter_Erreur(e);
 }
 
 bool Erreur_manager::fill_none_piece()
