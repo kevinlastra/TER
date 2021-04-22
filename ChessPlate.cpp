@@ -160,7 +160,7 @@ Piece* ChessPlate::find_piece(Type t, bool color, int x, int y)
       else if(t == dame)
       {
 	if(check_Rok_path(pieces[i]->get_last_pos(),c)
-	   && check_Bishop_path(pieces[i]->get_last_pos(),c))
+	   || check_Bishop_path(pieces[i]->get_last_pos(),c))
 	  return pieces[i];
 	else
 	{
@@ -325,7 +325,7 @@ bool ChessPlate::check_Rok_path(Coord start, Coord end)
   if(start.x == end.x)
   {
     mv = start.y>end.y?-1:1;
-    while(start.y+i*mv != end.y+mv)
+    while(start.y+i*mv != end.y)
     {
       for(int j = 0; j < p_size; j++)
       {
@@ -342,7 +342,7 @@ bool ChessPlate::check_Rok_path(Coord start, Coord end)
   else if(start.y == end.y)
   {
     mv = start.x>end.x?-1:1;
-    while(start.x+i*mv != end.x+mv)
+    while(start.x+i*mv != end.x)
     {
       for(int j = 0; j < p_size; j++)
       {

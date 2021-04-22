@@ -219,12 +219,13 @@ void Piece::resize()
 }
 bool Piece::Test_movements(Coord* c, bool eat, int i)
 {
-  int d;
+  int dx, dy;
   switch(type)
   {
   case roi:
-    d = (c->x-pos[i].x)*(c->x-pos[i].x)+(c->y-pos[i].y)*(c->y-pos[i].y);
-    if(d == 1)
+    dx = (c->x-pos[i].x)*(c->x-pos[i].x);
+    dy = (c->y-pos[i].y)*(c->y-pos[i].y);
+    if(dx <= 1 && dy <= 1)
     {
       return true;
     }

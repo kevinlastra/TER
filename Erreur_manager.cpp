@@ -15,12 +15,20 @@ Erreur_manager::~Erreur_manager()
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
+  cout << "ERREUR:  type: "
+       <<type_to_type_string(e.info_piece->type)
+       <<"  coord  x: "<<e.info_piece->coord.x
+       <<"   y: "<<e.info_piece->coord.y
+       <<"  action: "<<e.info_piece->action
+       <<endl;
   int* tls = TD->diviser(2,e.tl_index);
   e.tl_index = tls[0];
   ENOT->Traiter_Erreur(e);
   
   e.tl_index = tls[1];
   EN->Traiter_Erreur(e);
+  
+  delete[] tls;
 }
 
 bool Erreur_manager::fill_none_piece()
@@ -29,7 +37,6 @@ bool Erreur_manager::fill_none_piece()
   int size = TD->size();
   for(int h = 0; h < size; h++)
   {
-    cout<<"h: "<<h<<"   size: "<<size<<endl;
     TimeLine* tl = TD->TimeLine_at(h);
     if(tl->get_local_score() >= MAX_LOCAL_SCORE
        || tl->get_global_score() >= MAX_GLOBAL_SCORE)

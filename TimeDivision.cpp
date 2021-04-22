@@ -95,6 +95,12 @@ void TimeDivision::clear_tl()
   int cpt = 0;
   while(i < TimeLines.size())
   {
+    if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
+       || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
+    {
+      remove_tl_at(i);
+      continue;
+    }
     TimeLines[i]->Check_timeline();
     if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
        || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)

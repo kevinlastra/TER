@@ -65,7 +65,18 @@ void Identify::interpreteur(string* piece)
     {
       if(ascii == 'K')
       {
-	Factorize(&p, info_piece, piece);
+	//Factorize(&p, info_piece, piece);
+	p = tl->chessplate->at(info_piece->color?28:29);
+	if(piece[0][1] == 'x')
+	{
+	  info_piece->coord = Coord((int)piece[0][2]-96,(int)piece[0][3]-48);
+	  info_piece->action = Action::eat;
+	}
+	else
+	{
+	  info_piece->coord = Coord((int)piece[0][1]-96,(int)piece[0][2]-48);
+	  info_piece->action = Action::move;
+	}
       }
       else if(ascii == 'Q' || ascii == 'B' || ascii == 'N' || ascii == 'R')
       {
@@ -209,7 +220,7 @@ void Identify::interpreteur(string* piece)
       {
         if(Tuer(index, info_piece)==-1)
         {
-          info_piece->action = Action::move;
+          //info_piece->action = Action::move;
           //cout<<"traitement"<<endl;
           
           Error.piece_index = index;
@@ -220,13 +231,13 @@ void Identify::interpreteur(string* piece)
           Error.tl_instance_index = temps_index;
           
           Traitement_erreur();
-	      }
+	}
       }
-	    else if(info_piece->action == 0)
+      else if(info_piece->action == 0)
       {
         if(Tuer(index, info_piece)==0)
         {
-          info_piece->action = Action::eat;
+          //info_piece->action = Action::eat;
 
           Error.piece_index = index;
       
@@ -246,9 +257,7 @@ void Identify::interpreteur(string* piece)
       
     }
     else if(p == NULL)
-    {
-      //cout <<endl<<"Erreur: "<< piece[0] << endl;
-      
+    {      
       Error.piece_index = -1;
       
       Error.info_piece = info_piece;
@@ -257,7 +266,6 @@ void Identify::interpreteur(string* piece)
       Error.tl_instance_index = temps_index;
 
       Traitement_erreur();
-      
     }
   }
   delete info_piece;
@@ -309,11 +317,5 @@ TimeDivision* Identify::get_TimeLines()
 
 void Identify::Traitement_erreur()
 {
-  
-  /*cout <<"Indentify -TE-   Type: "<<type_to_type_string(Error.info_piece->type)
-       <<"    x: "
-       <<(char)(96+Error.info_piece->coord.x)<<"    y: "
-       <<Error.info_piece->coord.y<<endl;
-  */
   EM->Traiter_Erreur(Error);
 }

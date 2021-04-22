@@ -177,13 +177,11 @@ void TimeLine::Check_timeline()
     }
     c1 = Coord(instants[i].p->get_pos_at(index-1).x,
 	      instants[i].p->get_pos_at(index-1).y);
-    
     piece = chess->piece_at_coord(c1.x,c1.y);
     //TO
     index = instants[i].p->time_to_pos_index(i);
     c2 = Coord(instants[i].p->get_pos_at(index).x,
 	      instants[i].p->get_pos_at(index).y);
-
     if(piece != NULL)
     {
       if(piece->Test_movements(&c2, instants[i].a == eat, piece->get_TM_size()-1))
@@ -203,12 +201,18 @@ void TimeLine::Check_timeline()
 	  break;
 	}
       }
+      else
+      {
+	if(instants[i].a != change)
+	{
+	  ERROR = true;
+	}
+      }
     }
     else
     {
       ERROR = true;
     }
-    
     if(ERROR)
     {
       score_kill();
@@ -219,16 +223,17 @@ void TimeLine::Check_timeline()
       Coord* posRoi = Verif_echec(i);
       if(instants[i].p->Test_movements(posRoi,true,instants[i].i))
       {
-
         if(!instants[i].p->piece_rampant() 
-            ||(instants[i].p->piece_rampant()
-            && !chessplate->check_piece_rampant_movement(instants[i].p->get_Type(),
-            c1,
-            *posRoi)))
-            {
-              instants[i].info.echec = true;
-            }
-      }else{
+	   ||(instants[i].p->piece_rampant()
+	      && !chessplate->check_piece_rampant_movement(instants[i].p->get_Type(),
+							   c1,
+							   *posRoi)))
+	{
+	  instants[i].info.echec = true;
+	}
+      }
+      else
+      {
         instants[i].info.echec = false;
       }
       if(instants[i].a == eat)
@@ -251,6 +256,19 @@ void TimeLine::Check_timeline()
         k_piece->set_Alive(false);
       }
       piece->add_movements(i,c2);
+      if(instants[i].a == promotion)
+      {
+	piece->set_Alive(false);
+
+	//promotion
+	i++;
+	piece = chess->at(chess->size());
+	piece->set_Type(instants[i].p->get_Type());
+	piece->set_Type(instants[i].p->get_Color());
+	piece->add_movements(0,c2);
+
+	chess->promotion();
+      }
     }
   }
   delete chess;

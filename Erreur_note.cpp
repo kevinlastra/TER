@@ -5,10 +5,6 @@ Erreur_note::~Erreur_note(){}
 
 void Erreur_note::Traiter_Erreur(Info_Erreur e)
 {
-  /*cout <<"ERREUR - TE -   T: "
-       <<"      tl: "<<e.tl_index
-       <<"      i: "<<e.tl_instance_index
-       <<endl;*/
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   tl->pp_score();
 
@@ -19,7 +15,6 @@ void Erreur_note::Traiter_Erreur(Info_Erreur e)
     tl->score_kill();
     return;
   }
-  cout<<"nb null: "<<nb<<endl;
   int* proxs_castling = TD->diviser(3, e.tl_index);
   e.tl_index = proxs_castling[0];
   Oublie_conscient_cas_castling(e,true,proxs_castling[0],nb,null_pieces);
@@ -389,7 +384,7 @@ void Erreur_note::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_null
       //-----
       
       piece_to_kill = tl->chessplate->piece_at_coord(arbres[j]->arbre_struct[1].c.x,
-							  arbres[j]->arbre_struct[1].c.y);
+						     arbres[j]->arbre_struct[1].c.y);
       if(piece_to_kill != NULL)
       {
 	if(piece_to_kill->get_Color() == piece->get_Color())
@@ -416,17 +411,20 @@ void Erreur_note::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_null
       }
       else
 	tl->update_at(piece, Action::move, info, null_pieces[i]);
-	
+
+      cout << "Type: "<<piece->get_Type()<<endl;
       piece->add_movements(null_pieces[i],
 			   arbres[j]->arbre_struct[1].c);
       piece->pp_score();
      
       piece->set_Alive(false);
-      
-      tl->add_instant_on_top(tl->chessplate->at(e.piece_index),
-				  e.info_piece->coord, e.info_piece->action,
-				  e.info_piece->info);
-      tl->chessplate->at(e.piece_index)->pp_score();
+
+      //piece a bouger
+      piece = tl->chessplate->at(e.piece_index);
+      tl->add_instant_on_top(piece,
+			     e.info_piece->coord, e.info_piece->action,
+			     e.info_piece->info);
+      piece->pp_score();
     }
     delete[] proxs;
     delete arbres[j];
