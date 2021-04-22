@@ -1,5 +1,12 @@
 #include "Erreur_notation.h"
-
+/*
+Bugs non réglés et ajouts a faire: 
+- Certaines erreurs de eat ne se resolvent pas quand corrigées dans le identify
+- Si les coordonnées et le type sont tous deux incorrecte aucun moyen de connaitre la pièce jouée
+- La vérification du eat a l'interieur d'erreur_type() cause une erreur la ou elle n'en cause pas dans erreur_coord
+- certaines timelines reçues ont des coup manquant (un ou deux coups selon certains cas)
+- Il faut trouver un moyen d'implementer une correction d'amguité dans erreur notation
+*/
 Erreur_notation::Erreur_notation(TimeDivision* td):TD(td){}
 Erreur_notation::~Erreur_notation(){}
 
@@ -200,6 +207,10 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
       next_TL->score_kill();
       continue;
     }else{
+      if(!infP->info.ambiguous)
+      {
+        //infP->info.ambiguous=(next_TL,coord_piece,int_to_type(i),couleur_piece,index_tl);
+      }
      found = true;
     }
     //cout<<"avant add tl"<<endl;
