@@ -203,10 +203,13 @@ void Identify::interpreteur(string* piece)
     if(p != NULL)
     {
       int index = tl->chessplate->index_of(p);
+
+
       if(info_piece->action == 1)
       {
         if(Tuer(index, info_piece)==-1)
         {
+          info_piece->action = Action::move;
           //cout<<"traitement"<<endl;
           
           Error.piece_index = index;
@@ -217,12 +220,14 @@ void Identify::interpreteur(string* piece)
           Error.tl_instance_index = temps_index;
           
           Traitement_erreur();
-	}
+	      }
       }
 	    else if(info_piece->action == 0)
       {
         if(Tuer(index, info_piece)==0)
         {
+          info_piece->action = Action::eat;
+
           Error.piece_index = index;
       
           Error.info_piece = info_piece;
@@ -233,11 +238,12 @@ void Identify::interpreteur(string* piece)
           Traitement_erreur();
         }  
       }
-      
 
       tl->add_instant_on_top(p,info_piece->coord,
 			     info_piece->action,
-			     info_piece->info);
+			     info_piece->info);      
+
+      
     }
     else if(p == NULL)
     {

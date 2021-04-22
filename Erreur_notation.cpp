@@ -22,17 +22,12 @@ bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
   //resolu = Erreur_type(e);
   //Verif_eat(e.info_piece,e.piece_index,e.tl_index);
   if(e.info_piece->type!= NONE){
-    
-    Erreur_coord(e,e.tl_index);
-    
 
-    /*
     proxs = TD->diviser(2,e.tl_index);
-    if(!Erreur_type(e,proxs[0])){
-      Erreur_coord(e,proxs[1]);
-    }
-    */
+    Erreur_coord(e,proxs[0]);
+    Erreur_type(e,proxs[1]);
   }
+  delete[] proxs;
   return resolu;
 }
 
@@ -59,42 +54,29 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
   bool found = false;
   index_type = Get_index_from_type(type_piece, couleur_piece, tl->chessplate);
   int size= index_type.size();
-  //cout<<"var get"<<endl;
-  //cout<<"size: "<<size<<endl;
-
-  //tl->pp_score();
 
   if(type_piece!=Type::pions){
     pion=false;
   }
   if(size==0){
     tl->score_kill();
-    //cout<<"SCORE KILL"<<endl;
     return found;
   }
   next_try= TD->diviser(size,index_tl);
   for(int i = 0 ; i<=size-1; i++)
   {
-    
-    //cout<<"entrée boucle type"<<endl;
     tl = TD->TimeLine_at(next_try[i]);
-    //cout<<"tl recup"<<endl;
+
     piece = tl->chessplate->at(index_type[i]);
     piece->pp_score();
-    //cout<<"COUT PIECE : "<<piece->toString()<<endl;
-    //cout<<"index : "<<index_type[i]<<endl;
+
     arbre = AM.Generait_arbre(index_type[i],1);
-    //cout<<"piece recup"<<endl;
     nb_chemins=arbre->nb_chemin(1);
-    
-    //cout<<"piece recup"<<endl;
     found = false;
     
     next_tm=TD->diviser(nb_chemins, next_try[i]);
-    //cout<<"nb chemins: "<< nb_chemins<<endl;
       for(int n=0; n< nb_chemins ; n++)
       {
-        //cout<<"i:"<<i<<endl;
         
         tl=TD->TimeLine_at(next_tm[n]);
         piece = tl->chessplate->at(index_type[i]);
@@ -102,45 +84,9 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
         if(chemin.size() == 0)
         {
           tl->score_kill();
-          //cout<<"SCORE KILL"<<endl;
           continue;
         }
-        //cout<<"x: "<<chemin[0].c.x <<"  y: "<< chemin[0].c.y<<endl;
-        //cout<<"tl recup"<<endl;
-        /*if(error.info_piece->info.ambiguous){
-          piece_test = next_TL->chessplate->find_piece_ambiguos(type_piece,
-              couleur_piece,
-              chemin[0].c.x,
-              chemin[0].c.y,  
-              piece->get_Coord()->x,
-              pion);
-
-          
-          if(piece_test==NULL)
-          {
-            next_TL->score_kill();
-            //cout<<"SCORE KILL"<<endl;
-            continue;
-          }
-          
-
-        }else{
-          //cout<<"avant find piece"<<endl;
-          piece_test = next_TL->chessplate->find_piece(type_piece,
-           couleur_piece,
-					 chemin[0].c.x,
-           chemin[0].c.y);
-
-          
-          if(piece_test==NULL)
-          {
-            next_TL->score_kill();
-            //cout<<"SCORE KILL"<<endl;
-            continue;
-          }
-          */
-          
-          //cout<<"après"<<endl;
+        
         
         if(piece->get_Type() == roi && tl->chessplate->check_king_movement(chemin[0].c))
         {
@@ -156,12 +102,6 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
           tl->score_kill();
           continue;
         }
-	//-------------
-	/*info.ambiguous = check_ambiguiter(tl, chemin[0].c,
-					  piece->get_Type(),
-					  piece->get_Color(),
-					  null_pieces[i]);
-  */
         
         piece_to_kill = tl->chessplate->piece_at_coord(chemin[0].c.x, chemin[0].c.y);
 	      if(piece_to_kill != NULL)
@@ -196,18 +136,12 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
               continue;
             }
           }
-
-
-        //cout<<"FOUND"<<endl;
           tl->add_instant_on_top(tl->chessplate->at(arbre->index),
             chemin[0].c,
             infP->action,
             infP->info);
 
-
           piece->add_movements(arbre->index, chemin[0].c);
-          //cout<<"après add instant top"<<endl;
-
       }
       delete[] next_tm;
   }
@@ -227,18 +161,14 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
   //cout<<"tl obtenue"<<endl;
   std::vector<Piece*> piece_type = Get_piece_from_type(type_piece, couleur_piece, tl->chessplate);
   int size = piece_type.size();
-  cout<<"pieces types opbtenues"<<endl;
-  Piece piece_test;
+  Piece* piece_test;
   Piece* piece;
   int* next_try;
   bool pion = false;
   bool found = false;
-  next_try = TD->diviser(5, error.tl_index);
-  cout<<"var recup"<<endl;
+  next_try = TD->diviser(5, index_tl);
 
-
-
-  for(int i = 0 ; i<=5; i++)
+  for(int i = 0 ; i<5; i++)
   {
     next_TL = TD->TimeLine_at(next_try[i]);
     //cout<<"tl obtenue"<<endl;
@@ -251,7 +181,7 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
       //cout<<"piece obtenue"<<endl;
 
     }else{
-      for(int n = 0; n<= size; n++){
+      for(int n = 0; n<size; n++){
         if(int_to_type(i)==Type::pions){
           pion = true;
         }
@@ -261,7 +191,7 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
            couleur_piece,
 					 coord_piece.x,
            coord_piece.y,
-           piece_test.get_Coord()->x,
+           piece_test->get_Coord()->x,
            pion);
       }
     }
@@ -307,12 +237,13 @@ bool Erreur_notation::Verif_eat(Info_piece* infP,int p_index,int tl_index)
             infP->color,
             infP->coord.x,
             infP->coord.y);
-        if(piece == NULL){
+        if(piece == NULL)
+        {
           tl->score_kill();
           return false;
         }
       }else{
-        for(int n = 0; n<= size; n++){
+        for(int n = 0; n<size; n++){
           if(infP->type==Type::pions){
             pion = true;
           }
@@ -324,6 +255,12 @@ bool Erreur_notation::Verif_eat(Info_piece* infP,int p_index,int tl_index)
             infP->coord.y,
             piece_test.get_Coord()->x,
             pion);
+
+          if(piece == NULL)
+          {
+            tl->score_kill();
+            return false;
+          }
         }
       }
       return true;
@@ -387,48 +324,6 @@ bool Erreur_notation::check_ambiguiter(TimeLine* tl, Coord coord, Type type, boo
     }
   }
   return cpt == 2;
-}
-
-std::vector<int> Erreur_notation::get_piece_in_path(ChessPlate* chess, Coord c1, Coord c2, Type t)
-{
-  std::vector<int> piece_indexs;
-  int dst;
-  int x = (c1.x > c2.x)?-1:1;
-  int y = (c1.y > c2.y)?-1:1;
-  Piece* p;
-  if(t == dame || t == fous)
-  {
-    dst = abs(c1.x - c2.x);
-    for(int i = 1; i <= dst; i++)
-    {
-      p = chess->piece_at_coord(c1.x+i*x, c1.y+i*y);
-      if(p != NULL)
-	piece_indexs.push_back(chess->index_of(p));
-    }
-  }
-  if(t == dame || t == tours)
-  {
-    dst = abs(c1.x - c2.x)+abs(c1.y - c2.y);//1 des 2 est egal a 0
-    if(c1.x == c2.x)
-    {
-      for(int i = 1; i <= dst; i++)
-      {
-	p = chess->piece_at_coord(c1.x, c1.y+i*y);
-	if(p != NULL)
-	  piece_indexs.push_back(chess->index_of(p));
-      }
-    }
-    else if(c1.y == c2.y)
-    {
-      for(int i = 1; i <= dst; i++)
-      {
-	p = chess->piece_at_coord(c1.x+i*x, c1.y);
-	if(p != NULL)
-	  piece_indexs.push_back(chess->index_of(p));
-      }
-    }
-  }
-  return piece_indexs;
 }
 
 
