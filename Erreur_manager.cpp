@@ -15,12 +15,12 @@ Erreur_manager::~Erreur_manager()
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-  cout << "ERREUR:  type: "
+  /*cout << "ERREUR:  type: "
        <<type_to_type_string(e.info_piece->type)
        <<"  coord  x: "<<e.info_piece->coord.x
        <<"   y: "<<e.info_piece->coord.y
        <<"  action: "<<e.info_piece->action
-       <<endl;
+       <<endl;*/
   int* tls = TD->diviser(2,e.tl_index);
   e.tl_index = tls[0];
   ENOT->Traiter_Erreur(e);
@@ -48,16 +48,8 @@ bool Erreur_manager::fill_none_piece()
       continue;
     
     null_check = true;
-    int chess_size = tl->chessplate->size();
-    std::vector<int> alive_pieces;
-    for(int i = 0; i < chess_size; i++)
-    {
-      if(tl->chessplate->at(i)->get_Alive())
-      {
-	alive_pieces.push_back(i);
-      }
-    }
-    std::vector<Arbre*> arbres = Gen_Arbre(tl, alive_pieces, 1);
+    cout<<h<<endl;
+    
     
     Info info;
     int* null_tl_indexs = TD->diviser(nb_null_piece+1, h);
@@ -72,6 +64,24 @@ bool Erreur_manager::fill_none_piece()
 
     for(int i = 0; i < nb_null_piece; i++)
     {
+      tl = TD->TimeLine_at(null_tl_indexs[i]);
+      int chess_size = tl->chessplate->size();
+      std::vector<int> alive_pieces;
+      for(int j = 0; j < chess_size; j++)
+      {
+	if(tl->chessplate->at(j)->get_Alive()
+	   && tl->chessplate->at(j)->get_last_time() < null_indexs[i])
+	{
+	  alive_pieces.push_back(j);
+	}
+      }
+      if(alive_pieces.size() == 0)
+      {
+	tl->score_kill();
+	continue;
+      }
+      std::vector<Arbre*> arbres = Gen_Arbre(tl, alive_pieces, 1);
+      
       alive_tl_indexs = TD->diviser(arbres.size(), null_tl_indexs[i]);
       for(int j = 0; j < arbres.size(); j++)
       {
@@ -143,13 +153,13 @@ bool Erreur_manager::fill_none_piece()
 	  delete arbre_struct_indexs;
 	}
 	delete alive_tl_indexs;
-      }
-    for(int i = 0; i < arbres.size(); i++)
-    {
-      delete arbres[i];
+	for(int i = 0; i < arbres.size(); i++)
+	{
+	  delete arbres[i];
+	}
     }
-    //delete[] null_tl_indexs;
-    //delete[] null_indexs;
+    delete[] null_tl_indexs;
+    delete[] null_indexs;
   }
   return null_check;
 }

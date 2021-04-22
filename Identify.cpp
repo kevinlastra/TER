@@ -22,7 +22,7 @@ Identify::Identify(string* l, int size)
   }
   TD->clear_score();
   cout << "     TD Size: "<<TD->size()<<endl;
-  while(EM->fill_none_piece());
+  //while(EM->fill_none_piece());
   cout << "     TD Size: "<<TD->size()<<endl;
 }
 Identify::~Identify()
@@ -235,7 +235,7 @@ void Identify::interpreteur(string* piece)
       }
       else if(info_piece->action == 0)
       {
-        if(Tuer(index, info_piece)==0)
+        /*if(Tuer(index, info_piece)==0)
         {
           //info_piece->action = Action::eat;
 
@@ -247,7 +247,7 @@ void Identify::interpreteur(string* piece)
           Error.tl_instance_index = temps_index;
           
           Traitement_erreur();
-        }  
+	  }  */
       }
 
       tl->add_instant_on_top(p,info_piece->coord,
@@ -257,7 +257,7 @@ void Identify::interpreteur(string* piece)
       
     }
     else if(p == NULL)
-    {      
+    {
       Error.piece_index = -1;
       
       Error.info_piece = info_piece;

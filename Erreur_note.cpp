@@ -47,6 +47,7 @@ void Erreur_note::Traiter_Erreur(Info_Erreur e)
     {
       cout << "ERREUR AUCUN CAS DETECTER - Erreur manager"<<endl;
       TD->TimeLine_at(e.tl_index)->score_kill();
+      exit(1);
     }
     break;
   }
@@ -412,7 +413,6 @@ void Erreur_note::Oublie_conscient_cas_B(Info_Erreur e, int index_tl,int nb_null
       else
 	tl->update_at(piece, Action::move, info, null_pieces[i]);
 
-      cout << "Type: "<<piece->get_Type()<<endl;
       piece->add_movements(null_pieces[i],
 			   arbres[j]->arbre_struct[1].c);
       piece->pp_score();

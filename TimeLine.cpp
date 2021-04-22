@@ -165,6 +165,13 @@ void TimeLine::Check_timeline()
   for(int i = 0; i < size; i++)
   {
     //FROM
+    //cout <<type_to_type_string(instants[i].p->get_Type())<<endl;
+    if(instants[i].p->get_Type() == NONE)
+    {
+      cout<<"???"<<endl;
+      continue;
+    }
+    
     tm = instants[i].p->get_TM();
     
     for(int j = 0; j < instants[i].p->get_TM_size(); j++)
@@ -292,7 +299,6 @@ int* TimeLine::get_all_piece_NULL(int& nb)
   {
     if(instants[i].p->get_Type() == NONE)
     {
-      //cout <<"  NONE at "<<i<<endl;
       nb++;
     }
   }

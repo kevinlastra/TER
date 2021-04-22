@@ -90,6 +90,7 @@ void TimeDivision::clear_score()
 }
 void TimeDivision::clear_tl()
 {
+  
   int i = 0;
   
   int cpt = 0;
@@ -99,8 +100,10 @@ void TimeDivision::clear_tl()
        || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
     {
       remove_tl_at(i);
+      i++;
       continue;
     }
+    //cout<<"i: "<<i<<endl;
     TimeLines[i]->Check_timeline();
     if(TimeLines[i]->get_local_score() >= MAX_LOCAL_SCORE
        || TimeLines[i]->get_global_score() >= MAX_GLOBAL_SCORE)
@@ -108,8 +111,6 @@ void TimeDivision::clear_tl()
       remove_tl_at(i);
     }
     i++;
-    //cout << "removing    "<<i<<" of "<<size<<endl;
-    //cpt++;
   }
   std::vector<TimeLine*> temp;
   
