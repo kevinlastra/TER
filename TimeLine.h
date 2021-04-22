@@ -3,6 +3,7 @@
 
 #include "Piece.h"
 #include "ChessPlate.h"
+#include "ArbreMovement.h"
 #include <vector>
 
 
@@ -85,6 +86,8 @@ class TimeLine
   int* get_all_piece_NULL(int&);
 
   Coord* Verif_echec(int);
+
+  //void re_build_chessplate(int,std::vector<Anode>,std::vector<int>);
 };
 
 //transforme un entier dans une action 1-> move 2->eat etc....

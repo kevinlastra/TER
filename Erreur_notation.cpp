@@ -163,6 +163,7 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
   int size = piece_type.size();
   Piece* piece_test;
   Piece* piece;
+  Piece* piece_to_kill;
   int* next_try;
   bool pion = false;
   bool found = false;
@@ -202,11 +203,48 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
      found = true;
     }
     //cout<<"avant add tl"<<endl;
-    next_TL->add_instant_on_top(piece,
-				  coord_piece,
-          infP->action,
-				  infP->info);
-    //cout<<"après add tl"<<endl;
+    /*
+    piece_to_kill = tl->chessplate->piece_at_coord(coord_piece.x, coord_piece.y);
+	  if(piece_to_kill != NULL)
+    {
+      if(error.info_piece->action!= Action::eat){
+        cout<<"eat score kill"<<endl;
+        continue;
+      }
+      if(piece_to_kill->get_Color() == piece->get_Color())
+      {
+        cout<<"eat score kill"<<endl;
+        continue;
+      }
+	  
+      if(piece->get_Type() != pions
+          || (piece->get_Type() == pions
+          && piece->get_last_pos().x != coord_piece.x))
+      {
+      piece_to_kill->set_Alive(false);
+      piece_to_kill->pp_score();
+            
+      }
+      else
+      {
+        cout<<"eat score kill"<<endl;
+        tl->score_kill();
+        continue;        
+      }
+    }else{
+      if(error.info_piece->action== Action::eat)
+      {
+        cout<<"eat score kill"<<endl;
+        tl->score_kill();
+        continue;
+      }
+        }
+        */
+        next_TL->add_instant_on_top(piece,
+			  coord_piece,
+        infP->action,
+			  infP->info);
+      
   }
   delete[] next_try;
   return found;
