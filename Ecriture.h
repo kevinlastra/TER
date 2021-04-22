@@ -35,5 +35,5 @@ class Ecriture
   
 
   //ecriture dans un fichier a partir d'une timeline vers un path
-  void Write(TimeDivision*,string*);
+  std::vector<string> Write(TimeDivision*,string*);
 };

@@ -16,6 +16,7 @@ int main(int argc, char** argv)
     return 1;
   }
   string path(argv[1]);
+  std::vector<string> timelines;
   Lecture lecture;
   lecture.Read(&path);
   string* s = lecture.return_lm();
@@ -30,7 +31,7 @@ int main(int argc, char** argv)
   
   string write_path= "output/result.pgn";
   Ecriture ecriture;
-  ecriture.Write(tl,&write_path);
+  timelines = ecriture.Write(tl,&write_path);
 
   //Comparer comparer;
   //comparer.Compare(argv[1],"output/result.pgn");

@@ -22,7 +22,7 @@ Ecriture::Ecriture(){}
 Ecriture::~Ecriture(){}
 
 //Fonction d'écriture avec l'a timeline de la partie et le chemin du fichier dans lequel on écrira.
-void Ecriture::Write(TimeDivision* td, string* path)
+std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
 {
   Piece blanc;
   Piece noire;
@@ -31,6 +31,9 @@ void Ecriture::Write(TimeDivision* td, string* path)
   string nomBlanc;
   string nomNoir;
   TimeLine* tm;
+  std::vector<string> listeTimeline;
+  string timeline;
+
 
   int tour = 1;
   
@@ -41,7 +44,7 @@ void Ecriture::Write(TimeDivision* td, string* path)
   if(!file)
   {
     cout <<"Erreur le fichier n'a pas été trouvé ou n'a pas pu être ouvert" << endl;
-    return;
+    return listeTimeline;
   }
   
 
@@ -49,8 +52,8 @@ void Ecriture::Write(TimeDivision* td, string* path)
     for(int n = 0; n<td->size();n++){
 
       tm = td->TimeLine_at(n);
-    
-    
+      timeline = "";
+
       for(int i=0;i<tm->get_size();i+=2)
       {      
         coupNoir= "";
@@ -174,19 +177,27 @@ void Ecriture::Write(TimeDivision* td, string* path)
 
         //Ecriture sur dans le fichier passé en argument
         file << (tour/2)+1 << ". " << coupBlanc;
+        timeline += std::to_string((tour/2)+1) + ". " + coupBlanc;
         if(coupNoir!=""){
           file << " " << coupNoir;
+          timeline += " " + coupNoir;
+          
         }
         file << endl;
+        timeline += "\n";
         tour= tour+2;
+        
 
       }
-      file <<"---------------------------------------------------" << endl;
+      //file <<"---------------------------------------------------" << endl;
+      cout<<timeline<<endl;
+      listeTimeline.push_back(timeline);
       tour=0;
   
     }
 
   //Fermeture du fichier
+  return listeTimeline;
   file.close();
   
 }
