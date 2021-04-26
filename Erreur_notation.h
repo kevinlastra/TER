@@ -22,7 +22,7 @@ class Erreur_notation
 
     bool Traiter_Erreur(Info_Erreur);
     
-    void Error_eat(Info_Erreur, int);
+    bool Verif_eat(Info_piece*, int, int);
     Type int_to_type(int);
     bool Erreur_coord(Info_Erreur,int);
     bool Erreur_type(Info_Erreur ,int);

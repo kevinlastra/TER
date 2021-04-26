@@ -12,7 +12,6 @@ struct Info_piece
   Action action;
   bool color;
   Info info;
-  int coordAmbiguous;
 
   //cas ou type = pion
   int x;//example dxe3  var x = d
@@ -27,7 +26,7 @@ struct Info_Erreur
   //donc en collect tous les infos possible
   Info_piece* info_piece;
   //
-  bool errorEat;
+  
   int tl_index;        //index du tl
   int tl_instance_index;     //index de l'instance dans le tl
 };

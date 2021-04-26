@@ -23,21 +23,16 @@ bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
 
   bool resolu = false;
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
-  
+  tl->pp_score();
   int* proxs;
   
   //resolu = Erreur_type(e);
   //Verif_eat(e.info_piece,e.piece_index,e.tl_index);
-  cout<<"Traitement erreur"<<endl;
   if(e.info_piece->type!= NONE){
-    if(e.errorEat){
-      Error_eat(e,e.tl_index);
-    }else{
-      tl->pp_score();
-      proxs = TD->diviser(2,e.tl_index);
-      Erreur_coord(e,proxs[0]);
-      Erreur_type(e,proxs[1]);
-    }
+
+    proxs = TD->diviser(2,e.tl_index);
+    Erreur_coord(e,proxs[0]);
+    Erreur_type(e,proxs[1]);
   }
   delete[] proxs;
   return resolu;
@@ -218,125 +213,110 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
       }
      found = true;
     }
-
-    if(piece->get_Type() == roi && tl->chessplate->check_king_movement(coord_piece))
-    {
-      tl->score_kill();
-      continue;
-    }
-	
-	  if(piece->piece_rampant()
-	      && !tl->chessplate->check_piece_rampant_movement(piece->get_Type(),
-				piece->get_last_pos(),
-		    coord_piece))
-    {
-     tl->score_kill();
-      continue;
-    }
-
-
+    //cout<<"avant add tl"<<endl;
+    /*
     piece_to_kill = tl->chessplate->piece_at_coord(coord_piece.x, coord_piece.y);
-	      if(piece_to_kill != NULL)
-        {
-          if(infP->action!= Action::eat){
-            tl->score_kill();
-            continue;
-          }
-          if(piece_to_kill->get_Color() == piece->get_Color())
-          {
-            tl->score_kill();
-            continue;
-          }
+	  if(piece_to_kill != NULL)
+    {
+      if(error.info_piece->action!= Action::eat){
+        cout<<"eat score kill"<<endl;
+        continue;
+      }
+      if(piece_to_kill->get_Color() == piece->get_Color())
+      {
+        cout<<"eat score kill"<<endl;
+        continue;
+      }
 	  
-          if(piece->get_Type() != pions
-            || (piece->get_Type() == pions
-            && piece->get_last_pos().x != coord_piece.x))
-          {
-            piece_to_kill->set_Alive(false);
-            piece_to_kill->pp_score();
+      if(piece->get_Type() != pions
+          || (piece->get_Type() == pions
+          && piece->get_last_pos().x != coord_piece.x))
+      {
+      piece_to_kill->set_Alive(false);
+      piece_to_kill->pp_score();
             
-          }
-          else
-          {
-            tl->score_kill();
-            continue;
-          } 
-          }else{
-            if(error.info_piece->action== Action::eat)
-            {
-              tl->score_kill();
-              continue;
-            }
-          }
-    
-    next_TL->add_instant_on_top(piece,
-      coord_piece,
-      infP->action,
-      infP->info);
-
+      }
+      else
+      {
+        cout<<"eat score kill"<<endl;
+        tl->score_kill();
+        continue;        
+      }
+    }else{
+      if(error.info_piece->action== Action::eat)
+      {
+        cout<<"eat score kill"<<endl;
+        tl->score_kill();
+        continue;
+      }
+        }
+        */
+        next_TL->add_instant_on_top(piece,
+			  coord_piece,
+        infP->action,
+			  infP->info);
+      
   }
   delete[] next_try;
   return found;
 }
 
 
-void Erreur_notation::Error_eat(Info_Erreur error , int tl_index)
+bool Erreur_notation::Verif_eat(Info_piece* infP,int p_index,int tl_index)
 {
   TimeLine* tl = TD->TimeLine_at(tl_index);
-  Info_piece* infP = error.info_piece;
   Piece* piece;
+  std::vector<Piece*> piece_type = Get_piece_from_type(infP->type,
+      infP->color,
+      tl->chessplate);
+  int size = piece_type.size();
   bool pion = false;
   Piece* piece_to_kill=tl->chessplate->piece_at_coord(infP->coord.x, infP->coord.y);
-  
-  if(!infP->info.ambiguous)
-  {
-    piece = tl->chessplate->find_piece(infP->type,
+  Piece piece_test;
+
+  if(piece_to_kill != NULL){
+
+    if(piece_to_kill->get_Color()!=infP->color)
+    {
+      piece_to_kill->set_Alive(false);
+      piece_to_kill->pp_score();
+      if(!infP->info.ambiguous)
+      {
+        piece = tl->chessplate->find_piece(infP->type,
             infP->color,
             infP->coord.x,
             infP->coord.y);
-  }else{
-    //cout<<"ambiguous : "<<infP->coordAmbiguous<<endl;
-    piece = tl->chessplate->find_piece_ambiguos(infP->type,
+        if(piece == NULL)
+        {
+          tl->score_kill();
+          return false;
+        }
+      }else{
+        for(int n = 0; n<size; n++){
+          if(infP->type==Type::pions){
+            pion = true;
+          }
+
+          piece_test = piece_type[n];
+          piece = tl->chessplate->find_piece_ambiguos(infP->type,
             infP->color,
             infP->coord.x,
             infP->coord.y,
-            infP->coordAmbiguous,
+            piece_test.get_Coord()->x,
             pion);
-  }
-    if(piece == NULL)
-        {
-          //cout<<"pièce de error_eat fausse"<<endl;
-          tl->score_kill();
-          return;
+
+          if(piece == NULL)
+          {
+            tl->score_kill();
+            return false;
+          }
         }
-
-    if(piece_to_kill != NULL){
-
-      if(piece_to_kill->get_Color()!=infP->color)
-      {
-        piece_to_kill->set_Alive(false);
-        piece_to_kill->pp_score();
-        //cout<<"eat"<<endl;
-        infP->action=Action::eat;
-        
-      }else{
-        //cout<<"move"<<endl;
-        infP->action=Action::move;
       }
-    }else{
-      //cout<<"move"<<endl;
-      infP->action=Action::move;
+      return true;
     }
-  //cout<<piece->toString()<<endl;
-  tl->add_instant_on_top(piece,
-			  infP->coord,
-        infP->action,
-			  infP->info);
-  //cout<<"instant ajouté:"<<endl;
-  //cout<<"coord :"<<infP->coord.x<<" "<<infP->coord.y<<endl;
-  //cout<<"action :"<<infP->action<<endl;
+  }
+  return false;
 }
-
 
 
 

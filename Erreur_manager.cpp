@@ -21,19 +21,14 @@ void Erreur_manager::Traiter_Erreur(Info_Erreur e)
        <<"   y: "<<e.info_piece->coord.y
        <<"  action: "<<e.info_piece->action
        <<endl;*/
-
-  if(e.errorEat){
-	  ENOT->Traiter_Erreur(e);
-  }else{
-	int* tls = TD->diviser(2,e.tl_index);
-  	e.tl_index = tls[0];
-  	ENOT->Traiter_Erreur(e);
+  int* tls = TD->diviser(2,e.tl_index);
+  e.tl_index = tls[0];
+  ENOT->Traiter_Erreur(e);
   
-  	e.tl_index = tls[1];
-  	EN->Traiter_Erreur(e);
+  e.tl_index = tls[1];
+  EN->Traiter_Erreur(e);
   
-  	delete[] tls;
-  }
+  delete[] tls;
 }
 
 bool Erreur_manager::fill_none_piece()

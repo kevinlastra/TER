@@ -93,7 +93,6 @@ void Identify::interpreteur(string* piece)
 						  (int)piece[0][3]-48,
 						  (int)piece[0][1]-96,
 						  false);
-    cout<<(int)piece[0][1]-96<<endl;
 	  info_piece->coord = Coord((int)piece[0][2]-96,
 				   (int)piece[0][3]-48);
 	  info_piece->action = int_to_act(0);
@@ -204,7 +203,6 @@ void Identify::interpreteur(string* piece)
 						(int)piece[0][3]-48,
 						(int)piece[0][0]-96,
 						true);
-  cout<<(int)piece[0][0]-96<<endl;
 	info_piece->x = (int)piece[0][0]-96;
 	info_piece->coord = Coord((int)piece[0][2]-96,
 				 (int)piece[0][3]-48);
@@ -217,60 +215,44 @@ void Identify::interpreteur(string* piece)
     {
       int index = tl->chessplate->index_of(p);
 
-        Error.errorEat = false;
-        Piece* piece_to_kill = tl->chessplate->piece_at_coord(info_piece->coord.x, info_piece->coord.y);
 
-        if(info_piece->action==Action::eat)
+      if(info_piece->action == 1)
+      {
+        if(Tuer(index, info_piece)==-1)
         {
-          //cout<<"tuer eat "<<endl;
-          if(!Tuer(index, piece_to_kill))
-          {
-            cout<<"erreur eat detectée false"<<endl;
-            Error.piece_index = index;
-            if(info_piece->type==Type::pions)
-            {
-              info_piece->coordAmbiguous = (int)piece[0][0]-96;
-            }else{
-              info_piece->coordAmbiguous = (int)piece[0][1]-96;
-            }
-            Error.info_piece = info_piece;
-            Error.tl_index = TL_index;
-            Error.tl_instance_index = temps_index;
-            Error.errorEat = true;
-            
-            Traitement_erreur();
-            continue;
-          }else
-            piece_to_kill->set_Alive(false);
+          //info_piece->action = Action::move;
+          //cout<<"traitement"<<endl;
           
-        }else if(info_piece->action==Action::move && Tuer(index, piece_to_kill))
+          Error.piece_index = index;
+      
+          Error.info_piece = info_piece;
+        
+          Error.tl_index = TL_index;
+          Error.tl_instance_index = temps_index;
+          
+          Traitement_erreur();
+	}
+      }
+      else if(info_piece->action == 0)
+      {
+        /*if(Tuer(index, info_piece)==0)
         {
-          //cout<<"tuer move"<<endl;
-            cout<<"erreur eat detectée true "<<endl;
-            Error.piece_index = index;
-            if(info_piece->type==Type::pions)
-            {
-              info_piece->coordAmbiguous = (int)piece[0][0]-96;
-            }else{
-              info_piece->coordAmbiguous = (int)piece[0][1]-96;
-            }
-            Error.info_piece = info_piece;
-            Error.tl_index = TL_index;
-            Error.tl_instance_index = temps_index;
-            Error.errorEat = true;
-            
-            Traitement_erreur();
-            continue;
+          //info_piece->action = Action::eat;
+
+          Error.piece_index = index;
+      
+          Error.info_piece = info_piece;
+        
+          Error.tl_index = TL_index;
+          Error.tl_instance_index = temps_index;
           
-        }
-      //cout<<"ajout piece"<<endl;
-      
-      
+          Traitement_erreur();
+	  }  */
+      }
+
       tl->add_instant_on_top(p,info_piece->coord,
-		     info_piece->action,
-		     info_piece->info); 
-      
-      //cout<<"ajouté"<<endl;
+			     info_piece->action,
+			     info_piece->info);      
 
       
     }
@@ -282,7 +264,7 @@ void Identify::interpreteur(string* piece)
       
       Error.tl_index = TL_index;
       Error.tl_instance_index = temps_index;
-      Error.errorEat = false;
+
       Traitement_erreur();
     }
   }
@@ -309,18 +291,20 @@ void Identify::Factorize(Piece** p, Info_piece* ip, string* s)
     ip->action = int_to_act(1);
   }
 }
-bool Identify::Tuer(int p_index, Piece* piece_to_kill)
+int Identify::Tuer(int p_index, Info_piece* ip)
 {
   //cout << "----------Tuer--------"<<endl;
+  Piece* piece_to_kill = tl->chessplate->piece_at_coord(ip->coord.x, ip->coord.y);
   
   if(piece_to_kill != NULL
      && piece_to_kill->get_Color() != tl->chessplate->at(p_index)->get_Color())
   {
-    return true;
+    piece_to_kill->set_Alive(false);
+    return 0;
   }
   else
   {
-    return false;
+    return -1;
   }
 }
 
