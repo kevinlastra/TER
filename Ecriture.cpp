@@ -190,7 +190,7 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
 
       }
       //file <<"---------------------------------------------------" << endl;
-      cout<<timeline<<endl;
+      //cout<<timeline<<endl;
       listeTimeline.push_back(timeline);
       tour=0;
   

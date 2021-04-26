@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Organisation du projet}{3}
+\contentsline {subsection}{\numberline {1.1}Objectifs et cahier des charges}{3}
+\contentsline {subsection}{\numberline {1.2}Division du travail}{5}
+\contentsline {subsection}{\numberline {1.3}Outils de travail}{6}
+\contentsline {section}{\numberline {2}Conception}{7}
+\contentsline {subsection}{\numberline {2.1}Base du jeu}{9}
+\contentsline {subsection}{\numberline {2.2}Graphique}{10}
+\contentsline {subsection}{\numberline {2.3}Qt}{12}
+\contentsline {subsection}{\numberline {2.4}Intelligence Artificielle - IA}{16}
+\contentsline {subsubsection}{\numberline {2.4.1}Une IA pas tr\IeC {\`e}s fut\IeC {\'e}e}{16}
+\contentsline {subsubsection}{\numberline {2.4.2}Une IA un peu plus complexe}{16}
+\contentsline {subsection}{\numberline {2.5}G\IeC {\'e}n\IeC {\'e}ration du Terrain}{18}
+\contentsline {subsubsection}{\numberline {2.5.1}G\IeC {\'e}n\IeC {\'e}ration Automatique}{18}
+\contentsline {section}{\numberline {3}R\IeC {\'e}sultat}{23}
+\contentsline {subsection}{\numberline {3.1}Le jeu}{23}
+\contentsline {subsection}{\numberline {3.2}CONCLUSION}{23}
+\contentsline {section}{\numberline {4}Bibliographie}{24}

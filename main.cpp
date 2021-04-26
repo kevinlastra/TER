@@ -28,10 +28,10 @@ int main(int argc, char** argv)
   cout <<"  NB TIMELINES "<< tl->size()<<endl;
   tl->clear_tl();
   cout <<"  NB TIMELINES "<< tl->size()<<endl;
-  
   string write_path= "output/result.pgn";
   Ecriture ecriture;
   timelines = ecriture.Write(tl,&write_path);
+
 
   //Comparer comparer;
   //comparer.Compare(argv[1],"output/result.pgn");
