@@ -10,20 +10,20 @@
 //cette classe n'a pas ete tester pour des profondeur > 1
 //#####################
 
-//Node pour construir l'arbre de movement
+//Noeud pour construire l'arbre de movements
 struct Anode
 {
-  Coord c;            //coordoner du node
+  Coord c;            //coordonnées du noeud
   int prof;
-  int prev;           //node parent
+  int prev;           //noeud parent
 
   Anode(Coord, int, int);  //constructeur
   Anode();
 };
 struct Arbre
 {
-  std::vector<Anode> arbre_struct;   //arbre de coordoner
-  int index;                         //reference de la piece dans chessplate
+  std::vector<Anode> arbre_struct;   //arbre de coordonnées
+  int index;                         //référence de la pièce dans le plateau
 
   Arbre(Anode,int);                  //constructeur
 
@@ -36,8 +36,8 @@ class ArbreMovement
 {
  private:
   Arbre* arbre;            //pointeur de struct Arbre
-  ChessPlate* chessplate;  //pointeur sur chessplate
-  Piece* piece;            //pointeur sur une piece pour construir l'arbre
+  ChessPlate* chessplate;  //pointeur sur le plateau
+  Piece* piece;            //pointeur sur une pièce pour construire l'arbre
   
  public:
   ArbreMovement(ChessPlate*);
@@ -45,13 +45,13 @@ class ArbreMovement
 
   Arbre* Generait_arbre(Piece*, int, Coord, int);
   Arbre* Generait_arbre(int, int);
-  //ajout un niveau de profondeur
-  void AddProfondeur(Type, int);//tipe de la piece a bouger
+  //Ajoute un niveau de profondeur
+  void AddProfondeur(Type, int);//type de la pièce à bouger
 
-  //nettoi les branches pour les quelle la feuille n'arrive pas a la coordoner
+  //Nettoie les branches pour lesquelles la feuille n'arrive pas à la coordonnée passée en argument
   void clean_nodes(Coord,int);
   
-  //ajout un movement selon le type de piece
+  //Ajoute un movement selon le type de piece
   void Pawn(int,int);
   void Rok(int,int);
   void Knigth(int,int);

@@ -14,22 +14,22 @@ using namespace std;
 class Identify
 {
  private:
-  //pointeur du TimeLine
+  //pointeur de la TimeLine
   TimeDivision* TD;
   
   Erreur_manager* EM;
   Info_Erreur Error;
   
-  //liste de mots, lue par le lecteur ref-> Lecteur.h
+  //liste de mots lus par le lecteur ref-> Lecteur.h
   string* liste;
 
 
   
   TimeLine* tl;
 
-  //index du timeline traiter
+  //index de la timeline traitée
   int TL_index;
-  //temps de lecture pour construir le tl
+  //temps de lecture pour construire le tl
   int temps_index;
  public:
   //constructeur et destructeur
@@ -40,13 +40,13 @@ class Identify
   TimeDivision* get_TimeLines();
   void Traitement_erreur();
  private:
-  //pour un mot et une couleur, ajoute une piece a TimeLine
+  //pour un mot et une couleur, ajoute une piece dans la TimeLine
   void interpreteur(string*);
 
-  //factorize des operation
+  //factorise des operations
   void Factorize(Piece**,Info_piece*,string*);
   
-  //index de la piece assasin, coord de la piece a tuer
+  //index de la piece qui mange, coordonnées de la piece à tuer
   bool Tuer(int,Piece*);
 
 };

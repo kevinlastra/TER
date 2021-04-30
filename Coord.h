@@ -9,6 +9,4 @@ struct Coord
   Coord();
   Coord(int, int);
 };
-//destructeur!!
-
 #endif

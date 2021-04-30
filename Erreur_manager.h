@@ -21,12 +21,12 @@ class Erreur_manager
   Erreur_note* EN;
   Erreur_notation* ENOT;
  public:
-  //constructeur
+  //Constructeur
   Erreur_manager(TimeDivision*);
   ~Erreur_manager();
-  //debut du traitment des erreur
+  //Début du traitement des erreurs
   void Traiter_Erreur(Info_Erreur);
-  //
+  
   bool fill_none_piece();
   std::vector<Arbre*> Gen_Arbre(TimeLine*,std::vector<int>,int);
 };

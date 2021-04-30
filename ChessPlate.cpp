@@ -6,7 +6,7 @@ ChessPlate::ChessPlate()
   pieces = new Piece*[48];
   
 
-  //pions blanc
+  //pions blancs
   pieces[0] = new Piece(pions,true,1,2);
   pieces[1] = new Piece(pions,true,2,2);
   pieces[2] = new Piece(pions,true,3,2);
@@ -16,7 +16,7 @@ ChessPlate::ChessPlate()
   pieces[6] = new Piece(pions,true,7,2);
   pieces[7] = new Piece(pions,true,8,2);
 
-  //pions noir
+  //pions noirs
   pieces[8] = new Piece(pions,false,1,7);
   pieces[9] = new Piece(pions,false,2,7);
   pieces[10] = new Piece(pions,false,3,7);
@@ -26,27 +26,27 @@ ChessPlate::ChessPlate()
   pieces[14] = new Piece(pions,false,7,7);
   pieces[15] = new Piece(pions,false,8,7);
 
-  //tours blanc
+  //tours blanches
   pieces[16] = new Piece(tours,true,1,1);
   pieces[17] = new Piece(tours,true,8,1);
 
-  //tours noir
+  //tours noires
   pieces[18] = new Piece(tours,false,1,8);
   pieces[19] = new Piece(tours,false,8,8);
 
-  //cavaliers blanc
+  //cavaliers blancs
   pieces[20] = new Piece(cavaliers,true,2,1);
   pieces[21] = new Piece(cavaliers,true,7,1);
 
-  //cavaliers noir
+  //cavaliers noirs
   pieces[22] = new Piece(cavaliers,false,2,8);
   pieces[23] = new Piece(cavaliers,false,7,8);
 
-  //fous blanc
+  //fous blancs
   pieces[24] = new Piece(fous,true,3,1);
   pieces[25] = new Piece(fous,true,6,1);
 
-  //fous noir
+  //fous noirs
   pieces[26] = new Piece(fous,false,3,8);
   pieces[27] = new Piece(fous,false,6,8);
 
@@ -54,11 +54,11 @@ ChessPlate::ChessPlate()
   pieces[28] = new Piece(roi,true,5,1);
   pieces[29] = new Piece(roi,false,5,8);
 
-  //dame blanc et noir
+  //dame blanche et noire
   pieces[30] = new Piece(dame,true,4,1);
   pieces[31] = new Piece(dame,false,4,8);
 
-  //promotion blanc
+  //promotion blancs
   pieces[32] = new Piece();
   pieces[33] = new Piece();
   pieces[34] = new Piece();
@@ -68,7 +68,7 @@ ChessPlate::ChessPlate()
   pieces[38] = new Piece();
   pieces[39] = new Piece();
 
-  //promotion noir
+  //promotion noirs
   pieces[40] = new Piece();
   pieces[41] = new Piece();
   pieces[42] = new Piece();
@@ -364,6 +364,5 @@ void ChessPlate::Print()
   for(int i = 0; i < p_size; i++)
   {
     cout<<(pieces[i])->toString(true)<<endl;
-    //cout<<pieces[i]<<endl;
   }
 }

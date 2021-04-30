@@ -10,7 +10,7 @@ class Ecriture
  private:
 
   
-  //liste de mots
+  //Liste de mots
   string coupBlanc;
   string coupNoir;
 
@@ -20,11 +20,11 @@ class Ecriture
   Instant* pNoire;
   Instant* pLast;
 
-  //leurs noms
+  //Leurs noms
   string nomBlanc;
   string nomNoir;
 
-  //prend un entier (de 1 a 8) et lui fait correspondre une lettre ( de a jusqu'a h)
+  //Prend un entier (de 1 a 8) et lui fait correspondre une lettre ( de a jusqu'a h)
   char intToStr(int);
   string get_str_castling(int);
 
@@ -34,6 +34,6 @@ class Ecriture
   ~Ecriture();
   
 
-  //ecriture dans un fichier a partir d'une timeline vers un path
+  //Ecriture dans un fichier à partir d'une timeline vers un fichier
   std::vector<string> Write(TimeDivision*,string*);
 };

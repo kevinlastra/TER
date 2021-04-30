@@ -21,7 +21,7 @@ std::map<Type, string> type_to_pgn ={
 Ecriture::Ecriture(){}
 Ecriture::~Ecriture(){}
 
-//Fonction d'écriture avec l'a timeline de la partie et le chemin du fichier dans lequel on écrira.
+//Fonction d'écriture avec la timeline de la partie et le chemin du fichier dans lequel on écrira.
 std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
 {
   Piece blanc;
@@ -38,7 +38,7 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
   int tour = 1;
   
 
-  //Ouverture du fichier en écriture/ écrase le contenu du fichier si il n'est pas vide a l'ouverture
+  //Ouverture du fichier en écriture ou écrase le contenu du fichier si il n'est pas vide à l'ouverture.
   ofstream file(*path, ios::out | ios::trunc);
   
   if(!file)
@@ -48,7 +48,7 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
   }
   
 
-    //selection de la première timeline de la liste (ici la timeline 0, on pourra plus tard choisir de selectionner une timeline au choix ou bien selon le score)
+    //Pour chaque timeline on stocke la partie sous forme de string dans un vecteur.
     for(int n = 0; n<td->size();n++){
 
       tm = td->TimeLine_at(n);
@@ -58,12 +58,12 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
       {      
         coupNoir= "";
         coupBlanc= "";
-        pBlanche = tm->get_instant_at(i); //Piece blanche
+        pBlanche = tm->get_instant_at(i); //Pièce blanche
         
         Type typeBlanc= pBlanche->p->get_Type();
 
         if(typeBlanc!= Type::NONE){
-          coupBlanc+= type_to_pgn[typeBlanc]; //string dans lequel les coups de cette ligne seront ecrits
+          coupBlanc+= type_to_pgn[typeBlanc]; //String dans lequel les coups de cette ligne seront ecrits
           
           
           
@@ -98,10 +98,8 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
               break;
 
             case Action::promotion:
-              //cout<< "promo" << endl;
               coupBlanc += intToStr(pBlanche->p->get_pos_at(pBlanche->i).x) + std::to_string(pBlanche->p->get_pos_at(pBlanche->i).y) + type_to_pgn[tm->get_instant_at(i+1)->p->get_Type()];
               i++;
-              //cout << "promo effectuee" << endl;
               break;
 
 
@@ -119,9 +117,8 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
         }
         
         //coup joueur noir
-        
         if(i+1!=tm->get_size()){
-          pNoire = tm->get_instant_at(i+1); //Piece noire
+          pNoire = tm->get_instant_at(i+1); //Pièce noire
           Type typeNoir= pNoire->p->get_Type();
 
           if(typeNoir!=Type::NONE){
@@ -175,7 +172,7 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
           
 
 
-        //Ecriture sur dans le fichier passé en argument
+        //Ecriture dans le fichier passé en argument
         file << (tour/2)+1 << ". " << coupBlanc;
         timeline += std::to_string((tour/2)+1) + ". " + coupBlanc;
         if(coupNoir!=""){
@@ -189,8 +186,7 @@ std::vector<string> Ecriture::Write(TimeDivision* td, string* path)
         
 
       }
-      //file <<"---------------------------------------------------" << endl;
-      //cout<<timeline<<endl;
+      file <<"---------------------------------------------------" << endl;
       listeTimeline.push_back(timeline);
       tour=0;
   

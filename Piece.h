@@ -16,13 +16,13 @@ class Piece
   bool color;//Blanc:true    Noir:false
   bool alive;//vivant ou mort
 
-  //liste de position dans le temps
+  //liste de positions dans le temps
   Coord* pos;
 
-  //liste de temps ou il a bouger (TM)
+  //liste d'index de temps ou la pièce à bougé.
   int* Temps_movements;
 
-  //taille actuel et maximal
+  //taille actuelle et maximale
   int TM_size=0;
   int TM_max_size;
 
@@ -55,13 +55,13 @@ class Piece
   int get_TM_size();
   int get_TM_max_size();
 
-  //renvoi la liste de temps et des coordones
+  //renvoi la liste de temps et des coordonnées
   int* get_TM();
   Coord* get_Coords();
 
-  //renvoi la postion i dans la liste de position
+  //renvoie la postion i dans la liste de positions
   Coord get_pos_at(int);
-  //renvoi position en haut de la liste
+  //renvoi la position en haut de la liste
   Coord get_last_pos();
   //
   int get_index_pos_inf(int);
@@ -73,36 +73,37 @@ class Piece
   //bouger dans la position i de la liste
   int get_movements_at(int);
 
-  //transforme i le temps dans le TimeLine et
-  //renvoi j l'index de la coordoner ou il a bouger
-  //au temps i
+  /* Transforme i le temps dans le TimeLine et
+  renvoi j l'index de la coordonnée ou il a bougé
+  au temps i */
   int time_to_pos_index(int);
 
-  //retourne l'index dans timeline de la prochaine position de la piece
+  //Retourne l'index dans la timeline de la prochaine position de la piece
   int time_to_next_pos_time(int);
   int time_to_previous_pos_time(int);
-  //ajoute un temps et une coordoner
+  //Ajoute un temps et une coordonnée
   void add_movements(int, Coord);
 
-  //elimine le temps et la coordoner a l'index i
+  //Elimine le temps et la coordonnée à l'index i
   void remove_movements_at(int);
 
-  //test si la piece peut bouger a une telle coordoner
+  //Teste si la piece peut bouger à une coordonnée donnée
   bool Test_movements(Coord*,bool,int);
   bool Test_mov_Tour(Coord*, int);
   bool Test_mov_Fous(Coord*, int);
   bool Test_mov_Cavaliers(Coord*, int);
 
-  //to string dans le temps
+  //to string de la pièce a un temps donné
   string toString_At(int);
 
-  //tostring simple, true pour printer
-  //tous les coordoner ou il a ete
+  //tostring simple, true pour afficher sur le terminal
   string toString(bool=false);
+
+  //Methodes pour transformer un caractère en type , en string ou transformer un type en string
+  Type char_to_type(char);
+  string char_to_type_string(char);
+  string type_to_type_string(Type);
 };
 
-//print pour debogage 
-Type char_to_type(char);
-string char_to_type_string(char);
-string type_to_type_string(Type);
+
 #endif

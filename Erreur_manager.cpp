@@ -15,12 +15,6 @@ Erreur_manager::~Erreur_manager()
 }
 void Erreur_manager::Traiter_Erreur(Info_Erreur e)
 {
-  /*cout << "ERREUR:  type: "
-       <<type_to_type_string(e.info_piece->type)
-       <<"  coord  x: "<<e.info_piece->coord.x
-       <<"   y: "<<e.info_piece->coord.y
-       <<"  action: "<<e.info_piece->action
-       <<endl;*/
 
   if(e.errorEat){
 	  ENOT->Traiter_Erreur(e);

@@ -65,9 +65,9 @@ void Erreur_note::Pion(Info_Erreur e,int nb, int* null_pieces)
   if(e.piece_index != -1 && e.info_piece->action == eat)
   {
     proxs = TD->diviser(2,e.tl_index);  
-    //je suppose 2 posibiliter:
+    //je suppose 2 posibilitées:
     //      1) manger en passant.
-    //      2) erreur de notation "piece oublier"  ('_').
+    //      2) erreur de notation "piece oubliéer"
     //1)
     p = Manger_en_passant(e);
     tl = TD->TimeLine_at(proxs[0]);
@@ -97,10 +97,10 @@ void Erreur_note::Piece_rampant(Info_Erreur e,int nb, int* null_pieces)
 {
   if(e.piece_index == -1)
   {
-    //je suppose 2 cas possible:
-    //1) soit j'exist mais il existe une piece dans mon chemin
-    //   donc cette piece a un erreur d'oublie, CAS C
-    //2) soit je n'exist pas, CAS A
+    //je suppose 2 cas possibles:
+    //1) soit j'existe mais il existe une pièce sur mon chemin
+    //   donc cette pièce a un erreur d'oubli, CAS C
+    //2) soit je n'existe pas, CAS A
     int* proxs = TD->diviser(2, e.tl_index);
 
     //1)
@@ -133,8 +133,7 @@ Piece* Erreur_note::Manger_en_passant(Info_Erreur e)
     
     if(p == NULL)
     {
-      //cout << "Erreur: impossible de manger en passant, car il n'exist aucune piece"<<endl;
-      //p = Traitement_erreur();
+      //cout << "Erreur: impossible de manger en passant, car il n'existe aucune pièce"<<endl;
       tl->score_kill();
     }
     else

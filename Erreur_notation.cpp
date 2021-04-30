@@ -1,33 +1,15 @@
 #include "Erreur_notation.h"
-/*
-Bugs non réglés et ajouts a faire: 
-- Certaines erreurs de eat ne se resolvent pas quand corrigées dans le identify
-- Si les coordonnées et le type sont tous deux incorrecte aucun moyen de connaitre la pièce jouée
-- La vérification du eat a l'interieur d'erreur_type() cause une erreur la ou elle n'en cause pas dans erreur_coord
-- certaines timelines reçues ont des coup manquant (un ou deux coups selon certains cas)
-- Il faut trouver un moyen d'implementer une correction d'amguité dans erreur notation
-*/
+
 Erreur_notation::Erreur_notation(TimeDivision* td):TD(td){}
 Erreur_notation::~Erreur_notation(){}
 
 bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
 {
-
-  //cout<<"traitement erreur"<<endl;
-  /*cout<<"debut enot"<<endl;
-  cout <<"ERREUR - TE -   T: "
-       <<"      tl: "<<e.tl_index
-       <<"      i: "<<e.tl_instance_index
-       <<endl;
-  */
-
   bool resolu = false;
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   
   int* proxs;
   
-  //resolu = Erreur_type(e);
-  //Verif_eat(e.info_piece,e.piece_index,e.tl_index);
   cout<<"Traitement erreur"<<endl;
   if(e.info_piece->type!= NONE){
     if(e.errorEat){
@@ -45,7 +27,6 @@ bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
 
 
 bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
-  //cout<<"err coord"<<endl;
   Info_piece* infP = error.info_piece; 
   bool couleur_piece = infP->color;
   Coord coord_piece = infP->coord;
@@ -134,10 +115,8 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
           {
             piece_to_kill->set_Alive(false);
             piece_to_kill->pp_score();
-            
-          }
-          else
-          {
+
+          }else{
             tl->score_kill();
             continue;
           }
@@ -148,6 +127,7 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
               continue;
             }
           }
+
           tl->add_instant_on_top(tl->chessplate->at(arbre->index),
             chemin[0].c,
             infP->action,
@@ -163,14 +143,12 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
 
 
 bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
-  //cout<<"erreur type"<<endl;
   Info_piece* infP = error.info_piece; 
   Coord coord_piece = infP->coord;
   bool couleur_piece = infP->color;
   Type type_piece = infP->type;
   TimeLine* tl = TD->TimeLine_at(index_tl);
   TimeLine* next_TL;
-  //cout<<"tl obtenue"<<endl;
   std::vector<Piece*> piece_type = Get_piece_from_type(type_piece, couleur_piece, tl->chessplate);
   int size = piece_type.size();
   Piece* piece_test;
@@ -184,14 +162,12 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
   for(int i = 0 ; i<5; i++)
   {
     next_TL = TD->TimeLine_at(next_try[i]);
-    //cout<<"tl obtenue"<<endl;
     if(!infP->info.ambiguous)
     {
       piece = next_TL->chessplate->find_piece(int_to_type(i),
            couleur_piece,
 					 coord_piece.x,
            coord_piece.y);
-      //cout<<"piece obtenue"<<endl;
 
     }else{
       for(int n = 0; n<size; n++){
@@ -212,10 +188,6 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
       next_TL->score_kill();
       continue;
     }else{
-      if(!infP->info.ambiguous)
-      {
-        //infP->info.ambiguous=(next_TL,coord_piece,int_to_type(i),couleur_piece,index_tl);
-      }
      found = true;
     }
 
@@ -295,7 +267,7 @@ void Erreur_notation::Error_eat(Info_Erreur error , int tl_index)
             infP->coord.x,
             infP->coord.y);
   }else{
-    //cout<<"ambiguous : "<<infP->coordAmbiguous<<endl;
+
     piece = tl->chessplate->find_piece_ambiguos(infP->type,
             infP->color,
             infP->coord.x,
@@ -305,7 +277,6 @@ void Erreur_notation::Error_eat(Info_Erreur error , int tl_index)
   }
     if(piece == NULL)
         {
-          //cout<<"pièce de error_eat fausse"<<endl;
           tl->score_kill();
           return;
         }
@@ -316,65 +287,21 @@ void Erreur_notation::Error_eat(Info_Erreur error , int tl_index)
       {
         piece_to_kill->set_Alive(false);
         piece_to_kill->pp_score();
-        //cout<<"eat"<<endl;
+
         infP->action=Action::eat;
         
       }else{
-        //cout<<"move"<<endl;
         infP->action=Action::move;
       }
     }else{
-      //cout<<"move"<<endl;
       infP->action=Action::move;
     }
-  //cout<<piece->toString()<<endl;
   tl->add_instant_on_top(piece,
 			  infP->coord,
         infP->action,
 			  infP->info);
-  //cout<<"instant ajouté:"<<endl;
-  //cout<<"coord :"<<infP->coord.x<<" "<<infP->coord.y<<endl;
-  //cout<<"action :"<<infP->action<<endl;
 }
 
-
-
-
-std::vector<Arbre*> Erreur_notation::Gen_Arbre(TimeLine* tl, Coord c, int prof, bool color)
-{
-  //GEN ARBRE
-  std::vector<Arbre*> arbres;
-  Piece* piece;
-  for(int h = 0; h < tl->chessplate->size(); h++)
-  {
-    piece = tl->chessplate->at(h);
-    if(!piece->get_Alive() && piece->get_Color() != color)
-      continue;
-    
-    ArbreMovement AM(tl->chessplate);
-    Arbre* a = AM.Generait_arbre(tl->chessplate->at(h),h,c,prof);
-    if(a->arbre_struct.size() > 0)
-    {
-      arbres.push_back(a);
-    }
-  }
-  return arbres;
-}
-
-std::vector<Arbre*> Erreur_notation::Gen_Arbre(TimeLine* tl, std::vector<int> ps, int prof)
-{
-  //GEN ARBRE
-  std::vector<Arbre*> arbres;
-  for(int h = 0; h < ps.size(); h++)
-  { 
-    ArbreMovement AM(tl->chessplate);
-    cout<<"dans gen arbre"<<endl;
-    Arbre* a = AM.Generait_arbre(ps[h],prof);
-    if(a->arbre_struct.size() > 0)
-      arbres.push_back(a);
-  }
-  return arbres;
-}
 
 
 bool Erreur_notation::check_ambiguiter(TimeLine* tl, Coord coord, Type type, bool couleur, int index)
@@ -394,9 +321,6 @@ bool Erreur_notation::check_ambiguiter(TimeLine* tl, Coord coord, Type type, boo
   }
   return cpt == 2;
 }
-
-
-
 
 
 std::vector<Piece*> Erreur_notation::Get_piece_from_type(Type type, bool color, ChessPlate* chessplate){
