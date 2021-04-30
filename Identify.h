@@ -47,7 +47,7 @@ class Identify
   void Factorize(Piece**,Info_piece*,string*);
   
   //index de la piece assasin, coord de la piece a tuer
-  int Tuer(int,Info_piece*);
+  bool Tuer(int,Piece*);
 
 };
 
