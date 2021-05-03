@@ -23,7 +23,7 @@ class Erreur_notation
     //Renvoie l'erreur vers les methodes adaptées selon l'erreur.
     bool Traiter_Erreur(Info_Erreur);
     
-    //Corrige une erreur de notation d'une pièce qui en mange une autre
+    //Corrige une erreur de notation d'une pièce qui en mange une autre et une notation ambigue
     //Paramètres: Infos de l'erreur , Index de la timeline
     void Error_eat(Info_Erreur, int);
     void Erreur_ambiguite(Info_Erreur,int);
