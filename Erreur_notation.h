@@ -26,11 +26,13 @@ class Erreur_notation
     //Corrige une erreur de notation d'une pièce qui en mange une autre
     //Paramètres: Infos de l'erreur , Index de la timeline
     void Error_eat(Info_Erreur, int);
+    void Erreur_ambiguite(Info_Erreur,int);
 
     //Corrige une erreur de coordonnées ou de type si possible, testant les coups possibles
     //Paramètres: Infos de l'erreur , Index de la timeline
     bool Erreur_coord(Info_Erreur,int);
     bool Erreur_type(Info_Erreur ,int);
+    
 
     //Renvoie les indexs de pièce ou laes pièces en question d'un type donné sur le plateau passé en argument
     //Paramètres: Type de la pièce , couleur , plateau

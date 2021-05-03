@@ -9,13 +9,19 @@ bool Erreur_notation::Traiter_Erreur(Info_Erreur e)
   TimeLine* tl = TD->TimeLine_at(e.tl_index);
   
   int* proxs;
+  int* prox_ambiguous;
   
   cout<<"Traitement erreur"<<endl;
   if(e.info_piece->type!= NONE){
+    
     if(e.errorEat){
       Error_eat(e,e.tl_index);
     }else{
       tl->pp_score();
+      if(e.info_piece->info.ambiguous==false){
+        prox_ambiguous=TD->diviser(1,e.tl_index);
+        Erreur_ambiguite(e,prox_ambiguous[0]);
+      }
       proxs = TD->diviser(2,e.tl_index);
       Erreur_coord(e,proxs[0]);
       Erreur_type(e,proxs[1]);
@@ -116,6 +122,7 @@ bool Erreur_notation::Erreur_coord(Info_Erreur error,int index_tl){
             piece_to_kill->set_Alive(false);
             piece_to_kill->pp_score();
 
+
           }else{
             tl->score_kill();
             continue;
@@ -176,7 +183,7 @@ bool Erreur_notation::Erreur_type(Info_Erreur error,int index_tl){
         }
 
         piece_test = piece_type[n];
-        piece = next_TL->chessplate->find_piece_ambiguos(int_to_type(i),
+        piece = next_TL->chessplate->find_piece_ambiguos(int_to_type(i),  
            couleur_piece,
 					 coord_piece.x,
            coord_piece.y,
@@ -301,6 +308,54 @@ void Erreur_notation::Error_eat(Info_Erreur error , int tl_index)
         infP->action,
 			  infP->info);
 }
+
+
+void Erreur_notation::Erreur_ambiguite(Info_Erreur error,int tl_index){
+  TimeLine* tl = TD->TimeLine_at(tl_index);
+  Info_piece* infP = error.info_piece;
+  Piece* piece;
+  Piece* test_piece;
+  std::vector<Piece*> liste_piece;
+  int size = tl->chessplate->size();
+  int* proxs_tl;
+  TimeLine* nextTL;
+  bool pion = true;
+  
+  if(infP->type!=Type::pions){
+    pion=false;
+  }
+  for(int i = 0; i < size; i++)
+  {
+    piece = tl->chessplate->at(i);
+    if(piece->get_Type() == error.info_piece->type
+       && piece->get_Color() == error.info_piece->color
+       && piece->Test_movements(&error.info_piece->coord, false, piece->get_index_pos_inf(error.piece_index)))
+    {
+      liste_piece.push_back(piece);
+    }
+  }
+  proxs_tl = TD->diviser(liste_piece.size(), tl_index);
+  for(int j=0; j<liste_piece.size(); j++){
+    
+    nextTL = TD->TimeLine_at(proxs_tl[j]);
+    test_piece = nextTL->chessplate->find_piece_ambiguos(infP->type,
+            infP->color,
+            infP->coord.x,
+            infP->coord.y,
+            liste_piece[j]->get_Coord()->x,
+            pion);
+
+    if(test_piece!=NULL){
+      infP->info.ambiguous=true;
+      nextTL->add_instant_on_top(test_piece,
+      infP->coord,
+      infP->action,
+      infP->info);
+    }
+  }
+
+}
+
 
 
 
