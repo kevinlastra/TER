@@ -1,7 +1,0 @@
-#include "Piece.h"
-
-Piece::Piece()
-{
-  type = Type.NONE;
-  Coord = new Coord();
-}

@@ -1,9 +1,0 @@
-#include <string>
-
-TimeLine::TimeLine():max_size(4),size(0)
-{
-  act = new Action[4];
-  piece = new Piece[4];
-
-  
-}

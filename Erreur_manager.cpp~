@@ -1,8 +1,0 @@
-#include "Erreur_manager.h"
-
-Erreur_manager::Erreur_manager(){}
-
-Piece* Erreur_manager::Traiter_Erreur(Info_Erreur e)
-{
-  return NULL;
-}
